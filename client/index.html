@@ -4,12 +4,13 @@
         <meta charset="utf-8">
         <meta name="author" content="Chistulari, Vitorino, MrDátil">
     </head>
-    <body>
-        <canvas id="canvasFondo"></canvas>
-        <canvas id="canvasBicho" width="800" height="500"></canvas>
-        <canvas id="canvasUI"></canvas>
+    <body style="margin: 0;" onresize="reescalar()">
+        <canvas id="canvasFondo" style="display:none;"></canvas>
+        <canvas id="canvasBicho"></canvas>
+        <canvas id="canvasUI" style="display:none;"></canvas>
 
         <script src="lib/socket.io.js"></script>
+        <script src="bicho.js"></script>
         <script src="client.js"></script>
     </body>
 </html>
