@@ -1,4 +1,4 @@
-var canvas = document.getElementById('canvasBicho');
+var canvas = document.getElementById('canvasJuego');
 var ctx = canvas.getContext("2d");
 var alto;
 var bicho = new Bicho();

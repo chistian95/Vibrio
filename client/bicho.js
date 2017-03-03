@@ -51,7 +51,6 @@ var Bicho = function() {
     }
 
     this.pintar = function(ctx) {
-        console.log(this);
         for(var i=0; i<this.nodos.lenght; i++) {
             var nodo = this.nodos[i];
             if(nodo === null) {
