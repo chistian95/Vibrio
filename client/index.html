@@ -54,6 +54,10 @@
         var canvasUI = document.getElementById('canvasUI');
 
         entrar.onclick = function(){
+            if(input.value == ""){
+                alert("Escribe algo susia");
+                return;
+            }
             nombre = input.value;
             canvasJuego.style.display = "block";
             input.style.display = "none";
