@@ -28,7 +28,7 @@
     <!--==========MENU==========-->
     <div class="col-md-4 col-md-offset-4 home" id="menu">
 		<center>
-			<h1>Vibr.io</h1>
+			<h1 id="titulo">Vibr.io</h1>
 			<!--<p>Escribe un nick</p>-->
 			<form class="form-inline" autocomplete="off">
 				<div class="form-group" id="formulario">
@@ -41,18 +41,24 @@
 
     <!--==========JUEGO==========-->
     <canvas id="canvasFondo" style="display:none;"></canvas>
-    <canvas id="canvasBicho" style="display:none;"></canvas>
+    <canvas id="canvasJuego" style="display:none;"></canvas>
     <canvas id="canvasUI" style="display:none;"></canvas>
-
 
     <script>
         var nombre = "Sin nombre e.e";
         var input = document.getElementById('inputNombre');
         var entrar = document.getElementById('btn');
+        var titulo = document.getElementById('titulo');
+        var canvasJuego = document.getElementById('canvasJuego');
+        var canvasFondo = document.getElementById('canvasFondo');
+        var canvasUI = document.getElementById('canvasUI');
 
         entrar.onclick = function(){
             nombre = input.value;
-            console.log(nombre);
+            canvasJuego.style.display = "block";
+            input.style.display = "none";
+            entrar.style.display = "none";
+            titulo.style.display = "none";
         }
     </script>
     <script src="lib/socket.io.js"></script>
