@@ -1,16 +1,15 @@
-var canvas = document.getElementById('canvasJuego');
-var ctx = canvas.getContext("2d");
-var alto;
-var bicho = new Bicho();
-reescalar();
+var socket = io.connect('http://127.0.0.1:8082');
+var game = new Game(socket);
 
-function reescalar() {
-    alto = window.innerHeight;
-    ctx.canvas.width = window.innerWidth;
-    ctx.canvas.height = alto;
+socket.on('crearPlayerCliente', function(player){
+	game.crearPlayerCliente(player.id, player.local, player.x, player.y);
+});
+
+socket.on('sync', function(info){
+	game.recibirInfo(info);
+});
+
+crearJugadorServer(''+(Math.random()*9999), socket);
+function crearJugadorServer(playerName, socket){
+    socket.emit('crearJugadorServer', {id: playerName});
 }
-
-setInterval(function() {
-    bicho.update();
-    bicho.pintar(ctx);
-}, 20);
