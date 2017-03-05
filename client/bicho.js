@@ -11,9 +11,6 @@ var Bicho = function() {
     this.derecha = false;
 
     this.update = function() {
-        if(this.nodoCentral == null) {
-            return;
-        }
         var anguloRad = this.nodoCentral.anguloActual * Math.PI / 180.0;
         if(this.arriba) {
             this.x -= Math.cos(anguloRad) * 2;
@@ -51,13 +48,9 @@ var Bicho = function() {
     }
 
     this.pintar = function(ctx) {
-        for(var i=0; i<this.nodos.lenght; i++) {
-            var nodo = this.nodos[i];
-            if(nodo === null) {
-                continue;
-            }
+        this.nodos.forEach(function(nodo) {
             nodo.pintar(ctx);
-        }
+        });
     }
 
     this.reiniciarNodos();
@@ -74,7 +67,7 @@ var Nodo = function(bicho, tipoNodo, nodoPadre, anguloInicio, radio){
     this.bicho = bicho;
     this.tipoNodo = tipoNodo;
     this.nodoPadre = nodoPadre;
-    this.aguloInicio = anguloInicio;
+    this.anguloInicio = anguloInicio;
     this.radio = radio;
     this.anguloTope = 15;
     this.nodos = [];
@@ -85,59 +78,59 @@ var Nodo = function(bicho, tipoNodo, nodoPadre, anguloInicio, radio){
     this.visible = true;
 
     this.mover = function() {
-        if(tipoNodo === TipoNodo.MOTOR) {
-            if(anguloBajar) {
-                anguloGiro = anguloGiro - bicho.getVelocidadGiro() <= -anguloTope ? -anguloTope : anguloGiro - bicho.getVelocidadGiro();
-                anguloBajar = anguloGiro > -anguloTope;
+        if(this.tipoNodo === TipoNodo.MOTOR) {
+            if(this.anguloBajar) {
+                this.anguloGiro = this.anguloGiro - this.bicho.getVelocidadGiro() <= -this.anguloTope ? -this.anguloTope : this.anguloGiro - this.bicho.getVelocidadGiro();
+                this.anguloBajar = this.anguloGiro > -this.anguloTope;
             } else {
-                anguloGiro = anguloGiro + bicho.getVelocidadGiro() >= anguloTope ? anguloTope : anguloGiro + bicho.getVelocidadGiro();
+                this.anguloGiro = this.anguloGiro + this.bicho.getVelocidadGiro() >= this.anguloTope ? this.anguloTope : this.anguloGiro + this.bicho.getVelocidadGiro();
             }
-        } else if(tipoNodo === TipoNodo.FLEXIBLE) {
-            if(nodoPadre.anguloBajar) {
-                anguloGiro = nodoPadre.anguloGiro - bicho.getVelocidadGiro();
+        } else if(this.tipoNodo === TipoNodo.FLEXIBLE) {
+            if(this.nodoPadre.anguloBajar) {
+                this.anguloGiro = this.nodoPadre.anguloGiro - this.bicho.getVelocidadGiro();
             } else {
-                anguloGiro = nodoPadre.anguloGiro + bicho.getVelocidadGiro();
+                this.anguloGiro = this.nodoPadre.anguloGiro + this.bicho.getVelocidadGiro();
             }
         }
 
-        if(nodoPadre === null) {
-            x = bicho.x;
-            y = bicho.y;
+        if(this.nodoPadre == null) {
+            this.x = this.bicho.x;
+            this.y = this.bicho.y;
         } else {
-            var centroX = nodoPadre.x;
-            var centroY = nodoPadre.y;
-            anguloActual = nodoPadre.getAnguloActual() + nodoPadre.getAnguloGiro() + anguloInicio;
-            var angulo = Math.toRadians(anguloActual);
-            var radioPadre = nodoPadre.getRadio();
-            x = Math.cos(angulo) * radioPadre + centroX;
-            y = Math.sin(angulo) * radioPadre + centroY;
+            var centroX = this.nodoPadre.x;
+            var centroY = this.nodoPadre.y;
+            this.anguloActual = this.nodoPadre.anguloActual + this.nodoPadre.anguloGiro + this.anguloInicio;
+            var angulo = this.anguloActual * Math.PI / 180.0;
+            var radioPadre = this.nodoPadre.radio;
+            this.x = Math.cos(angulo) * radioPadre + centroX;
+            this.y = Math.sin(angulo) * radioPadre + centroY;
         }
-        for(var i=0; i<this.nodos.lenght; i++) {
-            var nodo = this.nodos[i];
-            nodo.mover();
-        }
+        this.nodos.forEach(function(nodo) {
+           nodo.mover();
+        });
     }
 
     this.pintar = function(ctx) {
-        if(!visible) {
+        if(!this.visible) {
             return;
         }
-        var xAbs = x - radio;
-        var yAbs = y - radio;
-        var radioAbs = radio * 2.0;
+        var xAbs = this.x - this.radio;
+        var yAbs = this.y - this.radio;
+        var radioAbs = this.radio * 2.0;
         /*
         ctx.setColor(tipoNodo.color);
         ctx.fillOval(xAbs, yAbs, radioAbs, radioAbs);
         */
+        ctx.fillRect(xAbs, yAbs, radioAbs, radioAbs);
 
-        var xSel = x - radio / 8.0;
-        var ySel = y - radio / 8.0;
-        var radiOSel = radio / 4.0;
+        var xSel = this.x -this. radio / 8.0;
+        var ySel = this.y - this.radio / 8.0;
+        var radioSel = this.radio / 4.0;
         /*
         ctx.setColor(Color.BLACK);
         ctx.fillOval(xSel, ySel, radioSel, radioSel);
         */
-        console.log("Nodo");
+        ctx.fillRect(xSel, ySel, radioSel, radioSel);
     }
 }
 

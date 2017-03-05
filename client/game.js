@@ -88,9 +88,9 @@ Game.prototype = {
 		if(this.localPlayer != undefined) this.enviarInfo();
 
         players.forEach(function(player){
-            console.log(player.id);
-            //player.bicho.update();
-            //player.bicho.pintar(ctx);
+            //console.log(player.id);
+            player.bicho.update();
+            player.bicho.pintar(ctx);
             ctx.font = "30px Comic Sans MS";
             ctx.textAlign = "center";
             ctx.fillText(nombre,player.x,player.y-10);
