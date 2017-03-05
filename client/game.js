@@ -113,6 +113,7 @@ function Player(id, game, local, x, y){
 	this.game = game;
 	this.local = local;
     this.bicho = new Bicho();
+    this.bicho.reiniciarNodos();
 }
 /*====================================*/
 
