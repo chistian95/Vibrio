@@ -76,6 +76,8 @@ Game.prototype = {
         if(e.keyCode === 83) game.localPlayer.dir = 1;
         if(e.keyCode === 65) game.localPlayer.dir = 2;
         if(e.keyCode === 68) game.localPlayer.dir = 3;
+
+        if(e.keyCode === 13 && canvasJuego.style.display === "none") empezarJuego();
     },
     /*===============================================*/
 
