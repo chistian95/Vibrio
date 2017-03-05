@@ -40,7 +40,6 @@ var Bicho = function() {
         this.nodos = [];
         this.contFase = 0;
         this.evolucionar();
-        console.log("evo_fin")
     }
 
     this.evolucionar = function() {
@@ -200,16 +199,16 @@ var Bicho = function() {
     this.mover = function(nodo) { //No sé si está bien del todo*
         if(nodo.tipoNodo === TipoNodo.MOTOR) {
             if(nodo.anguloBajar) {
-                nodo.anguloGiro = nodo.anguloGiro - this.velocidadGiro() <= -nodo.anguloTope ? -nodo.anguloTope : nodo.anguloGiro - this.velocidadGiro();
+                nodo.anguloGiro = nodo.anguloGiro - this.velocidadGiro <= -nodo.anguloTope ? -nodo.anguloTope : nodo.anguloGiro - this.velocidadGiro;
                 nodo.anguloBajar = nodo.anguloGiro > -nodo.anguloTope;
             } else {
-                nodo.anguloGiro = nodo.anguloGiro + this.velocidadGiro() >= nodo.anguloTope ? nodo.anguloTope : nodo.anguloGiro + this.velocidadGiro();
+                nodo.anguloGiro = nodo.anguloGiro + this.velocidadGiro >= nodo.anguloTope ? nodo.anguloTope : nodo.anguloGiro + this.velocidadGiro;
             }
         } else if(nodo.tipoNodo === TipoNodo.FLEXIBLE) {
             if(nodo.nodoPadre.anguloBajar) {
-                nodo.anguloGiro = nodo.nodoPadre.anguloGiro - this.velocidadGiro();
+                nodo.anguloGiro = nodo.nodoPadre.anguloGiro - this.velocidadGiro;
             } else {
-                nodo.anguloGiro = nodo.nodoPadre.anguloGiro + this.velocidadGiro();
+                nodo.anguloGiro = nodo.nodoPadre.anguloGiro + this.velocidadGiro;
             }
         }
 
