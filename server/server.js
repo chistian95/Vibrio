@@ -11,13 +11,16 @@ var io = require('socket.io')(server);
 /*==============================================================*/
 
 players = [];
+playersDesc = [];
 
 /* Nueva conexion
 ====================================================================================*/
 io.on('connection', function(client) {
     console.log('Nueva conexión.');
+    var playerid;
     client.on('crearJugadorServer', function(player){
-        console.log(player.id + ' se ha conectado');
+        playerid = player.id;
+        console.log(playerid + ' se ha conectado');
         var initX = Math.random()*500;
         var initY = Math.random()*500;
         /*Crear al cliente su jugador*/
@@ -42,11 +45,25 @@ io.on('connection', function(client) {
                 }
             });
 		}
-        /*Enviarle al cliente el arraylist de players (y mas cosas, pero por ahora solo eso)*/
+        /*Enviarle al cliente el arraylist de players y de playersDesconectados (y mas cosas, pero por ahora solo eso)*/
 		client.emit('sync', getInfo());
-        /*Enviarle a todos los clientes el arraylist de players (y mas cosas, pero por ahora solo eso)*/
+        /*Enviarle a todos los clientes el arraylist de players y de playersDesconectadosd (y mas cosas, pero por ahora solo eso)*/
 		client.broadcast.emit('sync', getInfo());
 	});
+
+    /*Al desconecarse el cliente*/
+    client.on('disconnect', function(){
+        //playersDesc.push(playerid);
+        //players.slice(playerid, 1);
+        for(var i=0;i<players.length;i++){
+            if(players[i].id === playerid){
+                playersDesc.push(players[i]);
+                players.splice(i, 1);
+            }
+
+        }
+        //onDisconnect(client);
+    });
 });
 /*==============================================================================*/
 
@@ -55,6 +72,10 @@ io.on('connection', function(client) {
 function getInfo(){
     var info = {};
     info.players = players;
+    if(playersDesc.length>0){
+        info.playersDesc = playersDesc;//Enviarle a cada cliente los clientes que se han desconectado
+        playersDesc = [] //Como el cliente ya sabe quienes son, no los necesitamos más
+    }
     return info;
 }
 /*================================================*/
@@ -83,6 +104,5 @@ function moverPlayers() {
             case 3: player.x += 1;break;
         }
     });
-
 }
 /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/

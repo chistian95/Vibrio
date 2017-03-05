@@ -10,6 +10,7 @@ socket.on('crearPlayerCliente', function(player){
 });
 
 socket.on('sync', function(info){
+    //alert(info.playersDesc);
 	game.recibirInfo(info);
 });
 /*========================================================================*/

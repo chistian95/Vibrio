@@ -32,19 +32,26 @@ Game.prototype = {
 	},
 
     recibirInfo: function(serverInfo){
+        //Borramos players desconectados
+        if(serverInfo.playersDesc != undefined){
+            for(var i = 0; i < serverInfo.playersDesc.length; i++)
+                for(var j=0;j < players.length;j++)
+                    if(players[j].id === serverInfo.playersDesc[i].id) players.splice(j, 1);
+        }
+
         //Por cada player recibido del servidor
 		serverInfo.players.forEach( function(serverPlayer){
 			var ok = false; //Variable para saber si existe el player localmente
 			players.forEach( function(player){ //Por cada player local
-				if(player.id == serverPlayer.id){//Comprobar si existe
+				if(player.id === serverPlayer.id){//Comprobar si existe
 					player.x = serverPlayer.x;
 					player.y = serverPlayer.y;
 					ok = true;
 				}
 			});
             //Si el jugador recibido del server no existe localmente crearlo.
-			if(!ok && (this.localPlayer == undefined || serverPlayer.id != this.localPlayer.id))
-				this.nuevoPlayer(serverPlayer.id, serverPlayer.type, false, serverPlayer.x, serverPlayer.y, serverPlayer.hp);
+			//if(!ok && (this.localPlayer == undefined || serverPlayer.id != this.localPlayer.id))
+				//this.nuevoPlayer(serverPlayer.id, serverPlayer.type, false, serverPlayer.x, serverPlayer.y, serverPlayer.hp);
 		});
 	},
     /*===================================================*/
@@ -74,17 +81,23 @@ Game.prototype = {
 
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
 	bucle: function(){
+        ctx.clearRect(0, 0, canvas.width, canvas.height); //Limpiar el canvas
+
 		if(this.localPlayer != undefined) this.enviarInfo();
 
         players.forEach(function(player){
+            console.log(player.id);
             //player.bicho.update();
             //player.bicho.pintar(ctx);
+            ctx.font = "30px Comic Sans MS";
+            ctx.textAlign = "center";
+            ctx.fillText(nombre,player.x,player.y-10);
             ctx.fillRect(player.x,player.y,20,20);
         });
+
 		if(this.localPlayer != undefined){
 			//this.move();
 		}
-
 	},
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
 }
