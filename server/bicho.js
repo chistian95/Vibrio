@@ -22,10 +22,9 @@ var BichoProto = function(){
             tempx += Math.cos(anguloRad) * 2;
             tempy += Math.sin(anguloRad) * 2;
         }
-        if(!(tempx<0 || tempx > 500 || tempy<0 || tempy > 500)) {
-            this.x = tempx;
-            this.y = tempy;
-        }
+        if(!(tempx<0 || tempx > 500)) this.x = tempx;
+        if(!(tempy<0 || tempy > 500)) this.y = tempy;
+
         var angulo = this.nodoCentral.anguloActual;
         if(this.izquierda) {
             angulo = angulo - this.velocidadGiro < 0 ? 360 : angulo - this.velocidadGiro;
