@@ -42,7 +42,10 @@ io.on('connection', function(client) {
             /*Actualizar la dirección según lo que ha enviado el cliente*/
             players.forEach( function(player){
                 if(player.id == info.player.id){
-                    player.dir = info.player.dir;
+                    player.bicho.arriba = info.player.arriba;
+                    player.bicho.abajo = info.player.abajo;
+                    player.bicho.izquierda = info.player.izquierda;
+                    player.bicho.derecha = info.player.derecha;
                 }
             });
 		}
@@ -87,9 +90,8 @@ function getInfo(){
 /*Constructor de los player
 ===============================*/
 
-function Player(id, x, y,dir){
+function Player(id, x, y){
 	this.id = id;
-    this.dir = dir;
     this.bicho = new Bicho(x,y);
     players.push(this);
 }
@@ -103,14 +105,6 @@ setInterval(function(){
 }, 20);
 function moverPlayers() {
     players.forEach( function(player){
-        player.bicho.izquierda = false;
-        player.bicho.derecha = false;
-        switch(player.dir) {
-            case 0: player.bicho.arriba = true;player.bicho.abajo = false;break;
-            case 1: player.bicho.abajo = true;player.bicho.arriba = false;break;
-            case 2: player.bicho.izquierda = true;break;
-            case 3: player.bicho.derecha = true;break;
-        }
         player.bicho.update();
     });
 }

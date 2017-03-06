@@ -19,6 +19,7 @@ function Game(socket){
 		g.bucle();
 	}, 40);
     window.addEventListener("keydown", this.teclitas, true);
+    window.addEventListener("keyup", this.teclitasUp, true);
 }
 /*=======================================================*/
 
@@ -27,7 +28,7 @@ Game.prototype = {
     ======================================================*/
 	crearPlayerCliente: function(id, local, x, y){
 		var t = new Player(id, this, local, x, y);
-		if(local) {t.dir = 1;this.localPlayer = t;} //Si es el player propio.
+		if(local) {this.localPlayer = t;} //Si es el player propio.
 		players.push(t);
 	},
 
@@ -62,7 +63,10 @@ Game.prototype = {
 		var info = {};
 		var t = {
 			id: this.localPlayer.id,
-			dir: this.localPlayer.dir,
+            arriba: this.localPlayer.arriba,
+            abajo: this.localPlayer.abajo,
+            izquierda: this.localPlayer.izquierda,
+            derecha: this.localPlayer.derecha,
 		};
 		info.player = t;
 		this.socket.emit('sync', info);
@@ -71,11 +75,18 @@ Game.prototype = {
     /*Inputs
     ==================================================*/
     teclitas: function (e) {
-        if(e.keyCode === 87) game.localPlayer.dir = 0;
-        if(e.keyCode === 83) game.localPlayer.dir = 1;
-        if(e.keyCode === 65) game.localPlayer.dir = 2;
-        if(e.keyCode === 68) game.localPlayer.dir = 3;
         if(e.keyCode === 13 && canvasJuego.style.display === "none") empezarJuego();
+
+        if(e.keyCode === 87) game.localPlayer.arriba = true;
+        if(e.keyCode === 83) game.localPlayer.abajo = true;
+        if(e.keyCode === 65) game.localPlayer.izquierda = true;
+        if(e.keyCode === 68) game.localPlayer.derecha = true;
+    },
+    teclitasUp: function(e) {
+        if(e.keyCode === 87) game.localPlayer.arriba = false;
+        if(e.keyCode === 83) game.localPlayer.abajo = false;
+        if(e.keyCode === 65) game.localPlayer.izquierda = false;
+        if(e.keyCode === 68) game.localPlayer.derecha = false;
     },
     /*===============================================*/
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
