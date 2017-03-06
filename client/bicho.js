@@ -57,48 +57,30 @@ var Nodo = function(bicho, tipoNodo, nodoPadre, anguloInicio, radio){
         var xAbs = this.x - this.radio;
         var yAbs = this.y - this.radio;
         var radioAbs = this.radio * 2;
-        /*
-        ctx.setColor(tipoNodo.color);
-        ctx.fillOval(xAbs, yAbs, radioAbs, radioAbs);
-        */
         ctx.beginPath();
         ctx.arc(xAbs+radioAbs/2, yAbs+radioAbs/2, radioAbs, 0, 2 * Math.PI, false);
-        ctx.fillStyle = 'green';
+        ctx.fillStyle = 'rgba(' + this.tipoNodo.color[0] + ', ' + this.tipoNodo.color[1] + ', ' + this.tipoNodo.color[2] + ', ' + this.tipoNodo.color[3] + ')';
         ctx.fill();
-        ctx.lineWidth = 5;
-        ctx.strokeStyle = '#003300';
-        ctx.stroke();
 
         var xSel = this.x -this. radio / 8.0;
         var ySel = this.y - this.radio / 8.0;
         var radioSel = this.radio / 4.0;
-        /*
-        ctx.setColor(Color.BLACK);
-        ctx.fillOval(xSel, ySel, radioSel, radioSel);
-        */
-        //ctx.fillRect(xSel, ySel, radioSel, radioSel);
         ctx.beginPath();
-        ctx.arc(xSel, ySel, radioSel, 0, 2 * Math.PI, false);
-        ctx.fillStyle = 'green';
+        ctx.arc(xSel+radioSel/2, ySel+radioSel/2, radioSel, 0, 2 * Math.PI, false);
+        ctx.fillStyle = 'black';
         ctx.fill();
-        ctx.lineWidth = 5;
-        ctx.strokeStyle = '#003300';
-        ctx.stroke();
-
-
     }
 }
 
 var TipoNodo = function(color){
-    var color;
     this.color = color;
 }
 
-TipoNodo.ESTATICO = new TipoNodo([0, 255, 0, 64]);
-TipoNodo.MOTOR = new TipoNodo([255, 0, 0, 64]);
-TipoNodo.FLEXIBLE = new TipoNodo([0, 255, 255, 64]);
-TipoNodo.PINCHO = new TipoNodo([0, 0, 255, 64]);
-TipoNodo.OJO = new TipoNodo([255, 255, 0, 64]);
+TipoNodo.ESTATICO = new TipoNodo([0, 255, 0, 0.25]);
+TipoNodo.MOTOR = new TipoNodo([255, 0, 0, 0.25]);
+TipoNodo.FLEXIBLE = new TipoNodo([0, 255, 255, 0.25]);
+TipoNodo.PINCHO = new TipoNodo([0, 0, 255, 0.25]);
+TipoNodo.OJO = new TipoNodo([255, 255, 0, 0.25]);
 
 function gusano(bicho, fase) {
     if(fase === 0) {
