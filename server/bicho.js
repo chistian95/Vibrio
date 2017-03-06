@@ -12,13 +12,19 @@ TipoNodo.OJO = new TipoNodo([255, 255, 0, 64]);
 var BichoProto = function(){
     this.update = function() {
        var anguloRad = this.nodoCentral.anguloActual * Math.PI / 180.0;
+        var tempx = this.x;
+        var tempy = this.y;
         if(this.arriba) {
-            this.x -= Math.cos(anguloRad) * 2;
-            this.y -= Math.sin(anguloRad) * 2;
+            tempx -= Math.cos(anguloRad) * 2;
+            tempy -= Math.sin(anguloRad) * 2;
         }
         if(this.abajo) {
-            this.x += Math.cos(anguloRad) * 2;
-            this.y += Math.sin(anguloRad) * 2;
+            tempx += Math.cos(anguloRad) * 2;
+            tempy += Math.sin(anguloRad) * 2;
+        }
+        if(!(tempx<0 || tempx > 500 || tempy<0 || tempy > 500)) {
+            this.x = tempx;
+            this.y = tempy;
         }
         var angulo = this.nodoCentral.anguloActual;
         if(this.izquierda) {
