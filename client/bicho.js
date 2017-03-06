@@ -10,28 +10,12 @@ var Bicho = function() {
     this.izquierda = false;
     this.derecha = false;
 
-    this.update = function() {
-        var anguloRad = this.nodoCentral.anguloActual * Math.PI / 180.0;
-        if(this.arriba) {
-            this.x -= Math.cos(anguloRad) * 2;
-            this.y -= Math.sin(anguloRad) * 2;
-        }
-        if(this.abajo) {
-            this.x += Math.cos(anguloRad) * 2;
-            this.y += Math.sin(anguloRad) * 2;
-        }
-
-        var angulo = this.nodoCentral.anguloActual;
-        if(this.izquierda) {
-            angulo = angulo - this.velocidadGiro < 0 ? 360 : angulo - this.velocidadGiro;
-        }
-        if(this.derecha) {
-            angulo = angulo + this.velocidadGiro > 360 ? 0 : angulo + this.velocidadGiro;
-        }
-        this.nodoCentral.anguloActual = angulo;
-
-        this.nodoCentral.mover();
+    this.pintar = function(ctx) {
+        this.nodos.forEach(function(nodo) {
+            nodo.pintar(ctx);
+        });
     }
+
 
     this.reiniciarNodos = function() {
         this.x = 350;
@@ -47,29 +31,18 @@ var Bicho = function() {
         this.contFase++;
     }
 
-    this.pintar = function(ctx) {
-        this.nodos.forEach(function(nodo) {
-            nodo.pintar(ctx);
-        });
-    }
-
     this.reiniciarNodos();
 }
 
 var Nodo = function(bicho, tipoNodo, nodoPadre, anguloInicio, radio){
     this.x = 0;
     this.y = 0;
-    this.anguloActual = 0;
-    this.anguloGiro = 0;
-    this.anguloBajar = 0;
     this.visible = false;
 
     this.bicho = bicho;
     this.tipoNodo = tipoNodo;
     this.nodoPadre = nodoPadre;
-    this.anguloInicio = anguloInicio;
-    this.radio = radio;
-    this.anguloTope = 15;
+    this.radio = radio/2;
     this.nodos = [];
     this.bicho.nodos.push(this);
     if(this.nodoPadre !== null) {
@@ -77,51 +50,24 @@ var Nodo = function(bicho, tipoNodo, nodoPadre, anguloInicio, radio){
     }
     this.visible = true;
 
-    this.mover = function() {
-        if(this.tipoNodo === TipoNodo.MOTOR) {
-            if(this.anguloBajar) {
-                this.anguloGiro = this.anguloGiro - this.bicho.getVelocidadGiro() <= -this.anguloTope ? -this.anguloTope : this.anguloGiro - this.bicho.getVelocidadGiro();
-                this.anguloBajar = this.anguloGiro > -this.anguloTope;
-            } else {
-                this.anguloGiro = this.anguloGiro + this.bicho.getVelocidadGiro() >= this.anguloTope ? this.anguloTope : this.anguloGiro + this.bicho.getVelocidadGiro();
-            }
-        } else if(this.tipoNodo === TipoNodo.FLEXIBLE) {
-            if(this.nodoPadre.anguloBajar) {
-                this.anguloGiro = this.nodoPadre.anguloGiro - this.bicho.getVelocidadGiro();
-            } else {
-                this.anguloGiro = this.nodoPadre.anguloGiro + this.bicho.getVelocidadGiro();
-            }
-        }
-
-        if(this.nodoPadre == null) {
-            this.x = this.bicho.x;
-            this.y = this.bicho.y;
-        } else {
-            var centroX = this.nodoPadre.x;
-            var centroY = this.nodoPadre.y;
-            this.anguloActual = this.nodoPadre.anguloActual + this.nodoPadre.anguloGiro + this.anguloInicio;
-            var angulo = this.anguloActual * Math.PI / 180.0;
-            var radioPadre = this.nodoPadre.radio;
-            this.x = Math.cos(angulo) * radioPadre + centroX;
-            this.y = Math.sin(angulo) * radioPadre + centroY;
-        }
-        this.nodos.forEach(function(nodo) {
-           nodo.mover();
-        });
-    }
-
     this.pintar = function(ctx) {
         if(!this.visible) {
             return;
         }
         var xAbs = this.x - this.radio;
         var yAbs = this.y - this.radio;
-        var radioAbs = this.radio * 2.0;
+        var radioAbs = this.radio * 2;
         /*
         ctx.setColor(tipoNodo.color);
         ctx.fillOval(xAbs, yAbs, radioAbs, radioAbs);
         */
-        ctx.fillRect(xAbs, yAbs, radioAbs, radioAbs);
+        ctx.beginPath();
+        ctx.arc(xAbs+radioAbs/2, yAbs+radioAbs/2, radioAbs, 0, 2 * Math.PI, false);
+        ctx.fillStyle = 'green';
+        ctx.fill();
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = '#003300';
+        ctx.stroke();
 
         var xSel = this.x -this. radio / 8.0;
         var ySel = this.y - this.radio / 8.0;
@@ -130,7 +76,16 @@ var Nodo = function(bicho, tipoNodo, nodoPadre, anguloInicio, radio){
         ctx.setColor(Color.BLACK);
         ctx.fillOval(xSel, ySel, radioSel, radioSel);
         */
-        ctx.fillRect(xSel, ySel, radioSel, radioSel);
+        //ctx.fillRect(xSel, ySel, radioSel, radioSel);
+        ctx.beginPath();
+        ctx.arc(xSel, ySel, radioSel, 0, 2 * Math.PI, false);
+        ctx.fillStyle = 'green';
+        ctx.fill();
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = '#003300';
+        ctx.stroke();
+
+
     }
 }
 
@@ -140,13 +95,9 @@ var TipoNodo = function(color){
 }
 
 TipoNodo.ESTATICO = new TipoNodo([0, 255, 0, 64]);
-
 TipoNodo.MOTOR = new TipoNodo([255, 0, 0, 64]);
-
 TipoNodo.FLEXIBLE = new TipoNodo([0, 255, 255, 64]);
-
 TipoNodo.PINCHO = new TipoNodo([0, 0, 255, 64]);
-
 TipoNodo.OJO = new TipoNodo([255, 255, 0, 64]);
 
 function gusano(bicho, fase) {
@@ -159,9 +110,7 @@ function gusano(bicho, fase) {
     } else if(fase === 3) {
         gusanoFase3(bicho);
     }
-    bicho.nodoCentral.mover();
 }
-
 function gusanoFase0(bicho) {
     bicho.nodos = [];
     var cuerpo = new Nodo(bicho, TipoNodo.ESTATICO, null, 0, 50);
@@ -169,14 +118,12 @@ function gusanoFase0(bicho) {
     new Nodo(bicho, TipoNodo.OJO, cuerpo, 240, 15); //Ojo2
     bicho.nodoCentral = cuerpo;
 }
-
 function gusanoFase1(bicho) {
     var cola1 = new Nodo(bicho, TipoNodo.MOTOR, bicho.nodoCentral, 0, 35);
     var cola2 = new Nodo(bicho, TipoNodo.FLEXIBLE, cola1, 0, 25);
     var cola3 = new Nodo(bicho, TipoNodo.FLEXIBLE, cola2, 0, 20);
     new Nodo(bicho, TipoNodo.MOTOR, cola3, 0, 18); //Cola4
 }
-
 function gusanoFase2(bicho) {
     var cola1 = bicho.nodos[3];
     cola1.tipoNodo = TipoNodo.ESTATICO;
@@ -212,7 +159,6 @@ function gusanoFase2(bicho) {
     new Nodo(bicho, TipoNodo.FLEXIBLE, pataIzq3, 0, 7);
     new Nodo(bicho, TipoNodo.FLEXIBLE, pataDrc3, 0, 7);
 }
-
 function gusanoFase3(bicho) {
     new Nodo(bicho, TipoNodo.OJO, bicho.nodoCentral, 100, 15);//Ojo3
     new Nodo(bicho, TipoNodo.OJO, bicho.nodoCentral, 260, 15);//Ojo4
@@ -272,4 +218,27 @@ function gusanoFase3(bicho) {
     var pataDrc3_3 = new Nodo(bicho, TipoNodo.MOTOR, pataDrc3_2, 0, 7);
     var pataDrc3_4 = new Nodo(bicho, TipoNodo.FLEXIBLE, pataDrc3_3, 0, 7);
     new Nodo(bicho, TipoNodo.ESTATICO, pataDrc3_4, 0, 7);
+}
+
+function drawEllipseByCenter(ctx, cx, cy, w, h) {
+  drawEllipse(ctx, cx - w/2.0, cy - h/2.0, w, h);
+}
+
+function drawEllipse(ctx, x, y, w, h) {
+  var kappa = .5522848,
+      ox = (w / 2) * kappa, // control point offset horizontal
+      oy = (h / 2) * kappa, // control point offset vertical
+      xe = x + w,           // x-end
+      ye = y + h,           // y-end
+      xm = x + w / 2,       // x-middle
+      ym = y + h / 2;       // y-middle
+
+  ctx.beginPath();
+  ctx.moveTo(x, ym);
+  ctx.bezierCurveTo(x, ym - oy, xm - ox, y, xm, y);
+  ctx.bezierCurveTo(xm + ox, y, xe, ym - oy, xe, ym);
+  ctx.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
+  ctx.bezierCurveTo(xm - ox, ye, x, ym + oy, x, ym);
+  //ctx.closePath(); // not used correctly, see comments (use to close off open path)
+  ctx.stroke();
 }

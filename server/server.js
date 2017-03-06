@@ -42,8 +42,6 @@ io.on('connection', function(client) {
             /*Actualizar la dirección según lo que ha enviado el cliente*/
             players.forEach( function(player){
                 if(player.id == info.player.id){
-                    //player.x = info.player.x;
-                    //player.y = info.player.y;
                     player.dir = info.player.dir;
                 }
             });
@@ -56,6 +54,7 @@ io.on('connection', function(client) {
 
     /*Al desconecarse el cliente*/
     client.on('disconnect', function(){
+        console.log("Player desconectado.")
         for(var i=0;i<players.length;i++){
             if(players[i].id === playerid){
                 playersDesc.push(players[i]);
@@ -65,12 +64,23 @@ io.on('connection', function(client) {
     });
 });
 /*==============================================================================*/
-
 /*Coger la información para mandarsela al cliente
 ==================================================*/
 function getInfo(){
-    var info = {};
-    info.players = players;
+    var info = [];
+    for(i=0;i<players.length+1;i++) {
+        info[i] = [];
+        for(x=0;x<3;x++) info[i][x] = [];
+    }
+    var num = 0;
+    players.forEach( function(player){
+        var num2 = 0;
+        player.bicho.nodos.forEach( function(nodo){
+            info[num][num2].push(nodo.x,nodo.y,player.id);
+            num2++;
+        });
+        num++;
+    });
     if(playersDesc.length>0){
         info.playersDesc = playersDesc;//Enviarle a cada cliente los clientes que se han desconectado
         playersDesc = [] //Como el cliente ya sabe quienes son, no los necesitamos más
@@ -80,34 +90,31 @@ function getInfo(){
 /*================================================*/
 /*Constructor de los player
 ===============================*/
+
 function Player(id, x, y,dir){
 	this.id = id;
-	this.x = x;
-	this.y = y;
     this.dir = dir;
-    this.bicho = new Bicho();
+    this.bicho = new Bicho(x,y);
     players.push(this);
-    var num = players.indexOf(this);
-    //Aquí va la manteca
-    this.bicho.evolucionar();
-    this.bicho.update();
 }
 /*===========================*/
-
 /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
 setInterval(function(){
     moverPlayers();
 }, 20);
-
 function moverPlayers() {
     players.forEach( function(player){
+        player.bicho.arriba = false;
+        player.bicho.abajo = false;
+        player.bicho.izquierda = false;
+        player.bicho.derecha = false;
         switch(player.dir) {
-            case 0: player.y -= 1;break;
-            case 1: player.y += 1;break;
-            case 2: player.x -= 1;break;
-            case 3: player.x += 1;break;
+            case 0: player.bicho.arriba = true;break;
+            case 1: player.bicho.abajo = true;break;
+            case 2: player.bicho.izquierda = true;break;
+            case 3: player.bicho.derecha = true;break;
         }
-        player.bicho.update(); //Aquí va la manteca
+        player.bicho.update();
     });
 }
 /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/

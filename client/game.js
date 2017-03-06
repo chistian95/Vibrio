@@ -17,7 +17,7 @@ function Game(socket){
 	var g = this;
 	setInterval(function(){
 		g.bucle();
-	}, 20);
+	}, 40);
     window.addEventListener("keydown", this.teclitas, true);
 }
 /*=======================================================*/
@@ -38,20 +38,21 @@ Game.prototype = {
                 for(var j=0;j < players.length;j++)
                     if(players[j].id === serverInfo.playersDesc[i].id) players.splice(j, 1);
         }
-
         //Por cada player recibido del servidor
-		serverInfo.players.forEach( function(serverPlayer){
-			var ok = false; //Variable para saber si existe el player localmente
-			players.forEach( function(player){ //Por cada player local
-				if(player.id === serverPlayer.id){//Comprobar si existe
-					player.x = serverPlayer.x;
-					player.y = serverPlayer.y;
-					ok = true;
-				}
-			});
-            //Si el jugador recibido del server no existe localmente crearlo.
-			//if(!ok && (this.localPlayer == undefined || serverPlayer.id != this.localPlayer.id))
-				//this.nuevoPlayer(serverPlayer.id, serverPlayer.type, false, serverPlayer.x, serverPlayer.y, serverPlayer.hp);
+        var num2 = -1;
+        var numserver = 0;
+		serverInfo.forEach(function(serverPlayer){ //Cada player del server info[]
+            num2 +=3;
+            var num = 0;
+            serverPlayer.forEach(function(nodoServer) { //Cada nodo del player del server info[][]
+                if(nodoServer != undefined && numserver<=players.length-1) {
+                    var nump = 0;
+                    players[numserver].bicho.nodos[num].x = nodoServer[0]
+                    players[numserver].bicho.nodos[num].y = nodoServer[1]
+                }
+                num++;
+            });
+            numserver++;
 		});
 	},
     /*===================================================*/
@@ -62,8 +63,6 @@ Game.prototype = {
 		var t = {
 			id: this.localPlayer.id,
 			dir: this.localPlayer.dir,
-            //x: this.localPlayer.x,
-			//y: this.localPlayer.y,
 		};
 		info.player = t;
 		this.socket.emit('sync', info);
@@ -76,11 +75,9 @@ Game.prototype = {
         if(e.keyCode === 83) game.localPlayer.dir = 1;
         if(e.keyCode === 65) game.localPlayer.dir = 2;
         if(e.keyCode === 68) game.localPlayer.dir = 3;
-
         if(e.keyCode === 13 && canvasJuego.style.display === "none") empezarJuego();
     },
     /*===============================================*/
-
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
 	bucle: function(){
         ctx.clearRect(0, 0, canvas.width, canvas.height); //Limpiar el canvas
@@ -88,18 +85,19 @@ Game.prototype = {
 		if(this.localPlayer != undefined) this.enviarInfo();
 
         players.forEach(function(player){
-            //console.log(player.id);
-            player.bicho.update();
-            player.bicho.pintar(ctx);
-            ctx.font = "30px Comic Sans MS";
+            var num = 0;
+            player.bicho.pintar(ctx)
+            ctx.font = "20px Comic Sans MS";
+            ctx.fillStyle = 'black';
             ctx.textAlign = "center";
-            ctx.fillText(nombre,player.x,player.y-10);
-            ctx.fillRect(player.x,player.y,20,20);
+            player.bicho.nodos.forEach(function(nodo){
+                ctx.fillText("Nº: "+num,nodo.x-10,nodo.y-10);
+                num++;
+            });
+            ctx.font = "20px Comic Sans MS";
+            ctx.fillStyle = 'blue';
+            ctx.fillText(nombre,player.bicho.nodoCentral.x-30,player.bicho.nodoCentral.y+20);
         });
-
-		if(this.localPlayer != undefined){
-			//this.move();
-		}
 	},
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
 }
