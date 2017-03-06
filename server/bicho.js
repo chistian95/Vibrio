@@ -192,12 +192,6 @@ var BichoProto = function(){
             }
         }
 
-        /*if(nodo.nodoPadre == null) {
-            nodo.x = x;
-            nodo.y = y;
-        } else {
-
-        }*/
         nodo.nodos.forEach(function(nodo) {
             mover(nodo);
             var centroX = nodo.nodoPadre.x;

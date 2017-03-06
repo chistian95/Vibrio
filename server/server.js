@@ -46,10 +46,6 @@ io.on('connection', function(client) {
                 }
             });
 		}
-        /*Enviarle al cliente el arraylist de players y de playersDesconectados (y mas cosas, pero por ahora solo eso)*/
-		client.emit('sync', getInfo());
-        /*Enviarle a todos los clientes el arraylist de players y de playersDesconectadosd (y mas cosas, pero por ahora solo eso)*/
-		client.broadcast.emit('sync', getInfo());
 	});
 
     /*Al desconecarse el cliente*/
@@ -101,6 +97,9 @@ function Player(id, x, y,dir){
 /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
 setInterval(function(){
     moverPlayers();
+    var clients = io.sockets.clients(); // This returns an array with all connected clients
+    /*Enviarle a todos los clientes el arraylist de players y de playersDesconectadosd (y mas cosas, pero por ahora solo eso)*/
+    io.sockets.emit('sync', getInfo());
 }, 20);
 function moverPlayers() {
     players.forEach( function(player){
