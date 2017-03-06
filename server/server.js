@@ -104,13 +104,11 @@ setInterval(function(){
 }, 20);
 function moverPlayers() {
     players.forEach( function(player){
-        player.bicho.arriba = false;
-        player.bicho.abajo = false;
         player.bicho.izquierda = false;
         player.bicho.derecha = false;
         switch(player.dir) {
-            case 0: player.bicho.arriba = true;break;
-            case 1: player.bicho.abajo = true;break;
+            case 0: player.bicho.arriba = true;player.bicho.abajo = false;break;
+            case 1: player.bicho.abajo = true;player.bicho.arriba = false;break;
             case 2: player.bicho.izquierda = true;break;
             case 3: player.bicho.derecha = true;break;
         }
