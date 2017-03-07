@@ -49,13 +49,14 @@ var BichoProto = function(){
             this.nodos.push(ojo2);
             this.nodoCentral = cuerpo;
         } else if(this.contFase === 1) {
-            var cola1 = new Nodo(TipoNodo.MOTOR, nodoCentral, 0, 35);
+            var cola1 = new Nodo(TipoNodo.MOTOR, this.nodoCentral, 0, 35);
+            this.nodos.push(cola1);
             var cola2 = new Nodo(TipoNodo.FLEXIBLE, cola1, 0, 25);
+            this.nodos.push(cola2);
             var cola3 = new Nodo(TipoNodo.FLEXIBLE, cola2, 0, 20);
-            new Nodo(TipoNodo.MOTOR, cola3, 0, 18); //Cola4
-            nodos.push(cola1);
-            nodos.push(cola2);
-            nodos.push(cola3);
+            this.nodos.push(cola3);
+            var cola4 = new Nodo(TipoNodo.MOTOR, cola3, 0, 18); //Cola4
+            this.nodos.push(cola4);
         }
         else if(this.contFase === 2) {
             var cola1 = nodos[3];
