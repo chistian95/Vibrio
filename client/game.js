@@ -69,6 +69,17 @@ Game.prototype = {
 		info.player = t;
 		this.socket.emit('sync', info);
 	},
+    /*===================================================*/
+    /*Prueba de evolucionar
+    ====================================================*/
+    evolucionar: function(){
+		var info = {};
+		var t = {
+			id: this.localPlayer.id
+		};
+		info.player = t;
+		this.socket.emit('evolucionar', info);
+	},
     /*=================================================*/
     /*Inputs
     ==================================================*/
@@ -79,6 +90,7 @@ Game.prototype = {
         if(e.keyCode === 83) game.localPlayer.abajo = true;
         if(e.keyCode === 65) game.localPlayer.izquierda = true;
         if(e.keyCode === 68) game.localPlayer.derecha = true;
+        if(e.keyCode === 32) game.evolucionar();
     },
     teclitasUp: function(e) {
         if(e.keyCode === 87) game.localPlayer.arriba = false;
@@ -94,15 +106,10 @@ Game.prototype = {
 		if(this.localPlayer != undefined) this.enviarInfo();
 
         players.forEach(function(player){
-            var num = 0;
             player.bicho.pintar(ctx)
             ctx.font = "20px Comic Sans MS";
             ctx.fillStyle = 'black';
             ctx.textAlign = "center";
-            player.bicho.nodos.forEach(function(nodo){
-                ctx.fillText("Nº: "+num,nodo.x-10,nodo.y-10);
-                num++;
-            });
             ctx.font = "20px Comic Sans MS";
             ctx.fillStyle = 'blue';
             ctx.fillText(nombre,player.bicho.nodos[0].x-30,player.bicho.nodos[0].y+20);

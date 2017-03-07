@@ -61,6 +61,19 @@ io.on('connection', function(client) {
             }
         }
     });
+
+    /*Al evolucionar*/
+    client.on('evolucionar', function(info) {
+        console.log("Evolucionar");
+        if(info.player != undefined){
+            /*Actualizar la dirección según lo que ha enviado el cliente*/
+            players.forEach( function(player){
+                if(player.id == info.player.id){
+                    player.bicho.evolucionar();
+                }
+            });
+		}
+    });
 });
 /*==============================================================================*/
 /*Coger la información para mandarsela al cliente

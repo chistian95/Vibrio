@@ -29,7 +29,7 @@ var Bicho = function() {
             nodo.tipoNodo = nodoMin[4];
             nodo.radio = nodoMin[5]/2.0;
         } else {
-            console.log(nodoMin[5]);
+            console.log(nodoMin);
             var nodo = new Nodo(nodoMin[1], nodoMin[2], nodoMin[3], nodoMin[4], nodoMin[5]/2.0);
             this.nodos.push(nodo);
         }
@@ -52,7 +52,7 @@ var Nodo = function(x, y, visible, tipoNodo, radio){
         var radioAbs = this.radio * 2;
         ctx.beginPath();
         ctx.arc(xAbs+radioAbs/2, yAbs+radioAbs/2, radioAbs, 0, 2 * Math.PI, false);
-        ctx.fillStyle = 'rgba(' + this.tipoNodo.color[0] + ', ' + this.tipoNodo.color[1] + ', ' + this.tipoNodo.color[2] + ', ' + this.tipoNodo.color[3] + ')';
+        ctx.fillStyle = 'rgba(' + this.tipoNodo.color[0] + ', ' + this.tipoNodo.color[1] + ', ' + this.tipoNodo.color[2] + ', 0.25)';
         ctx.fill();
 
         var xSel = this.x -this. radio / 8.0;
