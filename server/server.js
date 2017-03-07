@@ -75,7 +75,7 @@ function getInfo(){
     players.forEach( function(player){
         var num2 = 0;
         player.bicho.nodos.forEach( function(nodo){
-            info[num][num2].push(nodo.x,nodo.y,player.id);
+            info[num].push(player.bicho.crearNodoMin(num2, nodo));
             num2++;
         });
         num++;
@@ -95,7 +95,6 @@ function Player(id, x, y){
     this.bicho = new Bicho(x,y);
     players.push(this);
 }
-/*===========================*/
 /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
 setInterval(function(){
     moverPlayers();

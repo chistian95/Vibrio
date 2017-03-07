@@ -47,9 +47,7 @@ Game.prototype = {
             var num = 0;
             serverPlayer.forEach(function(nodoServer) { //Cada nodo del player del server info[][]
                 if(nodoServer != undefined && numserver<=players.length-1) {
-                    var nump = 0;
-                    players[numserver].bicho.nodos[num].x = nodoServer[0]
-                    players[numserver].bicho.nodos[num].y = nodoServer[1]
+                    players[numserver].bicho.parsearNodo(nodoServer);
                 }
                 num++;
             });
@@ -107,7 +105,7 @@ Game.prototype = {
             });
             ctx.font = "20px Comic Sans MS";
             ctx.fillStyle = 'blue';
-            ctx.fillText(nombre,player.bicho.nodoCentral.x-30,player.bicho.nodoCentral.y+20);
+            ctx.fillText(nombre,player.bicho.nodos[0].x-30,player.bicho.nodos[0].y+20);
         });
 	},
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
@@ -122,7 +120,6 @@ function Player(id, game, local, x, y){
 	this.game = game;
 	this.local = local;
     this.bicho = new Bicho();
-    this.bicho.reiniciarNodos();
 }
 /*====================================*/
 

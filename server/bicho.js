@@ -175,6 +175,10 @@ var BichoProto = function(){
         this.visible = true;
     }
 
+    this.crearNodoMin = function(posicion, nodo) {
+        return [posicion, nodo.x, nodo.y, nodo.visible, nodo.tipoNodo, nodo.radio];
+    }
+
     mover = function(nodo) { //No sé si está bien del todo*
 
         if(nodo.tipoNodo === TipoNodo.MOTOR) {
