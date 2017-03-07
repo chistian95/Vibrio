@@ -43,7 +43,13 @@
     <canvas id="canvasJuego" style="display:none;"></canvas>
     <canvas id="canvasUI" style="display:none;"></canvas>
 
+    <!--SCRIPTS-->
+    <script src="lib/socket.io.js"></script>
+    <script src="bicho.js"></script>
+    <script src="game.js"></script>
+    <script src="client.js"></script>
     <script>
+        var juego = false;
         var nombre = "Sin nombre e.e";
         var input = document.getElementById('inputNombre');
         var entrar = document.getElementById('btn');
@@ -53,10 +59,10 @@
         var canvasUI = document.getElementById('canvasUI');
 
         entrar.onclick = function(){
-            empezarJuego();
+            cargarJuego();
         }
 
-        function empezarJuego(){
+        function cargarJuego(){
             if(input.value == ""){
                 alert("Escribe algo susia");
                 return;
@@ -64,11 +70,8 @@
             nombre = input.value;
             canvasJuego.style.display = "block";
             menu.style.display = "none";
+            empezarJuego();
         }
     </script>
-    <script src="lib/socket.io.js"></script>
-    <script src="bicho.js"></script>
-    <script src="game.js"></script>
-    <script src="client.js"></script>
 </body>
 </html>

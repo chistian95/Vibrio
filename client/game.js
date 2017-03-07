@@ -80,8 +80,6 @@ Game.prototype = {
     /*Inputs
     ==================================================*/
     teclitas: function (e) {
-        if(e.keyCode === 13 && canvasJuego.style.display === "none") empezarJuego();
-
         if(e.keyCode === 87) game.localPlayer.arriba = true;
         if(e.keyCode === 83) game.localPlayer.abajo = true;
         if(e.keyCode === 65) game.localPlayer.izquierda = true;
