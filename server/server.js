@@ -80,10 +80,7 @@ io.on('connection', function(client) {
 ==================================================*/
 function getInfo(){
     var info = [];
-    for(i=0;i<players.length+1;i++) {
-        info[i] = [];
-        for(x=0;x<3;x++) info[i][x] = [];
-    }
+    for(i=0;i<players.length+1;i++) info[i] = [];
     var num = 0;
     players.forEach( function(player){
         var num2 = 0;

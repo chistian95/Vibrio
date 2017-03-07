@@ -40,16 +40,12 @@ Game.prototype = {
                     if(players[j].id === serverInfo.playersDesc[i].id) players.splice(j, 1);
         }
         //Por cada player recibido del servidor
-        var num2 = -1;
         var numserver = 0;
 		serverInfo.forEach(function(serverPlayer){ //Cada player del server info[]
-            num2 +=3;
-            var num = 0;
             serverPlayer.forEach(function(nodoServer) { //Cada nodo del player del server info[][]
                 if(nodoServer != undefined && numserver<=players.length-1) {
                     players[numserver].bicho.parsearNodo(nodoServer);
                 }
-                num++;
             });
             numserver++;
 		});
