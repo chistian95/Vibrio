@@ -29,7 +29,6 @@ var Bicho = function() {
             nodo.tipoNodo = nodoMin[4];
             nodo.radio = nodoMin[5]/2.0;
         } else {
-            console.log(nodoMin);
             var nodo = new Nodo(nodoMin[1], nodoMin[2], nodoMin[3], nodoMin[4], nodoMin[5]/2.0);
             this.nodos.push(nodo);
         }
