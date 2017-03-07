@@ -93,6 +93,7 @@ function getInfo(){
 function Player(id, x, y){
 	this.id = id;
     this.bicho = new Bicho(x,y);
+    //this.bicho.evolucionar();
     players.push(this);
 }
 /*===========================*/
