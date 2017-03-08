@@ -73,6 +73,19 @@ io.on('connection', function(client) {
             });
 		}
     });
+    /*Al involucionar*/
+    client.on('involucionar', function(info) {
+        if(info.player != undefined){
+            /*Actualizar la dirección según lo que ha enviado el cliente*/
+            players.forEach( function(player){
+                if(player.id == info.player.id){
+                    if(player.bicho.contFase>=2)player.bicho.contFase -=2;
+                    console.log("in")
+                    player.bicho.evolucionar();
+                }
+            });
+		}
+    });
 });
 /*==============================================================================*/
 /*Coger la información para mandarsela al cliente

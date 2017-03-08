@@ -64,31 +64,48 @@ var Nodo = function(x, y, visible, tipoNodo, radio){
     }
 
     this.debug = function(ctx) {
-        ctx.fillText("X: "+this.nodo.x,10,10);
-        ctx.fillText("Y: "+this.nodo.y,10,30);
-        ctx.fillText("Tipo: "+this.nodo.tipoNodo,30,10);
-        ctx.fillText("Radio: "+this.nodo.radio,30,30);
-        if(!this.visible) {
-            ctx.fillText("Invisible: "+this.nodo,30,30);
-            var xAbs = this.x - this.radio;
-            var yAbs = this.y - this.radio;
-            var radioAbs = this.radio * 2;
-            ctx.beginPath();
-            ctx.arc(xAbs+radioAbs/2, yAbs+radioAbs/2, radioAbs, 0, 2 * Math.PI, false);
-            var c1 = Math.max(this.tipoNodo.color[0]-100,0);
-            var c2 = Math.max(this.tipoNodo.color[1]-100,0);
-            var c3 = Math.max(this.tipoNodo.color[2]-100,0);
-            ctx.fillStyle = 'rgba(' + c1 + ', ' + c2 + ', ' + c3 + ', 0.20)';
-            ctx.fill();
-
-            var xSel = this.x -this. radio / 8.0;
-            var ySel = this.y - this.radio / 8.0;
-            var radioSel = this.radio / 4.0;
-            ctx.beginPath();
-            ctx.arc(xSel+radioSel/2, ySel+radioSel/2, radioSel, 0, 2 * Math.PI, false);
-            ctx.fillStyle = 'rgba(' + 50 + ', ' + 50 + ', ' + 50 + ', 0.5)';
-            ctx.fill();
+        ctx.font = "12px Comic Sans MS";
+        ctx.fillText("X: "+this.x,80,10);
+        ctx.fillText("Y: "+this.y,80,30);
+        var tipo = "Error"
+        var colores = []
+        colores.push(TipoNodo.ESTATICO.color);
+        colores.push(TipoNodo.OJO.color);
+        colores.push(TipoNodo.MOTOR.color);
+        colores.push(TipoNodo.FLEXIBLE.color);
+        for(var i=0;i<=3;i++) { //No sé por qué no me cogía this.nodo === TipoNodo.OJO o ESTATICO ._.
+            if(this.tipoNodo.color[0] === colores[i][0] &&
+               this.tipoNodo.color[1] === colores[i][1] &&
+               this.tipoNodo.color[2] === colores[i][2] &&
+               this.tipoNodo.color[3] === colores[i][3])
+                    switch(i) {
+                        case 0: tipo="Estatico";break;
+                        case 1: tipo="Ojo";break;
+                        case 2: tipo="Motor";break;
+                        case 3: tipo="Flexible";break;
+                    }
         }
+        ctx.fillText("Tipo: "+tipo,230,10);
+        ctx.fillText("Radio: "+this.radio,230,30);
+        ctx.fillText("Invisible: "+this.visible,330,10);
+        var xAbs = this.x - this.radio;
+        var yAbs = this.y - this.radio;
+        var radioAbs = this.radio * 2;
+        ctx.beginPath();
+        ctx.arc(xAbs+radioAbs/2, yAbs+radioAbs/2, radioAbs, 0, 2 * Math.PI, false);
+        var c1 = Math.max(this.tipoNodo.color[0]-100,0);
+        var c2 = Math.max(this.tipoNodo.color[1]-100,0);
+        var c3 = Math.max(this.tipoNodo.color[2]-100,0);
+        ctx.fillStyle = 'rgba(' + c1 + ', ' + c2 + ', ' + c3 + ', 0.7)';
+        ctx.fill();
+
+        var xSel = this.x -this. radio / 8.0;
+        var ySel = this.y - this.radio / 8.0;
+        var radioSel = this.radio / 4.0;
+        ctx.beginPath();
+        ctx.arc(xSel+radioSel/2, ySel+radioSel/2, radioSel, 0, 2 * Math.PI, false);
+        ctx.fillStyle = 'rgba(' + 50 + ', ' + 50 + ', ' + 50 + ', 0.7)';
+        ctx.fill();
     }
 }
 
@@ -96,8 +113,8 @@ var TipoNodo = function(color){
     this.color = color;
 }
 
-TipoNodo.ESTATICO = new TipoNodo([0, 255, 0, 0.25]);
-TipoNodo.MOTOR = new TipoNodo([255, 0, 0, 0.25]);
-TipoNodo.FLEXIBLE = new TipoNodo([0, 255, 255, 0.25]);
-TipoNodo.PINCHO = new TipoNodo([0, 0, 255, 0.25]);
-TipoNodo.OJO = new TipoNodo([255, 255, 0, 0.25]);
+TipoNodo.ESTATICO = new TipoNodo([0, 255, 0, 64]);
+TipoNodo.MOTOR = new TipoNodo([255, 0, 0, 64]);
+TipoNodo.FLEXIBLE = new TipoNodo([0, 255, 255, 64]);
+TipoNodo.PINCHO = new TipoNodo([0, 0, 255, 64]);
+TipoNodo.OJO = new TipoNodo([255, 255, 0, 64]);

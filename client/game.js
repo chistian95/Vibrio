@@ -88,6 +88,14 @@ Game.prototype = {
 		info.player = t;
 		this.socket.emit('evolucionar', info);
 	},
+    involucionar: function(){
+		var info = {};
+		var t = {
+			id: this.localPlayer.id
+		};
+		info.player = t;
+		this.socket.emit('involucionar', info);
+	},
     /*=================================================*/
     /*Inputs
     ==================================================*/
@@ -96,7 +104,6 @@ Game.prototype = {
         if(e.keyCode === 83) game.localPlayer.abajo = true;
         if(e.keyCode === 65) game.localPlayer.izquierda = true;
         if(e.keyCode === 68) game.localPlayer.derecha = true;
-        if(e.keyCode === 32) game.evolucionar();
     },
     teclitasUp: function(e) {
         if(e.keyCode === 87) game.localPlayer.arriba = false;
@@ -118,26 +125,31 @@ Game.prototype = {
             ctx.fillStyle = 'blue';
             ctx.fillText(nombre,player.bicho.nodos[0].x-30,player.bicho.nodos[0].y+20);
         });
-        console.log(this.playerToDebug)
-        var ok = false;
-        for(var i=1;i<=2;i++) {
-            if(!ok)this.gui.__controllers[i].onFinishChange(function(value) {
-                game.resetGui();
-                ok = true
-            });
+
+        if(this.playerDebug) {
+           var ok = false;
+            for(var i=1;i<=2;i++) {
+                if(!ok)this.gui.__controllers[i].onFinishChange(function(value) {
+                    game.resetGui();
+                    ok = true
+                });
+            }
+            players[Math.round(this.playerToDebug)].bicho.nodos[Math.round(this.NodoToDebug)].debug(ctx);
         }
 	},
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
     debugInit: function(){
         this.gui = new dat.GUI();
-        this.guiPlayerDebug = this.gui.add(this, 'playerDebug');
-        this.guiPlayerToDebug = this.gui.add(this, 'playerToDebug',0,players.length-1)
-        this.guiNodosToDebug = this.gui.add(this, 'NodoToDebug',0,this.debugNodosLength);
+        this.gui.add(this, 'playerDebug');
+        this.gui.add(this, 'playerToDebug',0,players.length-1)
+        this.gui.add(this, 'NodoToDebug',0,this.debugNodosLength-1);
+        this.gui.add(game, 'evolucionar');
+        this.gui.add(game, 'involucionar');
     },
 
     resetGui: function() {
         this.gui.__controllers[1].__max = Math.round(players.length-1);
-        this.gui.__controllers[2].__max = players[Math.round(this.playerToDebug)].bicho.nodos.length;
+        this.gui.__controllers[2].__max = players[Math.round(this.playerToDebug)].bicho.nodos.length-1;
         this.playerToDebug = Math.min(this.playerToDebug,this.gui.__controllers[1].__max);
         this.NodoToDebug = Math.min(this.NodoToDebug,this.gui.__controllers[2].__max);
         this.playerToDebug = Math.round(this.playerToDebug);
