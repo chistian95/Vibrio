@@ -1,9 +1,8 @@
 var canvas = document.getElementById('canvasJuego');
 var ctx = canvas.getContext("2d");
 var alto;
-var players = [];
+var players = []
 reescalar();
-
 function reescalar() {
     alto = window.innerHeight;
     ctx.canvas.width = window.innerWidth;
@@ -13,7 +12,12 @@ function reescalar() {
 /*Crear juego
 =========================================================*/
 function Game(socket){
+    this.playerToDebug = 0;
+    this.NodoToDebug = 0;
+    this.playerDebug = false;
+    this.debugNodosLength = 0;
 	this.socket = socket;
+
 	var g = this;
 	setInterval(function(){
 		g.bucle();
@@ -28,8 +32,11 @@ Game.prototype = {
     ======================================================*/
 	crearPlayerCliente: function(id, local, x, y){
 		var t = new Player(id, this, local, x, y);
-		if(local) {this.localPlayer = t;} //Si es el player propio.
+		if(local) {
+            this.localPlayer = t
+        ;} //Si es el player propio.
 		players.push(t);
+        if(players.length==1) this.debugInit();
 	},
 
     recibirInfo: function(serverInfo){
@@ -49,6 +56,11 @@ Game.prototype = {
             });
             numserver++;
 		});
+        if(players.length>=1) {
+            //this.resetGui();
+        }
+
+
 	},
     /*===================================================*/
     /*Eventos para enviar al server
@@ -96,9 +108,7 @@ Game.prototype = {
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
 	bucle: function(){
         ctx.clearRect(0, 0, canvas.width, canvas.height); //Limpiar el canvas
-
 		if(this.localPlayer != undefined) this.enviarInfo();
-
         players.forEach(function(player){
             player.bicho.pintar(ctx)
             ctx.font = "20px Comic Sans MS";
@@ -108,8 +118,33 @@ Game.prototype = {
             ctx.fillStyle = 'blue';
             ctx.fillText(nombre,player.bicho.nodos[0].x-30,player.bicho.nodos[0].y+20);
         });
+        console.log(this.playerToDebug)
+        var ok = false;
+        for(var i=1;i<=2;i++) {
+            if(!ok)this.gui.__controllers[i].onFinishChange(function(value) {
+                game.resetGui();
+                ok = true
+            });
+        }
 	},
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
+    debugInit: function(){
+        this.gui = new dat.GUI();
+        this.guiPlayerDebug = this.gui.add(this, 'playerDebug');
+        this.guiPlayerToDebug = this.gui.add(this, 'playerToDebug',0,players.length-1)
+        this.guiNodosToDebug = this.gui.add(this, 'NodoToDebug',0,this.debugNodosLength);
+    },
+
+    resetGui: function() {
+        this.gui.__controllers[1].__max = Math.round(players.length-1);
+        this.gui.__controllers[2].__max = players[Math.round(this.playerToDebug)].bicho.nodos.length;
+        this.playerToDebug = Math.min(this.playerToDebug,this.gui.__controllers[1].__max);
+        this.NodoToDebug = Math.min(this.NodoToDebug,this.gui.__controllers[2].__max);
+        this.playerToDebug = Math.round(this.playerToDebug);
+        this.NodoToDebug = Math.round(this.NodoToDebug);
+        this.gui.__controllers[2].updateDisplay();
+        this.gui.__controllers[1].updateDisplay();
+    }
 }
 
 /*Constructor de los player
