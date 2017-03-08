@@ -14,7 +14,6 @@ var b = require('./bicho');
 var Bicho = b.Bicho;
 
 players = [];
-playersDesc = [];
 
 /* Nueva conexion
 ====================================================================================*/
@@ -56,7 +55,7 @@ io.on('connection', function(client) {
         console.log("Player desconectado.")
         for(var i=0;i<players.length;i++){
             if(players[i].id === playerid){
-                playersDesc.push(players[i]);
+                client.broadcast.emit("playerDesconectadoCliente",{id: players[i].id})
                 players.splice(i, 1);
             }
         }
@@ -80,12 +79,10 @@ io.on('connection', function(client) {
             players.forEach( function(player){
                 if(player.id == info.player.id){
                     if(player.bicho.contFase>=1) {
-                        console.log(player.bicho.contFase)
                         var ang = player.bicho.nodoCentral.anguloActual;
                         player.bicho.nodos = [];
                         player.bicho.involucionar(player.bicho.contFase-1,ang);
                     }
-
                 }
             });
 		}
@@ -96,7 +93,7 @@ io.on('connection', function(client) {
 ==================================================*/
 function getInfo(){
     var info = [];
-    for(i=0;i<players.length+1;i++) info[i] = [];
+    for(i=0;i<players.length;i++) info[i] = [];
     var num = 0;
     players.forEach( function(player){
         var num2 = 0;
@@ -106,10 +103,6 @@ function getInfo(){
         });
         num++;
     });
-    if(playersDesc.length>0){
-        info.playersDesc = playersDesc;//Enviarle a cada cliente los clientes que se han desconectado
-        playersDesc = [] //Como el cliente ya sabe quienes son, no los necesitamos más
-    }
     return info;
 }
 /*================================================*/

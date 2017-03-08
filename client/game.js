@@ -37,6 +37,7 @@ Game.prototype = {
         ;} //Si es el player propio.
 		players.push(t);
         if(players.length==1) this.debugInit();
+        if(players.length>1) this.resetGui();
 	},
 
     recibirInfo: function(serverInfo){
@@ -57,11 +58,6 @@ Game.prototype = {
             });
             numserver++;
 		});
-        if(players.length>=1) {
-            //this.resetGui();
-        }
-
-
 	},
     /*===================================================*/
     /*Eventos para enviar al server
@@ -97,6 +93,14 @@ Game.prototype = {
 		info.player = t;
 		this.socket.emit('involucionar', info);
 	},
+
+    playerDesconectadoCliente: function(info) {
+        var num = 0;
+        players.forEach(function(player) {
+            if(player.id === info.id) players.splice(num,1);
+            num++;
+        });
+    },
     /*=================================================*/
     /*Inputs
     ==================================================*/

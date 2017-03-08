@@ -22,6 +22,10 @@ function empezarJuego(){
     socket.on('sync', function(info){
         game.recibirInfo(info);
     });
+
+    socket.on('playerDesconectadoCliente', function(info){
+        game.playerDesconectadoCliente(info);
+    });
     /*========================================================================*/
 }
 
