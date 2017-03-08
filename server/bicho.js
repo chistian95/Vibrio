@@ -149,6 +149,19 @@ var BichoProto = function(){
         this.contFase++;
     }
 
+    this.involucionar = function(faseInvolucion) {
+        this.contFase = 0;
+        var ang = this.nodoCentral.anguloActual;
+        console.log(this.nodoCentral.anguloActual)
+        while(this.contFase<faseInvolucion) {
+            console.log("Invo: "+faseInvolucion+" this: "+this.contFase)
+            this.evolucionar();
+        }
+        this.nodoCentral.anguloActual = ang
+        console.log(this.nodoCentral.anguloActual)
+        console.log("FIN Invo: "+faseInvolucion+" this: "+this.contFase)
+    }
+
 
     var Nodo = function(tipoNodo, nodoPadre, anguloInicio, radio, bicho){
         this.x = 0;

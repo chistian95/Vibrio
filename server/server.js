@@ -79,9 +79,13 @@ io.on('connection', function(client) {
             /*Actualizar la dirección según lo que ha enviado el cliente*/
             players.forEach( function(player){
                 if(player.id == info.player.id){
-                    if(player.bicho.contFase>=2)player.bicho.contFase -=2;
-                    console.log("in")
-                    player.bicho.evolucionar();
+                    if(player.bicho.contFase>=1) {
+                        console.log(player.bicho.contFase)
+                        var ang = player.bicho.nodoCentral.anguloActual;
+                        player.bicho.nodos = [];
+                        player.bicho.involucionar(player.bicho.contFase-1,ang);
+                    }
+
                 }
             });
 		}

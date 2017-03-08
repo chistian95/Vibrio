@@ -49,6 +49,7 @@ Game.prototype = {
         //Por cada player recibido del servidor
         var numserver = 0;
 		serverInfo.forEach(function(serverPlayer){ //Cada player del server info[]
+            if(serverPlayer.length>players[numserver].bicho.nodos.length) players[numserver].bicho.nodos.slice(0,serverPlayer.length-1)
             serverPlayer.forEach(function(nodoServer) { //Cada nodo del player del server info[][]
                 if(nodoServer != undefined && numserver<=players.length-1) {
                     players[numserver].bicho.parsearNodo(nodoServer);
