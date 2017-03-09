@@ -25,6 +25,8 @@ function Game(socket){
     window.addEventListener("keydown", this.teclitas, true);
     window.addEventListener("keyup", this.teclitasUp, true);
     window.addEventListener('mousemove', this.actualizarRaton, true);
+    window.addEventListener('touchstart', this.actualizarTouch, true);
+    window.addEventListener('touchmove', this.actualizarTouch, true);
 }
 /*=======================================================*/
 
@@ -121,6 +123,10 @@ Game.prototype = {
         game.localPlayer.ratonX = e.clientX;
         game.localPlayer.ratonY = e.clientY;
     },
+    actualizarTouch: function(e) {
+		game.localPlayer.ratonX = e.touches[0].clientX;
+		game.localPlayer.ratonY = e.touches[0].clientY;
+	},
     /*===============================================*/
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
 	bucle: function(){
