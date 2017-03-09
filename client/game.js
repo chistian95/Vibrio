@@ -24,6 +24,7 @@ function Game(socket){
 	}, 40);
     window.addEventListener("keydown", this.teclitas, true);
     window.addEventListener("keyup", this.teclitasUp, true);
+    window.addEventListener('mousemove', this.actualizarRaton, true);
 }
 /*=======================================================*/
 
@@ -116,9 +117,14 @@ Game.prototype = {
         if(e.keyCode === 65) game.localPlayer.izquierda = false;
         if(e.keyCode === 68) game.localPlayer.derecha = false;
     },
+    actualizarRaton: function(e) {
+        game.localPlayer.ratonX = e.clientX;
+        game.localPlayer.ratonY = e.clientY;
+    },
     /*===============================================*/
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
 	bucle: function(){
+        this.posicionRaton();
         ctx.clearRect(0, 0, canvas.width, canvas.height); //Limpiar el canvas
 		if(this.localPlayer != undefined) this.enviarInfo();
         players.forEach(function(player){
@@ -161,7 +167,34 @@ Game.prototype = {
         this.NodoToDebug = Math.round(this.NodoToDebug);
         this.gui.__controllers[2].updateDisplay();
         this.gui.__controllers[1].updateDisplay();
-    }
+    },
+    /*Mirar en que dirección girar el bicho
+    =======================================*/
+    posicionRaton: function() {
+        var relX = game.localPlayer.ratonX - game.localPlayer.bicho.nodos[0].x;
+        var relY = game.localPlayer.ratonY - game.localPlayer.bicho.nodos[0].y;
+        var anguloBicho = game.localPlayer.bicho.nodos[0].anguloActual;
+        var relAngulo = Math.atan2(relY, relX) * 180 / Math.PI + 180;
+        var difAngulo = relAngulo - anguloBicho;
+        if(difAngulo > -170 && (difAngulo < -10 || difAngulo > 190)) {
+            game.localPlayer.derecha =  false;
+            game.localPlayer.izquierda = true;
+        } else if(difAngulo > 10 || difAngulo < -190) {
+            game.localPlayer.derecha = true;
+            game.localPlayer.izquierda = false;
+        } else {
+            game.localPlayer.derecha = false;
+            game.localPlayer.izquierda = false;
+        }
+        var distancia = Math.sqrt(Math.pow(relX, 2) + Math.pow(relY, 2));
+        var diametro = game.localPlayer.bicho.nodos[0].radio * 2;
+        if(distancia > diametro) {
+            game.localPlayer.arriba = true;
+        } else {
+            game.localPlayer.arriba = false;
+        }
+    },
+    /*====================================*/
 }
 
 /*Constructor de los player
@@ -170,9 +203,10 @@ function Player(id, game, local, x, y){
 	this.id = id;
 	this.x = x;
 	this.y = y;
+    this.ratonX = x;
+    this.ratonY = y;
 	this.game = game;
 	this.local = local;
     this.bicho = new Bicho();
 }
 /*====================================*/
-
