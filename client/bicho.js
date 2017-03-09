@@ -30,19 +30,21 @@ var Bicho = function() {
             nodo.visible = nodoMin[3];
             nodo.tipoNodo = nodoMin[4];
             nodo.radio = nodoMin[5]/2.0;
+            nodo.anguloActual = nodoMin[6];
         } else {
-            var nodo = new Nodo(nodoMin[1], nodoMin[2], nodoMin[3], nodoMin[4], nodoMin[5]/2.0);
+            var nodo = new Nodo(nodoMin[1], nodoMin[2], nodoMin[3], nodoMin[4], nodoMin[5]/2.0, nodoMin[6]);
             this.nodos.push(nodo);
         }
     }
 }
 
-var Nodo = function(x, y, visible, tipoNodo, radio){
+var Nodo = function(x, y, visible, tipoNodo, radio, anguloActual){
     this.x = x;
     this.y = y;
     this.visible = visible;
     this.tipoNodo = tipoNodo;
     this.radio = radio;
+    this.anguloActual = anguloActual;
 
     this.pintar = function(ctx) {
         if(!this.visible) return;

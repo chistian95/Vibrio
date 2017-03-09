@@ -22,8 +22,8 @@ var BichoProto = function(){
             tempx += Math.cos(anguloRad) * 2;
             tempy += Math.sin(anguloRad) * 2;
         }
-        if(!(tempx<0 || tempx > 500)) this.x = tempx;
-        if(!(tempy<0 || tempy > 500)) this.y = tempy;
+        this.x = tempx;
+        this.y = tempy;
 
         var angulo = this.nodoCentral.anguloActual;
         if(this.izquierda) {
@@ -184,7 +184,7 @@ var BichoProto = function(){
     }
 
     this.crearNodoMin = function(posicion, nodo) {
-        return [posicion, nodo.x, nodo.y, nodo.visible, nodo.tipoNodo, nodo.radio];
+        return [posicion, nodo.x, nodo.y, nodo.visible, nodo.tipoNodo, nodo.radio, nodo.anguloActual];
     }
 
     mover = function(bicho, nodo) { //No sé si está bien del todo*
@@ -193,17 +193,17 @@ var BichoProto = function(){
         }
         if(nodo.tipoNodo === TipoNodo.MOTOR) {
             if(nodo.anguloBajar) {
-                nodo.anguloGiro = nodo.anguloGiro - this.velocidadGiro <= -nodo.anguloTope ? -nodo.anguloTope : nodo.anguloGiro - this.velocidadGiro;
+                nodo.anguloGiro = nodo.anguloGiro - (this.velocidadGiro / 2) <= -nodo.anguloTope ? -nodo.anguloTope : nodo.anguloGiro - (this.velocidadGiro / 2);
                 nodo.anguloBajar = nodo.anguloGiro > -nodo.anguloTope;
             } else {
-                nodo.anguloGiro = nodo.anguloGiro + this.velocidadGiro >= nodo.anguloTope ? nodo.anguloTope : nodo.anguloGiro + this.velocidadGiro;
+                nodo.anguloGiro = nodo.anguloGiro + (this.velocidadGiro / 2) >= nodo.anguloTope ? nodo.anguloTope : nodo.anguloGiro + (this.velocidadGiro / 2);
                 nodo.anguloBajar = nodo.anguloGiro >= nodo.anguloTope;
             }
         } else if(nodo.tipoNodo === TipoNodo.FLEXIBLE) {
             if(nodo.nodoPadre.anguloBajar) {
-                nodo.anguloGiro = nodo.nodoPadre.anguloGiro - this.velocidadGiro;
+                nodo.anguloGiro = nodo.nodoPadre.anguloGiro - (this.velocidadGiro / 2);
             } else {
-                nodo.anguloGiro = nodo.nodoPadre.anguloGiro + this.velocidadGiro;
+                nodo.anguloGiro = nodo.nodoPadre.anguloGiro + (this.velocidadGiro / 2);
             }
         }
 
@@ -231,7 +231,7 @@ var Bicho = function(x,y) {
     BichoProto.call(this);
     this.x = x;
     this.y = y;
-    this.velocidadGiro = 1.0;
+    this.velocidadGiro = 2.0;
     this.contFase = 0;
     this.nodos = [];
     this.nodoCentral = null;
