@@ -104,7 +104,6 @@ var Nodo = function(x, y, visible, tipoNodo, radio){
         var radioSel = this.radio / 4.0;
         ctx.beginPath();
         ctx.arc(xSel+radioSel/2, ySel+radioSel/2, radioSel, 0, 2 * Math.PI, false);
-        ctx.fillStyle = 'rgba(' + 50 + ', ' + 50 + ', ' + 50 + ', 0.7)';
         ctx.fill();
     }
 }

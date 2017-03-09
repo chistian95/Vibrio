@@ -30,8 +30,8 @@ function Game(socket){
 Game.prototype = {
     /*Eventos recibidos del server
     ======================================================*/
-	crearPlayerCliente: function(id, local, x, y){
-		var t = new Player(id, this, local, x, y);
+	crearPlayerCliente: function(id, local,nombrev){
+		var t = new Player(id, this, local,nombrev);
 		if(local) {
             this.localPlayer = t
         ;} //Si es el player propio.
@@ -128,7 +128,7 @@ Game.prototype = {
             ctx.textAlign = "center";
             ctx.font = "20px Comic Sans MS";
             ctx.fillStyle = 'blue';
-            ctx.fillText(nombre,player.bicho.nodos[0].x-30,player.bicho.nodos[0].y+20);
+            ctx.fillText(player.nombre,player.bicho.nodos[0].x-30,player.bicho.nodos[0].y+20);
         });
 
         if(this.playerDebug) {
@@ -140,6 +140,7 @@ Game.prototype = {
                 });
             }
             players[Math.round(this.playerToDebug)].bicho.nodos[Math.round(this.NodoToDebug)].debug(ctx);
+            ctx.fillText(""+players[Math.round(this.playerToDebug)].id,270,30);
         }
 	},
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
@@ -166,10 +167,10 @@ Game.prototype = {
 
 /*Constructor de los player
 =======================================*/
-function Player(id, game, local, x, y){
+function Player(id, game, local,nombrev){
+    console.log("id: "+id+" local: "+local+" nombre: "+nombrev)
+    this.nombre = nombrev;
 	this.id = id;
-	this.x = x;
-	this.y = y;
 	this.game = game;
 	this.local = local;
     this.bicho = new Bicho();

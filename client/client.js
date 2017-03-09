@@ -7,16 +7,17 @@ function empezarJuego(){
     game = new Game(socket);
     /*Eventos para enviarle al servidor
     ==========================================================================*/
-    crearJugadorServer(''+(Math.random()*9999), socket);
-    function crearJugadorServer(playerName, socket){
-        socket.emit('crearJugadorServer', {id: playerName});
+    crearJugadorServer(socket);
+    function crearJugadorServer(socket){
+        socket.emit('crearJugadorServer', {nombre: nombre});
     }
     /*========================================================================*/
 
     /*Eventos para recibir del servidor
     ==========================================================================*/
     socket.on('crearPlayerCliente', function(player){
-        game.crearPlayerCliente(player.id, player.local, player.x, player.y);
+        console.log(player.nombre+" "+player.local);
+        game.crearPlayerCliente(player.id, player.local, player.nombre);
     });
 
     socket.on('sync', function(info){

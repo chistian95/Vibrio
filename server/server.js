@@ -14,26 +14,37 @@ var b = require('./bicho');
 var Bicho = b.Bicho;
 
 players = [];
-
+ids = [];
+for(var i=0;i<=1000;i++) ids[i]=false;
 /* Nueva conexion
 ====================================================================================*/
 io.on('connection', function(client) {
     console.log('Nueva conexión.');
     var playerid;
     client.on('crearJugadorServer', function(player){
-        playerid = player.id;
-        console.log(playerid + ' se ha conectado');
+        var nombre = player.nombre;
         var initX = Math.random()*500;
         var initY = Math.random()*500;
         /*Crear al cliente su jugador*/
-        client.emit('crearPlayerCliente', { id: player.id, local: true, x: initX, y: initY});
+        playerid = 0;
+        var id = false;
+        while(!id) {
+            if(ids[playerid]) {
+                playerid++
+            } else {
+                ids[playerid] = true;
+                id = true;
+            }
+        }
+        console.log(nombre + ' se ha conectado Id: '+playerid);
         /*Enviarle al nuevo player los jugadores existentes.*/
         players.forEach(function(player){
-            client.emit('crearPlayerCliente', {id: player.id, local: false, x: player.x, y: player.y});
+            client.emit('crearPlayerCliente', {id: player.id, local: false, nombre: player.nombre});
         });
+        client.emit('crearPlayerCliente', { id: playerid, local: true,nombre: nombre});
         /*Enviar a todos los clientes "broadcast" la información del nuevo juegador*/
-        client.broadcast.emit('crearPlayerCliente', { id: player.id, local: false, x: initX, y: initY} );
-        new Player(player.id,initX,initY,1);
+        client.broadcast.emit('crearPlayerCliente', { id: playerid, local: false,nombre: nombre})
+        new Player(playerid,initX,initY,nombre);
     });
     /*Función para recibir información del cliente, en este caso la dirección si ha cambiado*/
     client.on('sync', function(info){
@@ -109,7 +120,8 @@ function getInfo(){
 /*Constructor de los player
 ===============================*/
 
-function Player(id, x, y){
+function Player(id, x, y,nombre){
+    this.nombre = nombre;
 	this.id = id;
     this.bicho = new Bicho(x,y);
     //this.bicho.evolucionar();
