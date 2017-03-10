@@ -1,18 +1,9 @@
-var canvas = document.getElementById('canvasJuego');
-var ctx = canvas.getContext("2d");
-/*var renderer = new PIXI.CanvasRenderer(400, 400, {type:canvas,view:canvas,resolution:1,antialias: false, transparent: false, resolution: 1});
-renderer.backgroundColor = 0x061639;
-renderer.view.style.border = "2px dashed black";
-var stage = new PIXI.Container();
-renderer.render(stage);*/
-var alto;
+/*var canvas = document.getElementById('canvasJuego');
+var ctx = canvas.getContext("2d");*/
+
+
+
 var players = []
-reescalar();
-function reescalar() {
-    alto = window.innerHeight;
-    ctx.canvas.width = window.innerWidth;
-    ctx.canvas.height = alto;
-}
 
 /*Crear juego
 =========================================================*/
@@ -22,6 +13,14 @@ function Game(socket){
     this.playerDebug = false;
     this.debugNodosLength = 0;
 	this.socket = socket;
+    this.app = new PIXI.Application(800, 600, {backgroundColor : 0x3498db});
+    document.body.appendChild(this.app.view);
+    this.app.renderer.backgroundColor = 0x3498db;
+    this.app.renderer.view.style.position = "absolute";
+    this.app.renderer.view.style.display = "block";
+    this.app.renderer.autoResize = true;
+    this.app.renderer.resize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(this.app.view);
 
 	var g = this;
 	setInterval(function(){
@@ -39,7 +38,7 @@ Game.prototype = {
     /*Eventos recibidos del server
     ======================================================*/
 	crearPlayerCliente: function(id, local,nombrev){
-		var t = new Player(id, this, local,nombrev);
+		var t = new Player(id, this, local,nombrev,this.app.stage);
 		if(local) {
             this.localPlayer = t
         ;} //Si es el player propio.
@@ -136,9 +135,9 @@ Game.prototype = {
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
 	bucle: function(){
         this.posicionRaton();
-        ctx.clearRect(0, 0, canvas.width, canvas.height); //Limpiar el canvas
+        //ctx.clearRect(0, 0, canvas.width, canvas.height); //Limpiar el canvas
 		if(this.localPlayer != undefined) this.enviarInfo();
-        players.forEach(function(player){
+        /*players.forEach(function(player){
             player.bicho.pintar(ctx)
             ctx.font = "20px Comic Sans MS";
             ctx.fillStyle = 'black';
@@ -158,7 +157,7 @@ Game.prototype = {
             }
             players[Math.round(this.playerToDebug)].bicho.nodos[Math.round(this.NodoToDebug)].debug(ctx);
             ctx.fillText(""+players[Math.round(this.playerToDebug)].id,270,30);
-        }
+        }*/
 	},
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
     debugInit: function(){
@@ -211,7 +210,7 @@ Game.prototype = {
 
 /*Constructor de los player
 =======================================*/
-function Player(id, game, local,nombrev){
+function Player(id, game, local,nombrev,stage){
     console.log("id: "+id+" local: "+local+" nombre: "+nombrev)
     this.nombre = nombrev;
 	this.id = id;
@@ -219,6 +218,6 @@ function Player(id, game, local,nombrev){
     this.ratonY = 0;
 	this.game = game;
 	this.local = local;
-    this.bicho = new Bicho();
+    this.bicho = new Bicho(stage);
 }
 /*====================================*/

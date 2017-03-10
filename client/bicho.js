@@ -1,6 +1,13 @@
-var Bicho = function() {
+
+var circulo = function(graphics,x,y,radio,tipoNodo) {
+    alert("circulo")
+
+}
+
+var Bicho = function(stage) {
     this.x = 0;
     this.y = 0;
+    this.stage = stage
     this.debug = false;
     this.velocidadGiro = 0;
     this.contFase = 0;
@@ -10,7 +17,6 @@ var Bicho = function() {
     this.abajo = false;
     this.izquierda = false;
     this.derecha = false;
-
     this.pintar = function(ctx,nodoDebugNum) {
         this.nodos.forEach(function(nodo) {
             nodo.pintar(ctx);
@@ -27,25 +33,34 @@ var Bicho = function() {
             var nodo = this.nodos[pos];
             nodo.x = nodoMin[1];
             nodo.y = nodoMin[2];
+            nodo.sprite.x = nodo.x- nodoMin[5];
+            nodo.sprite.y = nodo.y- nodoMin[5];
             nodo.visible = nodoMin[3];
             nodo.tipoNodo = nodoMin[4];
-            nodo.radio = nodoMin[5]/2.0;
+            nodo.radio = nodoMin[5];
             nodo.anguloActual = nodoMin[6];
         } else {
-            var nodo = new Nodo(nodoMin[1], nodoMin[2], nodoMin[3], nodoMin[4], nodoMin[5]/2.0, nodoMin[6]);
+            var nodo = new Nodo(nodoMin[1], nodoMin[2], nodoMin[3], nodoMin[4], nodoMin[5], nodoMin[6],this.stage);
             this.nodos.push(nodo);
         }
     }
 }
 
-var Nodo = function(x, y, visible, tipoNodo, radio, anguloActual){
+var Nodo = function(x, y, visible, tipoNodo, radio, anguloActual,stage){
+    var graphics = new PIXI.Graphics();
+    graphics.lineStyle(0);
+    graphics.beginFill(0x2ecc71, 1);
+    graphics.drawCircle(x, y,radio);
+    graphics.endFill();
+
+    this.sprite = new PIXI.Sprite(graphics.generateCanvasTexture());
+    stage.addChild(this.sprite);
     this.x = x;
     this.y = y;
     this.visible = visible;
     this.tipoNodo = tipoNodo;
     this.radio = radio;
     this.anguloActual = anguloActual;
-
     this.pintar = function(ctx) {
         if(!this.visible) return;
         var xAbs = this.x - this.radio;
