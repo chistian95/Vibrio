@@ -183,8 +183,8 @@ var BichoProto = function(){
         this.nodos = [];
         if(this.nodoPadre !== null) {
             nodoPadre.nodos.push(this);
+        }else{
             this.vida*=2;
-            console.log("No tengo padre :c");
         }
         console.log("VIDA: "+this.vida);
         this.visible = true;
