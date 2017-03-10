@@ -165,7 +165,7 @@ Game.prototype = {
         this.gui = new dat.GUI();
         this.gui.add(this, 'playerDebug');
         this.gui.add(this, 'playerToDebug',0,players.length-1)
-        this.gui.add(this, 'NodoToDebug',0,this.debugNodosLength-1);
+        this.gui.add(this, 'NodoToDebug',0,0);
         this.gui.add(game, 'evolucionar');
         this.gui.add(game, 'involucionar');
     },
