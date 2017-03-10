@@ -2,7 +2,7 @@
 var ctx = canvas.getContext("2d");*/
 
 
-
+var pos = [0,0]
 var players = []
 
 /*Crear juego
@@ -20,6 +20,8 @@ function Game(socket){
     this.app.renderer.view.style.display = "block";
     this.app.renderer.autoResize = true;
     this.app.renderer.resize(window.innerWidth, window.innerHeight);
+    this.app.stage.position.x = this.app.renderer.width/2;
+    this.app.stage.position.y = this.app.renderer.height/2;
     document.body.appendChild(this.app.view);
 
 	var g = this;
@@ -44,6 +46,7 @@ Game.prototype = {
 		var t = new Player(id, this, local,nombrev,this.app.stage);
 		if(local) {
             this.localPlayer = t
+            console.log("===============")
         ;} //Si es el player propio.
 		players.push(t);
         if(players.length==1) this.debugInit();
@@ -59,16 +62,20 @@ Game.prototype = {
         }
         //Por cada player recibido del servidor
         var numserver = 0;
-		serverInfo.forEach(function(serverPlayer){ //Cada player del server info[]
-            if(serverPlayer.length>players[numserver].bicho.nodos.length) players[numserver].bicho.nodos.slice(0,serverPlayer.length-1)
-            serverPlayer[0].forEach(function(nodoServer) { //Cada nodo del player del server info[][]
-                if(nodoServer != undefined && numserver<=players.length-1) {
-                    players[numserver].bicho.parsearNodo(nodoServer);
-                }
+        if(players.length>=1) {
+            serverInfo.forEach(function(serverPlayer){ //Cada player del server info[]
+                if(serverPlayer.length>players[numserver].bicho.nodos.length) players[numserver].bicho.nodos.slice(0,serverPlayer.length-1)
+                serverPlayer[0].forEach(function(nodoServer) { //Cada nodo del player del server info[][]
+                    if(nodoServer != undefined && numserver<=players.length-1) {
+                        players[numserver].bicho.parsearNodo(nodoServer);
+                    }
+                });
+                players[numserver].bicho.hitbox = serverPlayer[1];
+                numserver++;
             });
-            players[numserver].bicho.hitbox = serverPlayer[1];
-            numserver++;
-		});
+        }
+
+
 	},
     /*===================================================*/
     /*Eventos para enviar al server
@@ -128,16 +135,28 @@ Game.prototype = {
         if(e.keyCode === 68) game.localPlayer.derecha = false;
     },
     actualizarRaton: function(e) {
-        game.localPlayer.ratonX = e.clientX;
-        game.localPlayer.ratonY = e.clientY;
+        if(game.localPlayer) {
+            game.localPlayer.ratonX = e.clientX;
+            game.localPlayer.ratonY = e.clientY;
+        }
     },
     actualizarTouch: function(e) {
-		game.localPlayer.ratonX = e.touches[0].clientX;
-		game.localPlayer.ratonY = e.touches[0].clientY;
+        if(game.localPlayer) {
+            game.localPlayer.ratonX = e.touches[0].clientX;
+            game.localPlayer.ratonY = e.touches[0].clientY;
+        }
 	},
     /*===============================================*/
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
 	bucle: function(){
+        if(this.localPlayer){
+            if(this.localPlayer.bicho.nodos[0])
+            /*pos[0] = this.localPlayer.bicho.nodos[0].x
+            pos[1] = this.localPlayer.bicho.nodos[0].y
+            this.app.stage.pivot.x = pos[0];
+            this.app.stage.pivot.y = pos[1];*/
+
+        }
         this.posicionRaton();
         //ctx.clearRect(0, 0, canvas.width, canvas.height); //Limpiar el canvas
 		if(this.localPlayer != undefined) this.enviarInfo();
