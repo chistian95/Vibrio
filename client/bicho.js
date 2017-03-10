@@ -12,7 +12,6 @@ var Bicho = function(stage) {
     this.velocidadGiro = 0;
     this.contFase = 0;
     this.nodos = [];
-    this.nodoCentral = null;
     this.arriba = false;
     this.abajo = false;
     this.izquierda = false;
@@ -33,8 +32,8 @@ var Bicho = function(stage) {
             var nodo = this.nodos[pos];
             nodo.x = nodoMin[1];
             nodo.y = nodoMin[2];
-            nodo.sprite.x = nodo.x- nodoMin[5];
-            nodo.sprite.y = nodo.y- nodoMin[5];
+            nodo.sprite.x = nodo.x;
+            nodo.sprite.y = nodo.y;
             nodo.visible = nodoMin[3];
             nodo.tipoNodo = nodoMin[4];
             nodo.radio = nodoMin[5];
@@ -46,14 +45,22 @@ var Bicho = function(stage) {
     }
 }
 
+function rgb2hex(rgb){
+ rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+ return (rgb && rgb.length === 4) ? "0x" +
+  ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
+  ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
+  ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
+}
+
 var Nodo = function(x, y, visible, tipoNodo, radio, anguloActual,stage){
     var graphics = new PIXI.Graphics();
     graphics.lineStyle(0);
-    graphics.beginFill(0x2ecc71, 1);
-    graphics.drawCircle(x, y,radio);
+    graphics.beginFill(rgb2hex('rgba(' + tipoNodo.color[0] + ', ' + tipoNodo.color[1] + ', ' + tipoNodo.color[2] + ', 0.25)'));
+    graphics.drawCircle(10000, 202002,radio);
     graphics.endFill();
-
     this.sprite = new PIXI.Sprite(graphics.generateCanvasTexture());
+    this.sprite.anchor.set(0.5)
     stage.addChild(this.sprite);
     this.x = x;
     this.y = y;
@@ -61,24 +68,6 @@ var Nodo = function(x, y, visible, tipoNodo, radio, anguloActual,stage){
     this.tipoNodo = tipoNodo;
     this.radio = radio;
     this.anguloActual = anguloActual;
-    this.pintar = function(ctx) {
-        if(!this.visible) return;
-        var xAbs = this.x - this.radio;
-        var yAbs = this.y - this.radio;
-        var radioAbs = this.radio * 2;
-        ctx.beginPath();
-        ctx.arc(xAbs+radioAbs/2, yAbs+radioAbs/2, radioAbs, 0, 2 * Math.PI, false);
-        ctx.fillStyle = 'rgba(' + this.tipoNodo.color[0] + ', ' + this.tipoNodo.color[1] + ', ' + this.tipoNodo.color[2] + ', 0.25)';
-        ctx.fill();
-
-        var xSel = this.x -this. radio / 8.0;
-        var ySel = this.y - this.radio / 8.0;
-        var radioSel = this.radio / 4.0;
-        ctx.beginPath();
-        ctx.arc(xSel+radioSel/2, ySel+radioSel/2, radioSel, 0, 2 * Math.PI, false);
-        ctx.fillStyle = 'black';
-        ctx.fill();
-    }
 
     this.debug = function(ctx) {
         ctx.font = "12px Comic Sans MS";
