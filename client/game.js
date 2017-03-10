@@ -202,7 +202,7 @@ Game.prototype = {
             game.localPlayer.izquierda = false;
         }
         var distancia = Math.sqrt(Math.pow(relX, 2) + Math.pow(relY, 2));
-        var diametro = game.localPlayer.bicho.nodos[0].radio * 2;
+        var diametro = game.localPlayer.bicho.nodos[0].radio;
         if(distancia > diametro) {
             game.localPlayer.arriba = true;
         } else {
