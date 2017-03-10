@@ -152,14 +152,14 @@ var BichoProto = function(){
     this.involucionar = function(faseInvolucion) {
         this.contFase = 0;
         var ang = this.nodoCentral.anguloActual;
-        console.log(this.nodoCentral.anguloActual)
+        console.log(this.nodoCentral.anguloActual);
         while(this.contFase<faseInvolucion) {
-            console.log("Invo: "+faseInvolucion+" this: "+this.contFase)
+            console.log("Invo: "+faseInvolucion+" this: "+this.contFase);
             this.evolucionar();
         }
-        this.nodoCentral.anguloActual = ang
-        console.log(this.nodoCentral.anguloActual)
-        console.log("FIN Invo: "+faseInvolucion+" this: "+this.contFase)
+        this.nodoCentral.anguloActual = ang;
+        console.log(this.nodoCentral.anguloActual);
+        console.log("FIN Invo: "+faseInvolucion+" this: "+this.contFase);
     }
 
 
@@ -225,6 +225,28 @@ var BichoProto = function(){
         });
     }
     this.mover = mover;
+
+    this.calcularHitbox = function() {
+        var xMin = this.nodoCentral.x;
+        var xMax = this.nodoCentral.x;
+        var yMin = this.nodoCentral.y;
+        var yMax = this.nodoCentral.y;
+        this.nodos.forEach(function(nodo) {
+            if(nodo.x < xMin)
+                xMin = nodo.x;
+            if(nodo.x > xMax)
+                xMax = nodo.x;
+            if(nodo.y < yMin)
+                yMin = nodo.y;
+            if(nodo.y > yMax)
+                yMax = nodo.y;
+        });
+        xMin = xMin - this.nodoCentral.radio * 2;
+        yMin = yMin - this.nodoCentral.radio * 2;
+        xMax = xMax + this.nodoCentral.radio * 2;
+        yMax = yMax + this.nodoCentral.radio * 2;
+        this.hitbox = [xMin, yMin, xMax, yMax];
+    }
 }
 
 var Bicho = function(x,y) {
@@ -239,7 +261,8 @@ var Bicho = function(x,y) {
     this.abajo = false;
     this.izquierda = false;
     this.derecha = false;
-    this.evolucionar()
+    this.evolucionar();
+    this.hitbox = [];
 }
 Bicho.prototype = Object.create(BichoProto.prototype);
 

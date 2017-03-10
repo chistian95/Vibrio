@@ -108,10 +108,12 @@ function getInfo(){
     var num = 0;
     players.forEach( function(player){
         var num2 = 0;
+        info[num][0] = [];
         player.bicho.nodos.forEach( function(nodo){
-            info[num].push(player.bicho.crearNodoMin(num2, nodo));
+            info[num][0].push(player.bicho.crearNodoMin(num2, nodo));
             num2++;
         });
+        info[num][1] = player.bicho.hitbox;
         num++;
     });
     return info;
@@ -137,6 +139,14 @@ setInterval(function(){
 function moverPlayers() {
     players.forEach( function(player){
         player.bicho.update();
+    });
+}
+setInterval(function() {
+    calcularHitbox();
+}, 350);
+function calcularHitbox() {
+    players.forEach(function(player) {
+        player.bicho.calcularHitbox();
     });
 }
 /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
