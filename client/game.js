@@ -200,7 +200,7 @@ Game.prototype = {
         this.gui.add(this, 'NodoToDebug',0,0);
         this.gui.add(game, 'evolucionar');
         this.gui.add(game, 'involucionar');
-        this.gui.add(this, 'movimiento');
+
     },
 
     resetGui: function() {
@@ -216,32 +216,26 @@ Game.prototype = {
     /*Mirar en que dirección girar el bicho
     =======================================*/
     posicionRaton: function() {
-        if(this.movimiento) {
-            var relX = game.localPlayer.ratonX - game.localPlayer.bicho.nodos[0].x+app.world.pivot.x;
-            var relY = game.localPlayer.ratonY - game.localPlayer.bicho.nodos[0].y+app.world.pivot.y;
-            var anguloBicho = game.localPlayer.bicho.nodos[0].anguloActual;
-            var relAngulo = Math.atan2(relY, relX) * 180 / Math.PI + 180;
-            var difAngulo = relAngulo - anguloBicho;
-            if(difAngulo > -170 && (difAngulo < -10 || difAngulo > 190)) {
-                game.localPlayer.derecha =  false;
-                game.localPlayer.izquierda = true;
-            } else if(difAngulo > 10 || difAngulo < -190) {
-                game.localPlayer.derecha = true;
-                game.localPlayer.izquierda = false;
-            } else {
-                game.localPlayer.derecha = false;
-                game.localPlayer.izquierda = false;
-            }
-            var distancia = Math.sqrt(Math.pow(relX, 2) + Math.pow(relY, 2));
-            var diametro = game.localPlayer.bicho.nodos[0].radio;
-            if(distancia > diametro) {
-                game.localPlayer.arriba = true;
-            } else {
-                game.localPlayer.arriba = false;
-            }
+        var relX = game.localPlayer.ratonX - game.localPlayer.bicho.nodos[0].x
+        var relY = game.localPlayer.ratonY - game.localPlayer.bicho.nodos[0].y
+        var anguloBicho = game.localPlayer.bicho.nodos[0].anguloActual;
+        var relAngulo = Math.atan2(relY, relX) * 180 / Math.PI + 180;
+        var difAngulo = relAngulo - anguloBicho;
+        if(difAngulo > -170 && (difAngulo < -10 || difAngulo > 190)) {
+            game.localPlayer.derecha =  false;
+            game.localPlayer.izquierda = true;
+        } else if(difAngulo > 10 || difAngulo < -190) {
+            game.localPlayer.derecha = true;
+            game.localPlayer.izquierda = false;
         } else {
             game.localPlayer.derecha = false;
             game.localPlayer.izquierda = false;
+        }
+        var distancia = Math.sqrt(Math.pow(relX, 2) + Math.pow(relY, 2));
+        var diametro = game.localPlayer.bicho.nodos[0].radio;
+        if(distancia > diametro) {
+            game.localPlayer.arriba = true;
+        } else {
             game.localPlayer.arriba = false;
         }
     },
