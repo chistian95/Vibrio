@@ -240,7 +240,7 @@ Game.prototype = {
             } else {
                 game.localPlayer.arriba = false;
             }
-        else {
+        }else {
             game.localPlayer.derecha = false;
             game.localPlayer.izquierda = false;
             game.localPlayer.arriba = false;
