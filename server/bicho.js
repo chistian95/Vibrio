@@ -1,16 +1,16 @@
-var TipoNodo = function(color, vidaBase){
-    var color;
+var TipoNodo = function(nombre, color, vidaBase){
+    this.nombre = nombre;
     this.color = color;
     this.vidaBase = vidaBase;
 }
 
-TipoNodo.ESTATICO = new TipoNodo([0, 255, 0, 64], 1.5);
-TipoNodo.MOTOR = new TipoNodo([255, 0, 0, 64], 1.5);
-TipoNodo.FLEXIBLE = new TipoNodo([0, 255, 255, 64], 1.3);
-TipoNodo.PINCHO = new TipoNodo([0, 0, 255, 64], 1.6);
-TipoNodo.OJO = new TipoNodo([255, 255, 0, 64], 1);
-TipoNodo.CORAZA = new TipoNodo([145,145,145,64], 2);
-TipoNodo.TENTACULO = new TipoNodo([0,0,0,64], 1);
+TipoNodo.ESTATICO = new TipoNodo("ESTATICO", [0, 255, 0, 64], 1.5);
+TipoNodo.MOTOR = new TipoNodo("MOTOR", [255, 0, 0, 64], 1.5);
+TipoNodo.FLEXIBLE = new TipoNodo("FLEXIBLE", [0, 255, 255, 64], 1.3);
+TipoNodo.PINCHO = new TipoNodo("PINCHO", [0, 0, 255, 64], 1.6);
+TipoNodo.OJO = new TipoNodo("OJO", [255, 255, 0, 64], 1);
+TipoNodo.CORAZA = new TipoNodo("CORAZA", [145,145,145,64], 2);
+TipoNodo.TENTACULO = new TipoNodo("TENTACULO", [0,0,0,64], 1);
 
 var BichoProto = function(){
     this.update = function() {

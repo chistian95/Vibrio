@@ -44,6 +44,22 @@ var Bicho = function(stage,z) {
             this.nodos.push(nodo);
         }
     }
+
+    this.chocar = function(target) {
+        this.nodos.forEach(function(nodo) {
+            if(nodo.tipoNodo.nombre === TipoNodo.PINCHO.nombre) {
+                target.nodos.forEach(function(nodoTarget) {
+                    var distanciaX = nodo.x - nodoTarget.x;
+                    var distanciaY = nodo.y - nodoTarget.y;
+                    var sumaRadios = nodoTarget.radio + nodo.radio;
+                    if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
+                        console.log("Test");
+
+                    }
+                });
+            }
+        });
+    }
 }
 
 function rgb2hex(rgb){
@@ -116,12 +132,13 @@ var Nodo = function(x, y, visible, tipoNodo, radio, anguloActual,stage,z){
     }
 }
 
-var TipoNodo = function(color){
+var TipoNodo = function(nombre, color){
+    this.nombre = nombre;
     this.color = color;
 }
 
-TipoNodo.ESTATICO = new TipoNodo([0, 255, 0, 64]);
-TipoNodo.MOTOR = new TipoNodo([255, 0, 0, 64]);
-TipoNodo.FLEXIBLE = new TipoNodo([0, 255, 255, 64]);
-TipoNodo.PINCHO = new TipoNodo([0, 0, 255, 64]);
-TipoNodo.OJO = new TipoNodo([255, 255, 0, 64]);
+TipoNodo.ESTATICO = new TipoNodo("ESTATICO", [0, 255, 0, 64]);
+TipoNodo.MOTOR = new TipoNodo("MOTOR", [255, 0, 0, 64]);
+TipoNodo.FLEXIBLE = new TipoNodo("FLEXIBLE", [0, 255, 255, 64]);
+TipoNodo.PINCHO = new TipoNodo("PINCHO", [0, 0, 255, 64]);
+TipoNodo.OJO = new TipoNodo("OJO", [255, 255, 0, 64]);

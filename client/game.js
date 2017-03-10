@@ -26,6 +26,9 @@ function Game(socket){
 	setInterval(function(){
 		g.bucle();
 	}, 40);
+    setInterval(function() {
+        g.colision();
+    }, 350);
     window.addEventListener("keydown", this.teclitas, true);
     window.addEventListener("keyup", this.teclitasUp, true);
     window.addEventListener('mousemove', this.actualizarRaton, true);
@@ -199,7 +202,7 @@ Game.prototype = {
             game.localPlayer.izquierda = false;
         }
         var distancia = Math.sqrt(Math.pow(relX, 2) + Math.pow(relY, 2));
-        var diametro = game.localPlayer.bicho.nodos[0].radio * 2;
+        var diametro = game.localPlayer.bicho.nodos[0].radio;
         if(distancia > diametro) {
             game.localPlayer.arriba = true;
         } else {
@@ -207,6 +210,23 @@ Game.prototype = {
         }
     },
     /*====================================*/
+    /*Colision con otros players
+    ====================================================*/
+    colision: function(){
+		players.forEach(function(player) {
+            if(player.id === game.localPlayer.id) {
+                return true;
+            }
+            var hPlayer = game.localPlayer.bicho.hitbox;
+            var hTarget = player.bicho.hitbox;
+            if(hPlayer[2] >= hTarget[0] && hTarget[2] >= hPlayer[0]) {
+                if(hPlayer[3] >= hTarget[1] && hTarget[3] >= hPlayer[1]) {
+                    game.localPlayer.bicho.chocar(player.bicho);
+                }
+            }
+        });
+	},
+    /*===================================================*/
 }
 
 /*Constructor de los player
