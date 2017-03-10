@@ -200,7 +200,7 @@ Game.prototype = {
         this.gui.add(this, 'NodoToDebug',0,0);
         this.gui.add(game, 'evolucionar');
         this.gui.add(game, 'involucionar');
-        thus.gui.add(this, 'movimiento');
+        this.gui.add(this, 'movimiento');
 
     },
 
