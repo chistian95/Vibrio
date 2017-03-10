@@ -1,27 +1,41 @@
 /*var canvas = document.getElementById('canvasJuego');
 var ctx = canvas.getContext("2d");*/
-
+var app;
 
 var players = []
 
 /*Crear juego
 =========================================================*/
 function Game(socket){
+    app = new app();
+    var graphics = new PIXI.Graphics();
+    graphics.lineStyle(0);
+    graphics.beginFill(0xffffff, 0.5);
+    graphics.drawCircle(50, 50,100);
+    graphics.endFill();
+    var sprite = new PIXI.Sprite(graphics.generateCanvasTexture());
+    sprite.anchor.set(0.5);
+    sprite.interactive = true;
+    app.bichos.addChild(sprite);
+    this.movimiento = true
     this.playerToDebug = 0;
     this.NodoToDebug = 0;
     this.playerDebug = false;
     this.debugNodosLength = 0;
 	this.socket = socket;
-    this.app = new PIXI.Application(800, 600, {backgroundColor : 0x3498db});
+    /*this.app = new PIXI.Application(800, 600, {backgroundColor : 0x3498db});
     document.body.appendChild(this.app.view);
     this.app.renderer.backgroundColor = 0x3498db;
     this.app.renderer.view.style.position = "absolute";
     this.app.renderer.view.style.display = "block";
     this.app.renderer.autoResize = true;
-    this.app.renderer.resize(window.innerWidth, window.innerHeight);
+    this.app.renderer.resize(window.innerWidth, window.innerHeight);*/
+
+
+    // create the root of the scene graph
+
     //this.app.stage.position.x = this.app.renderer.width/2;
     //this.app.stage.position.y = this.app.renderer.height/2;
-    document.body.appendChild(this.app.view);
 
 	var g = this;
 	setInterval(function(){
@@ -42,10 +56,9 @@ Game.prototype = {
     /*Eventos recibidos del server
     ======================================================*/
 	crearPlayerCliente: function(id, local,nombrev){
-		var t = new Player(id, this, local,nombrev,this.app.stage);
+		var t = new Player(id, this, local,nombrev,app.bichos);
 		if(local) {
             this.localPlayer = t
-            console.log("===============")
         ;} //Si es el player propio.
 		players.push(t);
         if(players.length==1) this.debugInit();
@@ -148,27 +161,23 @@ Game.prototype = {
     /*===============================================*/
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
 	bucle: function(){
-        if(this.localPlayer){
-            /*if(this.localPlayer.bicho.nodos[0])
-            pos[0] = this.localPlayer.bicho.nodos[0].x
-            pos[1] = this.localPlayer.bicho.nodos[0].y
-            this.app.stage.pivot.x = pos[0];
-            this.app.stage.pivot.y = pos[1];*/
-
-        }
+        var temp = Math.abs(app.world.pivot.y);
+        app.world.pivot.x = this.localPlayer.bicho.nodos[0].x - window.innerWidth/2
+        app.world.pivot.y = this.localPlayer.bicho.nodos[0].y - window.innerHeight/2
+        if(temp>Math.abs(app.world.pivot.y)) console.log("temp: "+temp+" piv: "+Math.abs(app.world.pivot.y))
         this.posicionRaton();
         //ctx.clearRect(0, 0, canvas.width, canvas.height); //Limpiar el canvas
 		if(this.localPlayer != undefined) this.enviarInfo();
-        /*players.forEach(function(player){
-            player.bicho.pintar(ctx)
+        players.forEach(function(player){
+            /*player.bicho.pintar(ctx)
             ctx.font = "20px Comic Sans MS";
             ctx.fillStyle = 'black';
             ctx.textAlign = "center";
             ctx.font = "20px Comic Sans MS";
             ctx.fillStyle = 'blue';
-            ctx.fillText(player.nombre,player.bicho.nodos[0].x-30,player.bicho.nodos[0].y+20);
+            ctx.fillText(player.nombre,player.bicho.nodos[0].x-30,player.bicho.nodos[0].y+20);*/
         });
-
+        /*
         if(this.playerDebug) {
            var ok = false;
             for(var i=1;i<=2;i++) {
@@ -180,6 +189,8 @@ Game.prototype = {
             players[Math.round(this.playerToDebug)].bicho.nodos[Math.round(this.NodoToDebug)].debug(ctx);
             ctx.fillText(""+players[Math.round(this.playerToDebug)].id,270,30);
         }*/
+        app.camera.proxyContainer(app.world);
+        app.renderer.render(app.world);
 	},
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
     debugInit: function(){
@@ -189,6 +200,7 @@ Game.prototype = {
         this.gui.add(this, 'NodoToDebug',0,0);
         this.gui.add(game, 'evolucionar');
         this.gui.add(game, 'involucionar');
+        this.gui.add(this, 'movimiento');
     },
 
     resetGui: function() {
@@ -204,26 +216,32 @@ Game.prototype = {
     /*Mirar en que dirección girar el bicho
     =======================================*/
     posicionRaton: function() {
-        var relX = game.localPlayer.ratonX - game.localPlayer.bicho.nodos[0].x;
-        var relY = game.localPlayer.ratonY - game.localPlayer.bicho.nodos[0].y;
-        var anguloBicho = game.localPlayer.bicho.nodos[0].anguloActual;
-        var relAngulo = Math.atan2(relY, relX) * 180 / Math.PI + 180;
-        var difAngulo = relAngulo - anguloBicho;
-        if(difAngulo > -170 && (difAngulo < -10 || difAngulo > 190)) {
-            game.localPlayer.derecha =  false;
-            game.localPlayer.izquierda = true;
-        } else if(difAngulo > 10 || difAngulo < -190) {
-            game.localPlayer.derecha = true;
-            game.localPlayer.izquierda = false;
+        if(this.movimiento) {
+            var relX = game.localPlayer.ratonX - game.localPlayer.bicho.nodos[0].x+app.world.pivot.x;
+            var relY = game.localPlayer.ratonY - game.localPlayer.bicho.nodos[0].y+app.world.pivot.y;
+            var anguloBicho = game.localPlayer.bicho.nodos[0].anguloActual;
+            var relAngulo = Math.atan2(relY, relX) * 180 / Math.PI + 180;
+            var difAngulo = relAngulo - anguloBicho;
+            if(difAngulo > -170 && (difAngulo < -10 || difAngulo > 190)) {
+                game.localPlayer.derecha =  false;
+                game.localPlayer.izquierda = true;
+            } else if(difAngulo > 10 || difAngulo < -190) {
+                game.localPlayer.derecha = true;
+                game.localPlayer.izquierda = false;
+            } else {
+                game.localPlayer.derecha = false;
+                game.localPlayer.izquierda = false;
+            }
+            var distancia = Math.sqrt(Math.pow(relX, 2) + Math.pow(relY, 2));
+            var diametro = game.localPlayer.bicho.nodos[0].radio;
+            if(distancia > diametro) {
+                game.localPlayer.arriba = true;
+            } else {
+                game.localPlayer.arriba = false;
+            }
         } else {
             game.localPlayer.derecha = false;
             game.localPlayer.izquierda = false;
-        }
-        var distancia = Math.sqrt(Math.pow(relX, 2) + Math.pow(relY, 2));
-        var diametro = game.localPlayer.bicho.nodos[0].radio;
-        if(distancia > diametro) {
-            game.localPlayer.arriba = true;
-        } else {
             game.localPlayer.arriba = false;
         }
     },
@@ -249,7 +267,7 @@ Game.prototype = {
 
 /*Constructor de los player
 =======================================*/
-function Player(id, game, local,nombrev,stage){
+function Player(id, game, local,nombrev,bichos){
     console.log("id: "+id+" local: "+local+" nombre: "+nombrev)
     this.nombre = nombrev;
 	this.id = id;
@@ -257,6 +275,27 @@ function Player(id, game, local,nombrev,stage){
     this.ratonY = 0;
 	this.game = game;
 	this.local = local;
-    this.bicho = new Bicho(stage,this.id);
+    this.bicho = new Bicho(bichos,this.id);
+
 }
 /*====================================*/
+function app(){
+    this.bichos = new PIXI.Container();
+    this.renderer = new PIXI.CanvasRenderer(800, 600,{backgroundColor : 0x1099bb});
+    this.world = new PIXI.Container();
+    this.stage = new PIXI.Container();
+
+    this.stage.addChild(this.world);
+    this.world.addChild(this.bichos);
+    this.camera = new PIXI.Camera2d();
+    this.stage.addChild(this.camera);
+    this.renderer.backgroundColor = 0x3498db;
+    this.renderer.view.style.position = "absolute";
+    this.renderer.view.style.display = "block";
+    this.renderer.autoResize = true;
+    this.renderer.resize(window.innerWidth, window.innerHeight);
+    this.camera.position.x = window.innerWidth;
+    this.camera.position.y = window.innerHeight;
+    document.body.appendChild(this.renderer.view);
+}
+

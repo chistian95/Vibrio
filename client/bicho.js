@@ -4,11 +4,11 @@ var circulo = function(graphics,x,y,radio,tipoNodo) {
 
 }
 
-var Bicho = function(stage,z) {
+var Bicho = function(bichos,z) {
     this.x = 0;
     this.y = 0;
     this.z = z;
-    this.stage = stage;
+    this.contenedor = bichos;
     this.debug = false;
     this.velocidadGiro = 0;
     this.contFase = 0;
@@ -33,14 +33,14 @@ var Bicho = function(stage,z) {
             var nodo = this.nodos[pos];
             nodo.x = nodoMin[1];
             nodo.y = nodoMin[2];
-            nodo.sprite.x = nodo.x;
-            nodo.sprite.y = nodo.y;
+            nodo.sprite.position.x = nodo.x;
+            nodo.sprite.position.y = nodo.y;
             nodo.visible = nodoMin[3];
             nodo.tipoNodo = nodoMin[4];
             nodo.radio = nodoMin[5];
             nodo.anguloActual = nodoMin[6];
         } else {
-            var nodo = new Nodo(nodoMin[1], nodoMin[2], nodoMin[3], nodoMin[4], nodoMin[5], nodoMin[6],this.stage,this.z);
+            var nodo = new Nodo(nodoMin[1], nodoMin[2], nodoMin[3], nodoMin[4], nodoMin[5], nodoMin[6],this.contenedor,this.z);
             this.nodos.push(nodo);
         }
     }
@@ -70,16 +70,17 @@ function rgb2hex(rgb){
   ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
 }
 
-var Nodo = function(x, y, visible, tipoNodo, radio, anguloActual,stage,z){
+var Nodo = function(x, y, visible, tipoNodo, radio, anguloActual,contenedor,z){
     var graphics = new PIXI.Graphics();
     graphics.lineStyle(0);
     graphics.beginFill(rgb2hex('rgba(' + tipoNodo.color[0] + ', ' + tipoNodo.color[1] + ', ' + tipoNodo.color[2]), 0.5);
-    graphics.drawCircle(10000, 202002,radio);
+    graphics.drawCircle(radio, radio,radio);
     graphics.endFill();
     this.sprite = new PIXI.Sprite(graphics.generateCanvasTexture());
     this.sprite.anchor.set(0.5);
+    this.sprite.interactive = true;
     this.sprite.zOrder =z;
-    stage.addChild(this.sprite);
+    contenedor.addChild(this.sprite);
     this.x = x;
     this.y = y;
     this.visible = visible;
