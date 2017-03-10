@@ -1,5 +1,10 @@
 var canvas = document.getElementById('canvasJuego');
 var ctx = canvas.getContext("2d");
+/*var renderer = new PIXI.CanvasRenderer(400, 400, {type:canvas,view:canvas,resolution:1,antialias: false, transparent: false, resolution: 1});
+renderer.backgroundColor = 0x061639;
+renderer.view.style.border = "2px dashed black";
+var stage = new PIXI.Container();
+renderer.render(stage);*/
 var alto;
 var players = []
 reescalar();
