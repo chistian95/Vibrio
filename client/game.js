@@ -219,6 +219,6 @@ function Player(id, game, local,nombrev,stage){
     this.ratonY = 0;
 	this.game = game;
 	this.local = local;
-    this.bicho = new Bicho(stage);
+    this.bicho = new Bicho(stage,this.id);
 }
 /*====================================*/
