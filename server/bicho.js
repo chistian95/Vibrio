@@ -1,13 +1,16 @@
-var TipoNodo = function(color){
+var TipoNodo = function(color, vidaBase){
     var color;
     this.color = color;
+    this.vidaBase = vidaBase;
 }
 
-TipoNodo.ESTATICO = new TipoNodo([0, 255, 0, 64]);
-TipoNodo.MOTOR = new TipoNodo([255, 0, 0, 64]);
-TipoNodo.FLEXIBLE = new TipoNodo([0, 255, 255, 64]);
-TipoNodo.PINCHO = new TipoNodo([0, 0, 255, 64]);
-TipoNodo.OJO = new TipoNodo([255, 255, 0, 64]);
+TipoNodo.ESTATICO = new TipoNodo([0, 255, 0, 64], 1.5);
+TipoNodo.MOTOR = new TipoNodo([255, 0, 0, 64], 1.5);
+TipoNodo.FLEXIBLE = new TipoNodo([0, 255, 255, 64], 1.3);
+TipoNodo.PINCHO = new TipoNodo([0, 0, 255, 64], 1.6);
+TipoNodo.OJO = new TipoNodo([255, 255, 0, 64], 1);
+TipoNodo.CORAZA = new TipoNodo([145,145,145,64], 2);
+TipoNodo.TENTACULO = new TipoNodo([0,0,0,64], 1);
 
 var BichoProto = function(){
     this.update = function() {
@@ -174,11 +177,16 @@ var BichoProto = function(){
         this.nodoPadre = nodoPadre;
         this.anguloInicio = anguloInicio;
         this.radio = radio;
+        this.vida = tipoNodo.vidaBase * radio;
+        this.coraza = false;
         this.anguloTope = 15;
         this.nodos = [];
         if(this.nodoPadre !== null) {
             nodoPadre.nodos.push(this);
+            this.vida*=2;
+            console.log("No tengo padre :c");
         }
+        console.log("VIDA: "+this.vida);
         this.visible = true;
         bicho.nodos.push(this);
     }
