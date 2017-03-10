@@ -2,7 +2,6 @@
 var ctx = canvas.getContext("2d");*/
 
 
-var pos = [0,0]
 var players = []
 
 /*Crear juego
@@ -20,8 +19,8 @@ function Game(socket){
     this.app.renderer.view.style.display = "block";
     this.app.renderer.autoResize = true;
     this.app.renderer.resize(window.innerWidth, window.innerHeight);
-    this.app.stage.position.x = this.app.renderer.width/2;
-    this.app.stage.position.y = this.app.renderer.height/2;
+    //this.app.stage.position.x = this.app.renderer.width/2;
+    //this.app.stage.position.y = this.app.renderer.height/2;
     document.body.appendChild(this.app.view);
 
 	var g = this;
@@ -150,8 +149,8 @@ Game.prototype = {
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
 	bucle: function(){
         if(this.localPlayer){
-            if(this.localPlayer.bicho.nodos[0])
-            /*pos[0] = this.localPlayer.bicho.nodos[0].x
+            /*if(this.localPlayer.bicho.nodos[0])
+            pos[0] = this.localPlayer.bicho.nodos[0].x
             pos[1] = this.localPlayer.bicho.nodos[0].y
             this.app.stage.pivot.x = pos[0];
             this.app.stage.pivot.y = pos[1];*/

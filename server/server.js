@@ -63,9 +63,9 @@ io.on('connection', function(client) {
 
     /*Al desconecarse el cliente*/
     client.on('disconnect', function(){
-        console.log("Player desconectado.")
         for(var i=0;i<players.length;i++){
             if(players[i].id === playerid){
+                console.log(players[i].nombre+" desconectado.")
                 client.broadcast.emit("playerDesconectadoCliente",{id: players[i].id})
                 players.splice(i, 1);
             }
