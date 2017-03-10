@@ -73,7 +73,7 @@ function rgb2hex(rgb){
 var Nodo = function(x, y, visible, tipoNodo, radio, anguloActual,stage,z){
     var graphics = new PIXI.Graphics();
     graphics.lineStyle(0);
-    graphics.beginFill(rgb2hex('rgba(' + tipoNodo.color[0] + ', ' + tipoNodo.color[1] + ', ' + tipoNodo.color[2] + ', 0.25)'));
+    graphics.beginFill(rgb2hex('rgba(' + tipoNodo.color[0] + ', ' + tipoNodo.color[1] + ', ' + tipoNodo.color[2]), 0.5);
     graphics.drawCircle(10000, 202002,radio);
     graphics.endFill();
     this.sprite = new PIXI.Sprite(graphics.generateCanvasTexture());
