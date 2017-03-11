@@ -190,8 +190,9 @@ Game.prototype = {
             players[Math.round(this.playerToDebug)].bicho.nodos[Math.round(this.NodoToDebug)].debug(ctx);
             ctx.fillText(""+players[Math.round(this.playerToDebug)].id,270,30);
         }*/
-        app.camera.proxyContainer(app.world);
+        app.camera.proxyContainer(app.bichos);
         app.renderer.render(app.world);
+        app.camRender.render(app.camera);
 	},
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
     debugInit: function(){
@@ -285,18 +286,107 @@ function app(){
     this.renderer = new PIXI.CanvasRenderer(800, 600,{backgroundColor : 0x1099bb});
     this.world = new PIXI.Container();
     this.stage = new PIXI.Container();
+    this.camRender = new PIXI.CanvasRenderer(250, 200);
+    this.camRender.view.style.position = "absolute";
+    this.camRender.view.style.display = "block";
+    this.camRender.view.style.zIndex = 1;
+    this.camRender.view.style.padding = 10;
 
-    this.stage.addChild(this.world);
-    this.world.addChild(this.bichos);
-    this.camera = new PIXI.Camera2d();
-    this.stage.addChild(this.camera);
+    this.autoResize = true;
     this.renderer.backgroundColor = 0x3498db;
     this.renderer.view.style.position = "absolute";
     this.renderer.view.style.display = "block";
     this.renderer.autoResize = true;
     this.renderer.resize(window.innerWidth, window.innerHeight);
-    this.camera.position.x = window.innerWidth;
-    this.camera.position.y = window.innerHeight;
+
+    this.camera = new PIXI.Camera2d();
+    console.log(this.camera)
+    this.stage.addChild(this.world);
+    this.world.addChild(this.bichos);
+    this.camera.scale.x = .1;
+    this.camera.scale.y = .1;
+    console.log(this.camera.viewport.height)
+    this.stage.addChild(this.camera);
+    this.camera.position.x = 30;
+    this.camera.position.y = 50;
+    document.body.appendChild(this.camRender.view);
     document.body.appendChild(this.renderer.view);
+
 }
+
+// create a renderer, detecting automatically which one to create between Canvas and WebGL
+/*var renderer = new PIXI.CanvasRenderer(1500, 1600,{backgroundColor : 0x1099bb});
+document.body.appendChild(renderer.view);
+
+// create the root of the scene graph
+var stage = new PIXI.Container();
+var world = new PIXI.Container();
+
+var bichos = new PIXI.Container();
+
+var camera = new PIXI.Camera2d();
+camera.position.x = 800;
+camera.rotation = Math.PI/2;
+
+var camera3 = new PIXI.Camera2d();
+camera3.position.x = 800;
+camera3.position.y = 600;
+camera3.rotation = Math.PI;
+
+
+stage.addChild(world);
+world.addChild(bichos);
+world.addChild(camera);
+stage.addChild(camera3);
+// create a texture from an image path
+var texture = PIXI.Texture.fromImage('pepe.png');
+
+// create a new Sprite using the texture
+var bunnyLeft = new PIXI.Sprite(texture);
+
+// move the sprite to the center of the screen
+bunnyLeft.position.x = 200;
+bunnyLeft.position.y = 150;
+
+// create another one and change its anchor point
+var bunnyCenter = new PIXI.Sprite(texture);
+
+// move the sprite
+bunnyCenter.position.x = 200;
+bunnyCenter.position.y = 230;
+
+// center the sprite's anchor point
+bunnyCenter.anchor.x = 0.5;
+bunnyCenter.anchor.y = 0.5;
+
+// now add both sprites to the scene and see how they differ
+bichos.addChild(bunnyLeft);
+bichos.addChild(bunnyCenter);
+
+function resize(event) {
+    var target = event.target;
+    target.scale.x = 2.5 - target.scale.x;
+    target.scale.y = 2.5 - target.scale.y;
+}
+bunnyLeft.interactive = true;
+bunnyCenter.interactive = true;
+bunnyLeft.on('click', resize);
+bunnyCenter.on('click', resize);
+
+
+// start animating
+animate();
+
+function animate() {
+    requestAnimationFrame(animate);
+
+    // rotate both sprites and see the effect of the anchor
+    bunnyLeft.rotation += 0.08;
+    bunnyCenter.rotation += 0.08;
+
+    //camera.proxyContainer(bichos);
+    camera3.proxyContainer(world);
+    // render the container
+    renderer.render(stage);
+}*/
 
