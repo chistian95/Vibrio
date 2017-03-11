@@ -15,7 +15,6 @@ function empezarJuego(){
     /*Eventos para recibir del servidor
     ==========================================================================*/
     socket.on('crearPlayerCliente', function(player){
-        console.log(player.nombre+" "+player.local);
         game.crearPlayerCliente(player.id, player.local, player.nombre);
     });
 

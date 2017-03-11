@@ -33348,16 +33348,19 @@ var utils = module.exports = {
         if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1)
         {
             var args = [
-                '\n %c %c %c Pixi.js gameofbombs fork ' + CONST.VERSION + ' - ✰ ' + type + ' ✰  %c ' + ' %c ' + ' http://www.pixijs.com/ https://github.com/gameofbombs/pixi.js %c %c ♥%c♥%c♥ \n\n',
+
+                '\n %c ( ͡° ͜ʖ ͡°) %c ♥ %c ԅ(◉෴◉ԅ) %c %c %c %c Pixi.js vitor, el fork más papu de los papus. - ✰ ' + type + ' ✰  %c ' + ' %c ' + ' pegi 18 %c %c ヾ(・ω・)メ(・ω・)ノ \n\n',
+                'color: #7024ff; background: #fff; padding:5px 0;font-family: "Times New Roman", Times, serif;',
+                'color: #ff2424; background: #fff; padding:5px 0;',
+                'color: #234ba3; background: #fff; padding:5px 0;',
+                'color: #ff2424; background: #fff; padding:5px 0;',
                 'background: #ff66a5; padding:5px 0;',
                 'background: #ff66a5; padding:5px 0;',
-                'color: #ff66a5; background: #030307; padding:5px 0;',
+                'color: #66ffc4; background: #030307; padding:5px 0;',
                 'background: #ff66a5; padding:5px 0;',
                 'background: #ffc3dc; padding:5px 0;',
                 'background: #ff66a5; padding:5px 0;',
                 'color: #ff2424; background: #fff; padding:5px 0;',
-                'color: #ff2424; background: #fff; padding:5px 0;',
-                'color: #ff2424; background: #fff; padding:5px 0;'
             ];
 
             window.console.log.apply(console, args); //jshint ignore:line
