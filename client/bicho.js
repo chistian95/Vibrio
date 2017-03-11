@@ -4,11 +4,13 @@ var circulo = function(graphics,x,y,radio,tipoNodo) {
 
 }
 
-var Bicho = function(bichos,z) {
+var Bicho = function(bichos,z,nombre) {
     this.x = 0;
     this.y = 0;
     this.z = z;
     this.contenedor = bichos;
+    this.nombre = new PIXI.Text(nombre, {font:"20px Arial", fill:"#c327b7"});
+    this.contenedor.addChild(this.nombre);
     this.debug = false;
     this.velocidadGiro = 0;
     this.contFase = 0;
@@ -30,6 +32,8 @@ var Bicho = function(bichos,z) {
         var pos = nodoMin[0];
         if(pos === undefined) return;
         if(this.nodos.length > pos) {
+            this.nombre.x = this.nodos[0].x-this.nodos[0].radio/2
+            this.nombre.y = this.nodos[0].y
             var nodo = this.nodos[pos];
             nodo.x = nodoMin[1];
             nodo.y = nodoMin[2];

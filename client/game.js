@@ -277,8 +277,7 @@ function Player(id, game, local,nombrev,bichos){
     this.ratonY = 0;
 	this.game = game;
 	this.local = local;
-    this.bicho = new Bicho(bichos,this.id);
-
+    this.bicho = new Bicho(bichos,this.id,nombrev);
 }
 /*====================================*/
 function app(){
