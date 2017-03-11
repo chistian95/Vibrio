@@ -286,7 +286,7 @@ function app(){
     this.renderer = new PIXI.CanvasRenderer(800, 600,{backgroundColor : 0x1099bb});
     this.world = new PIXI.Container();
     this.stage = new PIXI.Container();
-    this.camRender = new PIXI.CanvasRenderer(250, 200);
+    this.camRender = new PIXI.CanvasRenderer(250, 200, {backgroundColor : 0x1099bb}, true)
     this.camRender.view.style.position = "absolute";
     this.camRender.view.style.display = "block";
     this.camRender.view.style.zIndex = 1;
