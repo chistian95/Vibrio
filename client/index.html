@@ -24,6 +24,9 @@
     </style>
 
 </head>
+<script src="lib/socket.io.js"></script>
+<script src="client.js"></script>
+<body style="margin: 0;" onresize="game.reescalar()">
     <!--==========MENU==========-->
     <div class="col-md-4 col-md-offset-4 home" id="menu">
 		<center>
@@ -44,12 +47,12 @@
 
     <!--SCRIPTS-->
     <script type="text/javascript" src="lib/dat.gui.min.js"></script>
-    <script src="lib/socket.io.js"></script>
+
     <script src="lib/pixi.js"></script>
     <script src="lib/pixicam.min.js"></script>
     <script src="bicho.js"></script>
     <script src="game.js"></script>
-    <script src="client.js"></script>
+
     <script>
         var juego = false;
         var nombre = "Sin nombre e.e";

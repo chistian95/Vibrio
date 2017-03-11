@@ -1,7 +1,6 @@
 /*var canvas = document.getElementById('canvasJuego');
 var ctx = canvas.getContext("2d");*/
 var app;
-
 var players = []
 
 /*Crear juego
@@ -53,6 +52,9 @@ function Game(socket){
 /*=======================================================*/
 
 Game.prototype = {
+    reescalar: function () {
+      app.renderer.resize(window.innerWidth, window.innerHeight);
+    },
     /*Eventos recibidos del server
     ======================================================*/
 	crearPlayerCliente: function(id, local,nombrev){
@@ -164,7 +166,6 @@ Game.prototype = {
         var temp = Math.abs(app.world.pivot.y);
         app.world.pivot.x = this.localPlayer.bicho.nodos[0].x - window.innerWidth/2
         app.world.pivot.y = this.localPlayer.bicho.nodos[0].y - window.innerHeight/2
-        if(temp>Math.abs(app.world.pivot.y)) console.log("temp: "+temp+" piv: "+Math.abs(app.world.pivot.y))
         this.posicionRaton();
         //ctx.clearRect(0, 0, canvas.width, canvas.height); //Limpiar el canvas
 		if(this.localPlayer != undefined) this.enviarInfo();
@@ -269,7 +270,6 @@ Game.prototype = {
 /*Constructor de los player
 =======================================*/
 function Player(id, game, local,nombrev,bichos){
-    console.log("id: "+id+" local: "+local+" nombre: "+nombrev)
     this.nombre = nombrev;
 	this.id = id;
     this.ratonX = 0;
