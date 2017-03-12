@@ -86,6 +86,8 @@ Game.prototype = {
                 numserver++;
             });
         }
+        //app.world.pivot.x = this.localPlayer.bicho.nodos[0].x - window.innerWidth/2
+        //app.world.pivot.y = this.localPlayer.bicho.nodos[0].y - window.innerHeight/2
 	},
     /*===================================================*/
     /*Eventos para enviar al server
@@ -159,10 +161,7 @@ Game.prototype = {
     /*===============================================*/
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
 	bucle: function(){
-        app.renderer.view.getContext("2d").fillRect(0,0,1500,1500)
-        var temp = Math.abs(app.world.pivot.y);
-        app.world.pivot.x = this.localPlayer.bicho.nodos[0].x - window.innerWidth/2
-        app.world.pivot.y = this.localPlayer.bicho.nodos[0].y - window.innerHeight/2
+
         this.posicionRaton();
         //ctx.clearRect(0, 0, canvas.width, canvas.height); //Limpiar el canvas
 		if(this.localPlayer != undefined) this.enviarInfo();
