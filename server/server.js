@@ -163,7 +163,8 @@ function regenerarMapa() {
 /* GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS */
 function generarPlantas() {
     for(var i=0; i<20; i++) {
-        var tipoPlanta = Math.round(Math.random());
+        var tipoPlanta = Math.round(Math.random() * 4);
+        console.log("Planta: " + tipoPlanta);
         var x = Math.random()*(width-200)+100;
         var y = Math.random()*(width-200)+100;
         var planta = new p.Planta(x, y, tipoPlanta);

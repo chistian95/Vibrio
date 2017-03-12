@@ -57,6 +57,8 @@ var PlantaProto = function(){
             this.nodoPadre = new Nodo(TipoNodo.MAGNA, null, 0, 50, this, 0);
         } else if(this.tipo == 1) {//SPICIS
             this.nodoPadre = new Nodo(TipoNodo.SPICIS, null, 0, 30, this, 0);
+        } else if(this.tipo == 2) {//CORNELISU
+            this.nodoPadre = new Nodo(TipoNodo.CORNELISU, null, 0, 50, this, 0);
         }
         this.update();
     }
@@ -117,6 +119,36 @@ var PlantaProto = function(){
                 new Nodo(TipoNodo.SPICIS, nodo, 90, 10, this, 2);
                 new Nodo(TipoNodo.SPICIS, nodo, 270, 10, this, 2);
             }
+        } else if(nodo.tipoNodo === TipoNodo.CORNELISU) {
+            if(nodo.clase === 0) {
+                for(var i=0; i<4; i++) {
+                    var angulo = i*90;
+                    var suma = angulo + (Math.random() * 40 - 20);
+                    new Nodo(TipoNodo.CORNELISU, nodo, suma, 30, this, 1);
+                }
+            } else if(nodo.clase === 1) {
+                if(Math.random() * 100 < 50) {
+                    var angulo = 90 + (Math.random() * 40 - 20);
+                    new Nodo(TipoNodo.CORNELISU, nodo, angulo, 10, this, 2);
+                }
+                if(Math.random() * 100 < 50) {
+                    var angulo = 270 + (Math.random() * 40 - 20);
+                    new Nodo(TipoNodo.CORNELISU, nodo, angulo, 10, this, 2);
+                }
+                var angulo = Math.random() * 40 - 20;
+                if(Math.random() * 100 < 50) {
+                    new Nodo(TipoNodo.CORNELISU, nodo, angulo, 10, this, 2);
+                } else {
+                    new Nodo(TipoNodo.CORNELISU, nodo, angulo, 30, this, 1);
+                }
+            } else if(nodo.clase === 2) {
+                if(Math.random() * 100 < 50) {
+                    var angulo = Math.random() * 40 - 20;
+                    new Nodo(TipoNodo.CORNELISU, nodo, angulo, 10, this, 2);
+                }
+            }
+        } else if(nodo.tipoNodo === TipoNodo.XP) {
+
         }
     }
 

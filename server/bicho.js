@@ -196,7 +196,6 @@ var BichoProto = function(){
         }else{
             this.vida*=2;
         }
-        console.log("VIDA: "+this.vida);
         this.visible = true;
         bicho.nodos.push(this);
     }
