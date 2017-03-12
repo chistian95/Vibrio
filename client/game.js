@@ -13,7 +13,6 @@ function Game(socket){
     this.playerDebug = false;
     this.debugNodosLength = 0;
 	this.socket = socket;
-    for(var i=0;i<100;i++)this.generarCirculoPrueba()
 
 	var g = this;
 	setInterval(function(){
@@ -33,7 +32,7 @@ function Game(socket){
 Game.prototype = {
     reescalar: function () {
       app.renderer.resize(window.innerWidth, window.innerHeight);
-      app.camRender.resize(window.innerWidth/10, window.innerHeight/10);
+      app.ContenedorMinimapa.resize(window.innerWidth/10, window.innerHeight/10);
     },
     /*Eventos recibidos del server
     ======================================================*/
@@ -86,11 +85,16 @@ Game.prototype = {
                 numserver++;
             });
         }
+
+        /*==========================================================================*/
+        /* Pixi - Mover la cámara y pintarlo todo
+        ============================================================================*/
         app.world.pivot.x = this.localPlayer.bicho.nodos[0].x - window.innerWidth/2
         app.world.pivot.y = this.localPlayer.bicho.nodos[0].y - window.innerHeight/2
         app.renderer.render(app.world);
         app.cameraMinimapa.proxyContainer(app.world);
-        app.camRender.render(app.cameraMinimapa);
+        app.ContenedorMinimapa.render(app.cameraMinimapa);
+        /*==========================================================================*/
 	},
     /*===================================================*/
     /*Eventos para enviar al server
@@ -168,17 +172,7 @@ Game.prototype = {
         this.posicionRaton();
         //ctx.clearRect(0, 0, canvas.width, canvas.height); //Limpiar el canvas
 		if(this.localPlayer != undefined) this.enviarInfo();
-        players.forEach(function(player){
-            /*player.bicho.pintar(ctx)
-            ctx.font = "20px Comic Sans MS";
-            ctx.fillStyle = 'black';
-            ctx.textAlign = "center";
-            ctx.font = "20px Comic Sans MS";
-            ctx.fillStyle = 'blue';
-            ctx.fillText(player.nombre,player.bicho.nodos[0].x-30,player.bicho.nodos[0].y+20);*/
-        });
-        /*
-        if(this.playerDebug) {
+        /*if(this.playerDebug) {
            var ok = false;
             for(var i=1;i<=2;i++) {
                 if(!ok)this.gui.__controllers[i].onFinishChange(function(value) {
@@ -189,13 +183,15 @@ Game.prototype = {
             players[Math.round(this.playerToDebug)].bicho.nodos[Math.round(this.NodoToDebug)].debug(ctx);
             ctx.fillText(""+players[Math.round(this.playerToDebug)].id,270,30);
         }*/
-
 	},
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
+    /*===================================================================*/
+    /*Debug
+    =====================================================================*/
     debugInit: function(){
         this.gui = new dat.GUI();
         this.gui.add(this, 'playerDebug');
-        this.gui.add(this, 'playerToDebug',0,players.length-1)
+        this.gui.add(this, 'playerToDebug',0,Math.max(players.length-1,0))
         this.gui.add(this, 'NodoToDebug',0,0);
         this.gui.add(game, 'evolucionar');
         this.gui.add(game, 'involucionar');
@@ -213,8 +209,9 @@ Game.prototype = {
         this.gui.__controllers[2].updateDisplay();
         this.gui.__controllers[1].updateDisplay();
     },
+    /*================================================================*/
     /*Mirar en que dirección girar el bicho
-    =======================================*/
+    ==================================================================*/
     posicionRaton: function() {
         if(this.movimiento) {
             var relX = game.localPlayer.ratonX - game.localPlayer.bicho.nodos[0].x+app.world.pivot.x;
@@ -246,7 +243,7 @@ Game.prototype = {
         }
     },
 
-    crearBorde: function(ancho,alto) {
+    crearBorde: function(ancho,alto) { //Se llama desde client.js al crear el player local.
         app.bordeGraphics = new PIXI.Graphics();
         app.bordeGraphics.lineStyle(30, 0x8d8dc9, 30);
         app.bordeGraphics.drawRect(0, 0, ancho, alto);
@@ -274,23 +271,6 @@ Game.prototype = {
             }
         });
 	},
-
-    generarCirculoPrueba: function(){
-        /*
-        var graphics = new PIXI.Graphics();
-        graphics.lineStyle(0);
-        graphics.beginFill(0xffffff, 0.5);
-        graphics.drawCircle(100, 100,100);
-        graphics.endFill();
-        var sprite = new PIXI.Sprite(graphics.generateCanvasTexture());
-
-        sprite.anchor.set(0.5);
-        sprite.position.x = Math.random()*2800+100;
-        sprite.position.y = Math.random()*2800+100;
-        sprite.interactive = true;
-        app.bichos.addChild(sprite);
-        */
-    }
     /*===================================================*/
 }
 
@@ -305,39 +285,59 @@ function Player(id, game, local,nombrev,bichos){
 	this.local = local;
     this.bicho = new Bicho(bichos,this.id,nombrev);
 }
-/*====================================*/
+
+/*====================================================================================*/
+/*Render - Pixi
+======================================================================================*/
 function app(){
+    /*Declarar contenedores de imágenes
+    =====================================*/
     this.bichos = new PIXI.Container();
-    this.renderer = new PIXI.CanvasRenderer(800, 600,{backgroundColor : 0x1099bb});
     this.world = new PIXI.Container();
     this.borde = new PIXI.Container();
-    this.stage = new PIXI.Container();
-    this.camRender = new PIXI.CanvasRenderer(250, 200, {backgroundColor : 0x1099bb}, true)
-    this.camRender.view.style.position = "absolute";
-    this.camRender.view.style.border= "5px solid black";
-    this.camRender.view.style.borderRadius= "10px";
-    this.camRender.view.style.display = "block";
-    this.camRender.view.style.zIndex = 1;
-    this.camRender.view.style.margin = 10;
-    this.camRender.resize(window.innerWidth/10, window.innerHeight/7);
-    this.autoResize = true;
-    this.renderer.backgroundColor = 0x3498db;
-    this.renderer.view.style.position = "absolute";
-    this.renderer.view.style.display = "block";
-    this.renderer.autoResize = true;
+    /*==================================*/
+    /*Declarar renderer de imágenes
+    =================================================================================================*/
+    this.renderer = new PIXI.CanvasRenderer(800, 600,{backgroundColor : 0x3498db});
+    this.ContenedorMinimapa = new PIXI.CanvasRenderer(250, 200, {backgroundColor : 0x1099bb}, true)
+    /*===============================================================================================*/
+    /*Preparar los renderer (Estilos)
+    ==============================================================================*/
     this.renderer.resize(window.innerWidth, window.innerHeight);
+    this.ContenedorMinimapa.resize(window.innerWidth/10, window.innerHeight/7);
 
+    this.renderer.view.style.position = "absolute";
+    this.ContenedorMinimapa.view.style.position = "absolute";
+
+    this.renderer.view.style.display = "block";
+    this.ContenedorMinimapa.view.style.display = "block";
+
+    this.ContenedorMinimapa.view.style.border= "5px solid black";
+    this.ContenedorMinimapa.view.style.borderRadius= "10px";
+    this.ContenedorMinimapa.view.style.zIndex = 1; //ContenedorMinimapa se ve por encima del renderer normal si no no se vería
+
+    //Añadirlos al body para que se vean
+    document.body.appendChild(this.renderer.view);
+    document.body.appendChild(this.ContenedorMinimapa.view);
+    /*========================================================================= */
+    /*Que se autoajusten cuando se les cambie de tamaño en reescalar
+    ===========================================================================*/
+    this.renderer.autoResize = true;
+    this.autoResize = true;
+    /*=========================================================================*/
+    /*Cámera
+    =============================================*/
     this.cameraMinimapa = new PIXI.Camera2d();
-    this.stage.addChild(this.world);
-    this.world.addChild(this.bichos);
+    this.cameraMinimapa.position.x = 0;
+    this.cameraMinimapa.position.y = 0;
+    //Quitarle escala al minimapa para que sea un mundo en miniatura.
     this.cameraMinimapa.scale.x = .1;
     this.cameraMinimapa.scale.y = .1;
-    this.stage.addChild(this.cameraMinimapa);
-    this.cameraMinimapa.position.x = 0//game.localPlayer.bicho.nodos[0].x*.1//window.innerWidth/10;
-    this.cameraMinimapa.position.y = 0//game.localPlayer.bicho.nodos[0].y*.1//window.innerHeight/7;
-    document.body.appendChild(this.renderer.view);
-    document.body.appendChild(this.camRender.view);
-
+    /*=======================================================================*/
+    /*Añadir los bichos al mundo
+    =========================================================================*/
+    this.world.addChild(this.bichos);
 }
+/*=============================================================s==============*/
 
 

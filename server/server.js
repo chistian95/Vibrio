@@ -150,7 +150,7 @@ function moverPlayers() {
 setInterval(function() {
     calcularHitbox();
     regenerarMapa();
-}, 350);
+}, 500);
 function calcularHitbox() {
     players.forEach(function(player) {
         player.bicho.calcularHitbox();
@@ -176,7 +176,7 @@ function generarPlantas() {
     }
 }
 generarPlantas();
-for(var i=0;i<100;i++) {
+for(var i=0;i<50;i++) {
     var p = new Player(i,Math.random()*width,Math.random()*height,"bot");
     var derechizqr = Math.round(Math.random()*1);
     if(derechizqr==0)p.bicho.derecha = true;
@@ -184,6 +184,8 @@ for(var i=0;i<100;i++) {
     var arribabajo = Math.round(Math.random()*1);
     if(arribabajo==0)p.bicho.arriba = true;
     else p.bicho.atras = true;
+    var evolucion = Math.round(Math.random()*3);
+    if(evolucion!=0) for(var x=evolucion;x>0;x--) p.bicho.evolucionar();
     ids[i] = true;
 }
 /* GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS */
