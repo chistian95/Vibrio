@@ -17,21 +17,47 @@ Los bichos pequeños solo podrán comer los nodos "pequeños" de las plantas, y 
 */
 
 var PlantaProto = function(){
-    var Nodo = function(tipoNodo, nodoPadre, radio, planta){
+    var Nodo = function(tipoNodo, nodoPadre, anguloInicio, radio, planta, clase){
         this.x = 0;
         this.y = 0;
         this.tipoNodo = tipoNodo;
         this.nodoPadre = nodoPadre;
+        this.anguloInicio = anguloInicio;
+        this.anguloActual = 0;
         this.radio = radio;
+        this.clase = clase;
         this.nodos = [];
         if(this.nodoPadre !== null) {
-            nodoPadre.nodos.push(this);
+            //nodoPadre.nodos.push(this);
+        } else {
+            this.x = planta.x;
+            this.y = planta.y;
         }
         this.visible = true;
         planta.nodos.push(this);
+
+        planta.generarHijos(this);
+
+        this.update = function() {
+            if(nodoPadre === null) {
+                return;
+            }
+            var centroX = this.nodoPadre.x;
+            var centroY = this.nodoPadre.y;
+            this.anguloActual = this.anguloInicio + this.nodoPadre.anguloActual;
+            var angulo = this.anguloActual * Math.PI / 180.0;
+            var radioPadre = this.nodoPadre.radio;
+            this.x = Math.cos(angulo) * radioPadre + centroX;
+            this.y = Math.sin(angulo) * radioPadre + centroY;
+        }
     }
 
     this.generar = function(){ //Función que genera la planta
+        if(this.tipo == 0) { //MAGNA
+            this.nodoPadre = new Nodo(TipoNodo.MAGNA, null, 0, 50, this, 0);
+        }
+        this.update();
+        /*
         if(Nodo.tipoNodo.tipo === 0){ //MAGNA
             var centro = new Nodo(TipoNodo.MAGNA, null, 50, this);
             var r = Math.round(Math.random()*5)+3;
@@ -88,10 +114,53 @@ var PlantaProto = function(){
             }
             this.nodoCentral = centro;
         }
+        */
     }
 
-    this.crearNodoMin = function(posicion, nodo) {
-        return [posicion, nodo.x, nodo.y, nodo.visible, nodo.tipoNodo, nodo.radio];
+    this.generarHijos = function(nodo) {
+        if(nodo.clase === 0) {
+            for(var i=0; i<4; i++) {
+                if(Math.random() * 100 < 90) {
+                    var angulo = i*90;
+                    var radio = Math.random() * 4 + 28;
+                    new Nodo(TipoNodo.MAGNA, nodo, angulo, radio, this, 2);
+                }
+            }
+            for(var i=0; i<4; i++) {
+                if(Math.random() * 100 < 90) {
+                    var angulo = i*90 + 45;
+                    var radio = Math.random() * 4 + 28;
+                    new Nodo(TipoNodo.MAGNA, nodo, angulo, radio, this, 1);
+                }
+            }
+        } else if(nodo.clase === 1) {
+            if(Math.random() * 100 < 75) {
+                var radio = Math.random() * 4 + 28;
+                new Nodo(TipoNodo.MAGNA, nodo, 0, radio, this, 3);
+            }
+        } else if(nodo.clase === 2) {
+            if(Math.random() * 100 < 75) {
+                var radio = Math.random() * 4 + 8;
+                new Nodo(TipoNodo.MAGNA, nodo, 0, radio, this, 4);
+            }
+        } else if(nodo.clase === 3) {
+            if(Math.random() * 100 < 75) {
+                var radio = Math.random() * 4 + 8;
+                new Nodo(TipoNodo.MAGNA, nodo, 0, radio, this, 4);
+            }
+            if(Math.random() * 100 < 75) {
+                var radio = Math.random() * 4 + 8;
+                new Nodo(TipoNodo.MAGNA, nodo, 90, radio, this, 4);
+            }
+            if(Math.random() * 100 < 75) {
+                var radio = Math.random() * 4 + 8;
+                new Nodo(TipoNodo.MAGNA, nodo, 270, radio, this, 4);
+            }
+        }
+    }
+
+    this.crearNodoMin = function(nodo) {
+        return [nodo.x, nodo.y, nodo.visible, nodo.tipoNodo, nodo.radio];
     }
 
     this.calcularHitbox = function() {
@@ -115,15 +184,23 @@ var PlantaProto = function(){
         yMax = yMax + this.nodoCentral.radio * 2;
         this.hitbox = [xMin, yMin, xMax, yMax];
     }
+
+    this.update = function() {
+        this.nodos.forEach(function(nodo) {
+            nodo.update();
+        });
+    }
 }
 
-var Planta = function(x,y) {
+var Planta = function(x,y,tipo) {
     PlantaProto.call(this);
     this.x = x;
     this.y = y;
+    this.tipo = tipo;
     this.nodos = [];
     this.nodoCentral = null;
     this.hitbox = [];
+    this.generar();
 }
 Planta.prototype = Object.create(PlantaProto.prototype);
 

@@ -2,6 +2,7 @@
 var ctx = canvas.getContext("2d");*/
 var app;
 var players = [];
+var numPlantas = 0;
 /*Crear juego
 =========================================================*/
 function Game(socket){
@@ -35,10 +36,28 @@ Game.prototype = {
     },
     /*Eventos recibidos del server
     ======================================================*/
-	crearPlayerCliente: function(id, local,nombrev){
+	crearPlayerCliente: function(id, local,nombrev, plantas){
 		var t = new Player(id, this, local,nombrev,app.bichos);
 		if(local) {
             this.localPlayer = t
+            plantas.forEach(function(planta) {
+                console.log("CREAR PLANTA");
+                planta.forEach(function(nodoPlanta) {
+                    //nodo.x, nodo.y, nodo.visible, nodo.tipoNodo, nodo.radio
+                    var graphics = new PIXI.Graphics();
+                    graphics.lineStyle(0);
+                    graphics.beginFill(0x56f442, 0.5);
+                    graphics.drawCircle(nodoPlanta[4], nodoPlanta[4], nodoPlanta[4]);
+                    graphics.endFill();
+                    var sprite = new PIXI.Sprite(graphics.generateCanvasTexture());
+
+                    sprite.anchor.set(0.5);
+                    sprite.position.x = nodoPlanta[0];
+                    sprite.position.y = nodoPlanta[1];
+                    sprite.interactive = true;
+                    app.world.addChild(sprite);
+                });
+            });
         ;} //Si es el player propio.
 		players.push(t);
         if(players.length==1) this.debugInit();
@@ -47,15 +66,15 @@ Game.prototype = {
 
     recibirInfo: function(serverInfo){
         //Borramos players desconectados
-        if(serverInfo.playersDesc != undefined){
-            for(var i = 0; i < serverInfo.playersDesc.length; i++)
+        if(serverInfo[0].playersDesc != undefined){
+            for(var i = 0; i < serverInfo[0].playersDesc.length; i++)
                 for(var j=0;j < players.length;j++)
-                    if(players[j].id === serverInfo.playersDesc[i].id) players.splice(j, 1);
+                    if(players[j].id === serverInfo[0].playersDesc[i].id) players.splice(j, 1);
         }
         //Por cada player recibido del servidor
         var numserver = 0;
         if(players.length>=1) {
-            serverInfo.forEach(function(serverPlayer){ //Cada player del server info[]
+            serverInfo[0].forEach(function(serverPlayer){ //Cada player del server info[]
                 if(serverPlayer.length>players[numserver].bicho.nodos.length) players[numserver].bicho.nodos.slice(0,serverPlayer.length-1)
                 serverPlayer[0].forEach(function(nodoServer) { //Cada nodo del player del server info[][]
                     if(nodoServer != undefined && numserver<=players.length-1) {
@@ -66,8 +85,6 @@ Game.prototype = {
                 numserver++;
             });
         }
-
-
 	},
     /*===================================================*/
     /*Eventos para enviar al server
@@ -258,6 +275,7 @@ Game.prototype = {
 	},
 
     generarCirculoPrueba: function(){
+        /*
         var graphics = new PIXI.Graphics();
         graphics.lineStyle(0);
         graphics.beginFill(0xffffff, 0.5);
@@ -270,6 +288,7 @@ Game.prototype = {
         sprite.position.y = Math.random()*2800+100;
         sprite.interactive = true;
         app.bichos.addChild(sprite);
+        */
     }
     /*===================================================*/
 }

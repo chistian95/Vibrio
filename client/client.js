@@ -15,9 +15,9 @@ function empezarJuego(){
     /*Eventos para recibir del servidor
     ==========================================================================*/
     socket.on('crearPlayerCliente', function(player){
-        if(!player.local) game.crearPlayerCliente(player.id, false, player.nombre);
+        if(!player.local) game.crearPlayerCliente(player.id, false, player.nombre, null);
         else {
-            game.crearPlayerCliente(player.id, true, player.nombre);
+            game.crearPlayerCliente(player.id, true, player.nombre, player.plantas);
             console.log(player.width)
             game.crearBorde(player.width,player.height);
         }

@@ -14,6 +14,9 @@ var io = require('socket.io')(server);
 
 var b = require('./bicho');
 var Bicho = b.Bicho;
+var p = require('./plantas');
+var Planta = p.Planta;
+var plantasMundo = [];
 
 players = [];
 ids = [];
@@ -43,7 +46,7 @@ io.on('connection', function(client) {
         players.forEach(function(player){
             client.emit('crearPlayerCliente', {id: player.id, local: false, nombre: player.nombre});
         });
-        client.emit('crearPlayerCliente', { id: playerid, local: true,nombre: nombre,width:width,height:height});
+        client.emit('crearPlayerCliente', { id: playerid, local: true,nombre: nombre,width:width,height:height, plantas: plantasMundo});
         /*Enviar a todos los clientes "broadcast" la información del nuevo juegador*/
         client.broadcast.emit('crearPlayerCliente', { id: playerid, local: false,nombre: nombre})
         new Player(playerid,initX,initY,nombre);
@@ -105,17 +108,18 @@ io.on('connection', function(client) {
 /*Coger la información para mandarsela al cliente
 ==================================================*/
 function getInfo(){
-    var info = [];
-    for(i=0;i<players.length;i++) info[i] = [];
+    var info = []
+    info[0] = [];
+    for(i=0;i<players.length;i++) info[0][i] = [];
     var num = 0;
     players.forEach( function(player){
         var num2 = 0;
-        info[num][0] = [];
+        info[0][num][0] = [];
         player.bicho.nodos.forEach( function(nodo){
-            info[num][0].push(player.bicho.crearNodoMin(num2, nodo));
+            info[0][num][0].push(player.bicho.crearNodoMin(num2, nodo));
             num2++;
         });
-        info[num][1] = player.bicho.hitbox;
+        info[0][num][1] = player.bicho.hitbox;
         num++;
     });
     return info;
@@ -156,3 +160,18 @@ function regenerarMapa() {
 
 }
 /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
+/* GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS */
+function generarPlantas() {
+    for(var i=0; i<20; i++) {
+        var x = Math.random()*2800+100;
+        var y = Math.random()*2800+100;
+        var planta = new p.Planta(x, y, 0);
+        var nodosPlanta = [];
+        planta.nodos.forEach(function(nodo) {
+            nodosPlanta.push(planta.crearNodoMin(nodo));
+        });
+        plantasMundo.push(nodosPlanta);
+    }
+}
+generarPlantas();
+/* GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS */
