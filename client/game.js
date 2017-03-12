@@ -41,7 +41,6 @@ Game.prototype = {
 		if(local) {
             this.localPlayer = t
             plantas.forEach(function(planta) {
-                console.log("CREAR PLANTA");
                 planta.forEach(function(nodoPlanta) {
                     //nodo.x, nodo.y, nodo.visible, nodo.tipoNodo, nodo.radio
                     var graphics = new PIXI.Graphics();

@@ -59,6 +59,10 @@ var PlantaProto = function(){
             this.nodoPadre = new Nodo(TipoNodo.SPICIS, null, 0, 30, this, 0);
         } else if(this.tipo == 2) {//CORNELISU
             this.nodoPadre = new Nodo(TipoNodo.CORNELISU, null, 0, 50, this, 0);
+        } else if(this.tipo == 3) {//XPAGUETOES
+            this.nodoPadre = new Nodo(TipoNodo.XP, null, 0, 50, this, 0);
+        } else if(this.tipo == 3) {//MAGIS
+            this.nodoPadre = new Nodo(TipoNodo.MAGIS, null, 0, 50, this, 0);
         }
         this.update();
     }
@@ -148,6 +152,8 @@ var PlantaProto = function(){
                 }
             }
         } else if(nodo.tipoNodo === TipoNodo.XP) {
+
+        } else if(nodo.tipoNodo === TipoNodo.MAGIS) {
 
         }
     }
