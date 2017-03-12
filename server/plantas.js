@@ -1,13 +1,13 @@
-var TipoNodo = function(tipo, color){ //0=MAGNA, 1=SPICIS, 2=XP, 3=CORNELISU, 4=MAGIS
+var TipoNodo = function(tipo, colorHex){ //0=MAGNA, 1=SPICIS, 2=XP, 3=CORNELISU, 4=MAGIS
     this.tipo = tipo;
-    this.color = color;
+    this.colorHex = colorHex;
 }
 
-TipoNodo.MAGNA = new TipoNodo(0, [0, 255, 0, 64]); //TAMAÑO
-TipoNodo.SPICIS = new TipoNodo(1, [255, 0, 0, 64]); //PINCHOS
-TipoNodo.XP = new TipoNodo(2, [0, 255, 255, 64]); //XPAGUETOES (OJOS)
-TipoNodo.CORNELISU = new TipoNodo(3, [0, 0, 255, 64]); //CORAZA
-TipoNodo.MAGIS = new TipoNodo(4, [145,145,145,64]); //MAGIS CORPUS (MÁS NODOS)
+TipoNodo.MAGNA = new TipoNodo(0, "0x00ff00"); //TAMAÑO
+TipoNodo.SPICIS = new TipoNodo(1, "0x42c8f4"); //PINCHOS
+TipoNodo.XP = new TipoNodo(2, [0, "0x9ba1a3"]); //XPAGUETOES (OJOS)
+TipoNodo.CORNELISU = new TipoNodo(3, "0xb4e22b"); //CORAZA
+TipoNodo.MAGIS = new TipoNodo(4, "0xe27a2f"); //MAGIS CORPUS (MÁS NODOS)
 
 /*
 Las plantas van a tener un nodo central del que saldrá una cantidad aleatoria de nodos "grandes", despues, de cada nodo "grande" pueden (o no) salir
@@ -55,106 +55,67 @@ var PlantaProto = function(){
     this.generar = function(){ //Función que genera la planta
         if(this.tipo == 0) { //MAGNA
             this.nodoPadre = new Nodo(TipoNodo.MAGNA, null, 0, 50, this, 0);
+        } else if(this.tipo == 1) {//SPICIS
+            this.nodoPadre = new Nodo(TipoNodo.SPICIS, null, 0, 30, this, 0);
         }
         this.update();
-        /*
-        if(Nodo.tipoNodo.tipo === 0){ //MAGNA
-            var centro = new Nodo(TipoNodo.MAGNA, null, 50, this);
-            var r = Math.round(Math.random()*5)+3;
-            var r2 = Math.round(Math.random()*5)+3;
-            for(var i=0; i<r;i++){//Nodos "GRANDES" de la planta
-                var p = new Nodo(TipoNodo.MAGNA, centro, 50, this);
-                for(var n=0; n<r2;n++){ //Nodos "PEQUEÑOS" de la planta
-                    new Nodo(TipoNodo.MAGNA, p, 15, this);
-                }
-            }
-            this.nodoCentral = centro;
-        }else if(Nodo.tipoNodo.tipo === 1){ //SPICIS
-            var centro = new Nodo(TipoNodo.SPICIS, null, 50, this);
-            var r = Math.round(Math.random()*5)+3;
-            var r2 = Math.round(Math.random()*5)+3;
-            for(var i=0; i<r;i++){//Nodos "GRANDES" de la planta
-                var p = new Nodo(TipoNodo.SPICIS, centro, 50, this);
-                for(var n=0; n<r2;n++){ //Nodos "PEQUEÑOS" de la planta
-                    new Nodo(TipoNodo.SPICIS, p, 15, this);
-                }
-            }
-            this.nodoCentral = centro;
-        }else if(Nodo.tipoNodo.tipo === 2){ //XP
-            var centro = new Nodo(TipoNodo.XP, null, 50, this);
-            var r = Math.round(Math.random()*5)+3;
-            var r2 = Math.round(Math.random()*5)+3;
-            for(var i=0; i<r;i++){//Nodos "GRANDES" de la planta
-                var p = new Nodo(TipoNodo.XP, centro, 50, this);
-                for(var n=0; n<r2;n++){ //Nodos "PEQUEÑOS" de la planta
-                    new Nodo(TipoNodo.XP, p, 15, this);
-                }
-            }
-            this.nodoCentral = centro;
-        }else if(Nodo.tipoNodo.tipo === 3){ //CORNELISU
-            var centro = new Nodo(TipoNodo.CORNELISU, null, 50, this);
-            var r = Math.round(Math.random()*5)+3;
-            var r2 = Math.round(Math.random()*5)+3;
-            for(var i=0; i<r;i++){//Nodos "GRANDES" de la planta
-                var p = new Nodo(TipoNodo.CORNELISU, centro, 50, this);
-                for(var n=0; n<r2;n++){ //Nodos "PEQUEÑOS" de la planta
-                    new Nodo(TipoNodo.CORNELISU, p, 15, this);
-                }
-            }
-            this.nodoCentral = centro;
-        }else if(Nodo.tipoNodo.tipo === 4){ //MAGIS
-            var centro = new Nodo(TipoNodo.MAGIS, null, 50, this);
-            var r = Math.round(Math.random()*5)+3;
-            var r2 = Math.round(Math.random()*5)+3;
-            for(var i=0; i<r;i++){//Nodos "GRANDES" de la planta
-                var p = new Nodo(TipoNodo.MAGIS, centro, 50, this);
-                for(var n=0; n<r2;n++){ //Nodos "PEQUEÑOS" de la planta
-                    new Nodo(TipoNodo.MAGIS, p, 15, this);
-                }
-            }
-            this.nodoCentral = centro;
-        }
-        */
     }
 
     this.generarHijos = function(nodo) {
-        if(nodo.clase === 0) {
-            for(var i=0; i<4; i++) {
-                if(Math.random() * 100 < 90) {
+        if(nodo.tipoNodo === TipoNodo.MAGNA) {
+            if(nodo.clase === 0) {
+                for(var i=0; i<4; i++) {
+                    if(Math.random() * 100 < 90) {
+                        var angulo = i*90;
+                        var radio = Math.random() * 4 + 28;
+                        new Nodo(TipoNodo.MAGNA, nodo, angulo, radio, this, 2);
+                    }
+                }
+                for(var i=0; i<4; i++) {
+                    if(Math.random() * 100 < 90) {
+                        var angulo = i*90 + 45;
+                        var radio = Math.random() * 4 + 28;
+                        new Nodo(TipoNodo.MAGNA, nodo, angulo, radio, this, 1);
+                    }
+                }
+            } else if(nodo.clase === 1) {
+                if(Math.random() * 100 < 75) {
+                    var radio = Math.random() * 4 + 28;
+                    new Nodo(TipoNodo.MAGNA, nodo, 0, radio, this, 3);
+                }
+            } else if(nodo.clase === 2) {
+                if(Math.random() * 100 < 75) {
+                    var radio = Math.random() * 4 + 8;
+                    new Nodo(TipoNodo.MAGNA, nodo, 0, radio, this, 4);
+                }
+            } else if(nodo.clase === 3) {
+                if(Math.random() * 100 < 75) {
+                    var radio = Math.random() * 4 + 8;
+                    new Nodo(TipoNodo.MAGNA, nodo, 0, radio, this, 4);
+                }
+                if(Math.random() * 100 < 75) {
+                    var radio = Math.random() * 4 + 8;
+                    new Nodo(TipoNodo.MAGNA, nodo, 90, radio, this, 4);
+                }
+                if(Math.random() * 100 < 75) {
+                    var radio = Math.random() * 4 + 8;
+                    new Nodo(TipoNodo.MAGNA, nodo, 270, radio, this, 4);
+                }
+            }
+        } else if(nodo.tipoNodo === TipoNodo.SPICIS) {
+            if(nodo.clase === 0) {
+                for(var i=0; i<4; i++) {
                     var angulo = i*90;
-                    var radio = Math.random() * 4 + 28;
-                    new Nodo(TipoNodo.MAGNA, nodo, angulo, radio, this, 2);
+                    new Nodo(TipoNodo.SPICIS, nodo, angulo, 30, this, 1);
                 }
-            }
-            for(var i=0; i<4; i++) {
-                if(Math.random() * 100 < 90) {
-                    var angulo = i*90 + 45;
-                    var radio = Math.random() * 4 + 28;
-                    new Nodo(TipoNodo.MAGNA, nodo, angulo, radio, this, 1);
+            } else if(nodo.clase === 1) {
+                if(Math.random() * 100 < 50) {
+                    new Nodo(TipoNodo.SPICIS, nodo, 0, 30, this, 1);
+                } else {
+                    new Nodo(TipoNodo.SPICIS, nodo, 0, 10, this, 2);
                 }
-            }
-        } else if(nodo.clase === 1) {
-            if(Math.random() * 100 < 75) {
-                var radio = Math.random() * 4 + 28;
-                new Nodo(TipoNodo.MAGNA, nodo, 0, radio, this, 3);
-            }
-        } else if(nodo.clase === 2) {
-            if(Math.random() * 100 < 75) {
-                var radio = Math.random() * 4 + 8;
-                new Nodo(TipoNodo.MAGNA, nodo, 0, radio, this, 4);
-            }
-        } else if(nodo.clase === 3) {
-            if(Math.random() * 100 < 75) {
-                var radio = Math.random() * 4 + 8;
-                new Nodo(TipoNodo.MAGNA, nodo, 0, radio, this, 4);
-            }
-            if(Math.random() * 100 < 75) {
-                var radio = Math.random() * 4 + 8;
-                new Nodo(TipoNodo.MAGNA, nodo, 90, radio, this, 4);
-            }
-            if(Math.random() * 100 < 75) {
-                var radio = Math.random() * 4 + 8;
-                new Nodo(TipoNodo.MAGNA, nodo, 270, radio, this, 4);
+                new Nodo(TipoNodo.SPICIS, nodo, 90, 10, this, 2);
+                new Nodo(TipoNodo.SPICIS, nodo, 270, 10, this, 2);
             }
         }
     }
