@@ -162,7 +162,7 @@ function regenerarMapa() {
 /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
 /* GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS */
 function generarPlantas() {
-    for(var i=0; i<20; i++) {
+    for(var i=0; i<15; i++) {
         var tipoPlanta = Math.round(Math.random() * 4);
         var x = Math.random()*(width-200)+100;
         var y = Math.random()*(width-200)+100;
@@ -175,7 +175,7 @@ function generarPlantas() {
     }
 }
 generarPlantas();
-for(var i=0;i<50;i++) {
+for(var i=0;i<10;i++) {
     var p = new Player(i,Math.random()*width,Math.random()*height,"bot");
     var derechizqr = Math.round(Math.random()*1);
     if(derechizqr==0)p.bicho.derecha = true;
