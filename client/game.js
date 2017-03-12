@@ -87,10 +87,13 @@ Game.prototype = {
         }
 
         /*==========================================================================*/
-        /* Pixi - Mover la cámara
+        /* Pixi - Mover la cámara y pintarlo todo
         ============================================================================*/
         app.world.pivot.x = this.localPlayer.bicho.nodos[0].x - window.innerWidth/2
         app.world.pivot.y = this.localPlayer.bicho.nodos[0].y - window.innerHeight/2
+        app.renderer.render(app.world);
+        app.cameraMinimapa.proxyContainer(app.world);
+        app.ContenedorMinimapa.render(app.cameraMinimapa);
         /*==========================================================================*/
 	},
     /*===================================================*/
@@ -180,13 +183,6 @@ Game.prototype = {
             players[Math.round(this.playerToDebug)].bicho.nodos[Math.round(this.NodoToDebug)].debug(ctx);
             ctx.fillText(""+players[Math.round(this.playerToDebug)].id,270,30);
         }*/
-        /*==================================================*/
-        /* Pixi - Pintar todo
-        ====================================================*/
-        app.renderer.render(app.world);
-        app.cameraMinimapa.proxyContainer(app.world);
-        app.ContenedorMinimapa.render(app.cameraMinimapa);
-        /*=================================================*/
 	},
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
     /*===================================================================*/
