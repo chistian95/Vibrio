@@ -46,7 +46,7 @@ Game.prototype = {
                     //nodo.x, nodo.y, nodo.visible, nodo.tipoNodo, nodo.radio
                     var graphics = new PIXI.Graphics();
                     graphics.lineStyle(0);
-                    graphics.beginFill(0x56f442, 0.5);
+                    graphics.beginFill(nodoPlanta[3].colorHex, 0.75);
                     graphics.drawCircle(nodoPlanta[4], nodoPlanta[4], nodoPlanta[4]);
                     graphics.endFill();
                     var sprite = new PIXI.Sprite(graphics.generateCanvasTexture());
