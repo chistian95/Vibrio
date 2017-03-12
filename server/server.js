@@ -2,8 +2,8 @@
 =================================================================*/
 var express = require('express');
 var app = express();
-var width = 1000;
-var height = 1000;
+var width = 3000;
+var height = 3000;
 app.use(express.static(__dirname));
 var server = app.listen(process.env.PORT || 8082, function () {
 	var puerto = server.address().port;
@@ -25,8 +25,8 @@ io.on('connection', function(client) {
     var playerid;
     client.on('crearJugadorServer', function(player){
         var nombre = player.nombre;
-        var initX = Math.random()*500;
-        var initY = Math.random()*500;
+        var initX = Math.random()*width;
+        var initY = Math.random()*height;
         /*Crear al cliente su jugador*/
         playerid = 0;
         var id = false;
@@ -41,9 +41,9 @@ io.on('connection', function(client) {
         console.log(nombre + ' se ha conectado Id: '+playerid);
         /*Enviarle al nuevo player los jugadores existentes.*/
         players.forEach(function(player){
-            client.emit('crearPlayerCliente', {id: player.id, local: false, nombre: player.nombre,width:width,height:height});
+            client.emit('crearPlayerCliente', {id: player.id, local: false, nombre: player.nombre});
         });
-        client.emit('crearPlayerCliente', { id: playerid, local: true,nombre: nombre});
+        client.emit('crearPlayerCliente', { id: playerid, local: true,nombre: nombre,width:width,height:height});
         /*Enviar a todos los clientes "broadcast" la información del nuevo juegador*/
         client.broadcast.emit('crearPlayerCliente', { id: playerid, local: false,nombre: nombre})
         new Player(playerid,initX,initY,nombre);
@@ -127,7 +127,7 @@ function getInfo(){
 function Player(id, x, y,nombre){
     this.nombre = nombre;
 	this.id = id;
-    this.bicho = new Bicho(x,y);
+    this.bicho = new Bicho(x,y,width,height);
     //this.bicho.evolucionar();
     players.push(this);
 }

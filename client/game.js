@@ -1,43 +1,18 @@
 /*var canvas = document.getElementById('canvasJuego');
 var ctx = canvas.getContext("2d");*/
 var app;
-var players = []
-var width = 0, height=0;
+var players = [];
 /*Crear juego
 =========================================================*/
 function Game(socket){
     app = new app();
-    width = 0;
-    height = 0;
-    var graphics = new PIXI.Graphics();
-    graphics.lineStyle(0);
-    graphics.beginFill(0xffffff, 0.5);
-    graphics.drawCircle(50, 50,100);
-    graphics.endFill();
-    var sprite = new PIXI.Sprite(graphics.generateCanvasTexture());
-
-    sprite.anchor.set(0.5);
-    sprite.interactive = true;
-    app.bichos.addChild(sprite);
     this.movimiento = true
     this.playerToDebug = 0;
     this.NodoToDebug = 0;
     this.playerDebug = false;
     this.debugNodosLength = 0;
 	this.socket = socket;
-    /*this.app = new PIXI.Application(800, 600, {backgroundColor : 0x3498db});
-    document.body.appendChild(this.app.view);
-    this.app.renderer.backgroundColor = 0x3498db;
-    this.app.renderer.view.style.position = "absolute";
-    this.app.renderer.view.style.display = "block";
-    this.app.renderer.autoResize = true;
-    this.app.renderer.resize(window.innerWidth, window.innerHeight);*/
-
-
-    // create the root of the scene graph
-
-    //this.app.stage.position.x = this.app.renderer.width/2;
-    //this.app.stage.position.y = this.app.renderer.height/2;
+    for(var i=0;i<100;i++)this.generarCirculoPrueba()
 
 	var g = this;
 	setInterval(function(){
@@ -194,7 +169,7 @@ Game.prototype = {
             players[Math.round(this.playerToDebug)].bicho.nodos[Math.round(this.NodoToDebug)].debug(ctx);
             ctx.fillText(""+players[Math.round(this.playerToDebug)].id,270,30);
         }*/
-        app.camera.proxyContainer(app.bichos);
+        app.camera.proxyContainer(app.world);
         app.renderer.render(app.world);
         app.camRender.render(app.camera);
 	},
@@ -252,6 +227,18 @@ Game.prototype = {
             game.localPlayer.arriba = false;
         }
     },
+
+    crearBorde: function(ancho,alto) {
+        app.bordeGraphics = new PIXI.Graphics();
+        app.bordeGraphics.lineStyle(30, 0x8d8dc9, 30);
+        app.bordeGraphics.drawRect(0, 0, ancho, alto);
+        app.bordeSprite = new PIXI.Sprite(app.bordeGraphics.generateCanvasTexture());
+        app.bordeSprite.interactive = true;
+        app.bordeSprite.zOrder =5;
+        app.bordeSprite.x = 0;
+        app.bordeSprite.y = 0;
+        app.world.addChild(app.bordeSprite);
+    },
     /*====================================*/
     /*Colision con otros players
     ====================================================*/
@@ -269,6 +256,21 @@ Game.prototype = {
             }
         });
 	},
+
+    generarCirculoPrueba: function(){
+        var graphics = new PIXI.Graphics();
+        graphics.lineStyle(0);
+        graphics.beginFill(0xffffff, 0.5);
+        graphics.drawCircle(100, 100,100);
+        graphics.endFill();
+        var sprite = new PIXI.Sprite(graphics.generateCanvasTexture());
+
+        sprite.anchor.set(0.5);
+        sprite.position.x = Math.random()*2800+100;
+        sprite.position.y = Math.random()*2800+100;
+        sprite.interactive = true;
+        app.bichos.addChild(sprite);
+    }
     /*===================================================*/
 }
 
@@ -315,12 +317,6 @@ function app(){
     this.camera.position.y = 50;
     document.body.appendChild(this.renderer.view);
     document.body.appendChild(this.camRender.view);
-
-    this.bordeGraphics = new PIXI.Graphics();
-    this.bordeGraphics.lineStyle(0);
-    this.bordeGraphics.beginFill(0xffffff, 0.5);
-    this.bordeGraphics.drawRect(0, 0, width, height);
-    this.bordeGraphics.endFill();
 
 }
 

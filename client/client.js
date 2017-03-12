@@ -18,8 +18,8 @@ function empezarJuego(){
         if(!player.local) game.crearPlayerCliente(player.id, false, player.nombre);
         else {
             game.crearPlayerCliente(player.id, true, player.nombre);
-            game.width = player.width;
-            game.height = player.height;
+            console.log(player.width)
+            game.crearBorde(player.width,player.height);
         }
     });
 

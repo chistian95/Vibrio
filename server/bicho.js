@@ -1,5 +1,5 @@
-var width = 1000;
-var height = 1000;
+var width = 0;
+var height = 0;
 
 var TipoNodo = function(nombre, color, vidaBase){
     this.nombre = nombre;
@@ -30,7 +30,7 @@ var BichoProto = function(){
         }
 
         if(tempx<0) tempx=0;
-        else if(tempx>width) temp=width;
+        else if(tempx>width) tempx=width;
         this.x = tempx;
 
         if(tempy<0) tempy=0;
@@ -266,8 +266,10 @@ var BichoProto = function(){
     }
 }
 
-var Bicho = function(x,y) {
+var Bicho = function(x,y,w,h) {
     BichoProto.call(this);
+    width = w;
+    height = h;
     this.x = x;
     this.y = y;
     this.velocidadGiro = 2.0;
