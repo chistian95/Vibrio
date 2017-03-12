@@ -14,11 +14,16 @@
         #menu{margin-top: 5%;}
         /*#inputNombre{margin-right: 5px;}*/
         h1{font-size: 8em;}
+        span{
+            margin-bottom: 20%;
+            margin-top: 20%;
+        }
 
         @media screen and (max-width:768px) {
             .ajustar {
                 width: 100%;
                 display:block;
+                margin-bottom: 1%;
             }
         }
     </style>
@@ -36,6 +41,9 @@
 					<input autofocus="autofocus" class="form-control" id="inputNombre" placeholder="Introduce tu nick" type="text" autocomplete="off">
 				</div>
                 <button class="btn btn-primary ajustar" id="btn" type="button">Entrar</button>
+                <button type="button" class="btn btn-primary ajustar" id="conf">
+                    <span class="glyphicon glyphicon-cog" id="span_confi"></span>
+                </button>
 			</form>
 		</center>
 	</div>
@@ -58,6 +66,10 @@
         var nombre = "Sin nombre e.e";
         var input = document.getElementById('inputNombre');
         var entrar = document.getElementById('btn');
+        var confi = document.getElementById('confi');
+        var span = document.getElementById('span_confi');
+        span.style.height = input.style.height;
+        console.log("SPAN: "+ input.style.width);
         var titulo = document.getElementById('titulo');
         var canvasJuego = document.getElementById('canvasJuego');
         var canvasFondo = document.getElementById('canvasFondo');
