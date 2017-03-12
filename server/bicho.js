@@ -1,3 +1,6 @@
+var width = 1000;
+var height = 1000;
+
 var TipoNodo = function(nombre, color, vidaBase){
     this.nombre = nombre;
     this.color = color;
@@ -25,7 +28,13 @@ var BichoProto = function(){
             tempx += Math.cos(anguloRad) * 2;
             tempy += Math.sin(anguloRad) * 2;
         }
+
+        if(tempx<0) tempx=0;
+        else if(tempx>width) temp=width;
         this.x = tempx;
+
+        if(tempy<0) tempy=0;
+        else if(tempy>height) tempy=height;
         this.y = tempy;
 
         var angulo = this.nodoCentral.anguloActual;

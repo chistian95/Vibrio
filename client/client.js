@@ -15,7 +15,12 @@ function empezarJuego(){
     /*Eventos para recibir del servidor
     ==========================================================================*/
     socket.on('crearPlayerCliente', function(player){
-        game.crearPlayerCliente(player.id, player.local, player.nombre);
+        if(!player.local) game.crearPlayerCliente(player.id, false, player.nombre);
+        else {
+            game.crearPlayerCliente(player.id, true, player.nombre);
+            game.width = player.width;
+            game.height = player.height;
+        }
     });
 
     socket.on('sync', function(info){

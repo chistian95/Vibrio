@@ -2,17 +2,20 @@
 var ctx = canvas.getContext("2d");*/
 var app;
 var players = []
-
+var width = 0, height=0;
 /*Crear juego
 =========================================================*/
 function Game(socket){
     app = new app();
+    width = 0;
+    height = 0;
     var graphics = new PIXI.Graphics();
     graphics.lineStyle(0);
     graphics.beginFill(0xffffff, 0.5);
     graphics.drawCircle(50, 50,100);
     graphics.endFill();
     var sprite = new PIXI.Sprite(graphics.generateCanvasTexture());
+
     sprite.anchor.set(0.5);
     sprite.interactive = true;
     app.bichos.addChild(sprite);
@@ -163,6 +166,7 @@ Game.prototype = {
     /*===============================================*/
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
 	bucle: function(){
+        app.renderer.view.getContext("2d").fillRect(0,0,1500,1500)
         var temp = Math.abs(app.world.pivot.y);
         app.world.pivot.x = this.localPlayer.bicho.nodos[0].x - window.innerWidth/2
         app.world.pivot.y = this.localPlayer.bicho.nodos[0].y - window.innerHeight/2
@@ -284,6 +288,7 @@ function app(){
     this.bichos = new PIXI.Container();
     this.renderer = new PIXI.CanvasRenderer(800, 600,{backgroundColor : 0x1099bb});
     this.world = new PIXI.Container();
+    this.borde = new PIXI.Container();
     this.stage = new PIXI.Container();
     this.camRender = new PIXI.CanvasRenderer(250, 200, {backgroundColor : 0x1099bb}, true)
     this.camRender.view.style.position = "absolute";
@@ -308,8 +313,14 @@ function app(){
     this.stage.addChild(this.camera);
     this.camera.position.x = 30;
     this.camera.position.y = 50;
-    document.body.appendChild(this.camRender.view);
     document.body.appendChild(this.renderer.view);
+    document.body.appendChild(this.camRender.view);
+
+    this.bordeGraphics = new PIXI.Graphics();
+    this.bordeGraphics.lineStyle(0);
+    this.bordeGraphics.beginFill(0xffffff, 0.5);
+    this.bordeGraphics.drawRect(0, 0, width, height);
+    this.bordeGraphics.endFill();
 
 }
 
