@@ -33,6 +33,7 @@ function Game(socket){
 Game.prototype = {
     reescalar: function () {
       app.renderer.resize(window.innerWidth, window.innerHeight);
+      app.camRender.resize(window.innerWidth/10, window.innerHeight/10);
     },
     /*Eventos recibidos del server
     ======================================================*/
@@ -318,7 +319,7 @@ function app(){
     this.camRender.view.style.display = "block";
     this.camRender.view.style.zIndex = 1;
     this.camRender.view.style.margin = 10;
-
+    this.camRender.resize(window.innerWidth/10, window.innerHeight/7);
     this.autoResize = true;
     this.renderer.backgroundColor = 0x3498db;
     this.renderer.view.style.position = "absolute";
@@ -332,8 +333,8 @@ function app(){
     this.camera.scale.x = .1;
     this.camera.scale.y = .1;
     this.stage.addChild(this.camera);
-    this.camera.position.x = 30;
-    this.camera.position.y = 50;
+    this.camera.position.x = 0//game.localPlayer.bicho.nodos[0].x*.1//window.innerWidth/10;
+    this.camera.position.y = 0//game.localPlayer.bicho.nodos[0].y*.1//window.innerHeight/7;
     document.body.appendChild(this.renderer.view);
     document.body.appendChild(this.camRender.view);
 
