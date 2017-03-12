@@ -2,8 +2,8 @@
 =================================================================*/
 var express = require('express');
 var app = express();
-var width = 1000;
-var height = 1000;
+var width = 3000;
+var height = 3000;
 app.use(express.static(__dirname));
 var server = app.listen(process.env.PORT || 8082, function () {
 	var puerto = server.address().port;
@@ -163,8 +163,8 @@ function regenerarMapa() {
 /* GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS */
 function generarPlantas() {
     for(var i=0; i<20; i++) {
-        var x = Math.random()*2800+100;
-        var y = Math.random()*2800+100;
+        var x = Math.random()*(width-200)+100;
+        var y = Math.random()*(width-200)+100;
         var planta = new p.Planta(x, y, 0);
         var nodosPlanta = [];
         planta.nodos.forEach(function(nodo) {
@@ -174,4 +174,14 @@ function generarPlantas() {
     }
 }
 generarPlantas();
+for(var i=0;i<100;i++) {
+    var p = new Player(i,Math.random()*width,Math.random()*height,"bot");
+    var derechizqr = Math.round(Math.random()*1);
+    if(derechizqr==0)p.bicho.derecha = true;
+    else p.bicho.izquierda = true;
+    var arribabajo = Math.round(Math.random()*1);
+    if(arribabajo==0)p.bicho.arriba = true;
+    else p.bicho.atras = true;
+    ids[i] = true;
+}
 /* GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS */

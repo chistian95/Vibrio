@@ -86,8 +86,11 @@ Game.prototype = {
                 numserver++;
             });
         }
-        //app.world.pivot.x = this.localPlayer.bicho.nodos[0].x - window.innerWidth/2
-        //app.world.pivot.y = this.localPlayer.bicho.nodos[0].y - window.innerHeight/2
+        app.world.pivot.x = this.localPlayer.bicho.nodos[0].x - window.innerWidth/2
+        app.world.pivot.y = this.localPlayer.bicho.nodos[0].y - window.innerHeight/2
+        app.renderer.render(app.world);
+        app.cameraMinimapa.proxyContainer(app.world);
+        app.camRender.render(app.cameraMinimapa);
 	},
     /*===================================================*/
     /*Eventos para enviar al server
@@ -186,9 +189,7 @@ Game.prototype = {
             players[Math.round(this.playerToDebug)].bicho.nodos[Math.round(this.NodoToDebug)].debug(ctx);
             ctx.fillText(""+players[Math.round(this.playerToDebug)].id,270,30);
         }*/
-        app.camera.proxyContainer(app.world);
-        app.renderer.render(app.world);
-        app.camRender.render(app.camera);
+
 	},
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
     debugInit: function(){
@@ -326,14 +327,14 @@ function app(){
     this.renderer.autoResize = true;
     this.renderer.resize(window.innerWidth, window.innerHeight);
 
-    this.camera = new PIXI.Camera2d();
+    this.cameraMinimapa = new PIXI.Camera2d();
     this.stage.addChild(this.world);
     this.world.addChild(this.bichos);
-    this.camera.scale.x = .1;
-    this.camera.scale.y = .1;
-    this.stage.addChild(this.camera);
-    this.camera.position.x = 0//game.localPlayer.bicho.nodos[0].x*.1//window.innerWidth/10;
-    this.camera.position.y = 0//game.localPlayer.bicho.nodos[0].y*.1//window.innerHeight/7;
+    this.cameraMinimapa.scale.x = .1;
+    this.cameraMinimapa.scale.y = .1;
+    this.stage.addChild(this.cameraMinimapa);
+    this.cameraMinimapa.position.x = 0//game.localPlayer.bicho.nodos[0].x*.1//window.innerWidth/10;
+    this.cameraMinimapa.position.y = 0//game.localPlayer.bicho.nodos[0].y*.1//window.innerHeight/7;
     document.body.appendChild(this.renderer.view);
     document.body.appendChild(this.camRender.view);
 
