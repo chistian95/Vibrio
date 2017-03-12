@@ -150,7 +150,7 @@ function moverPlayers() {
 setInterval(function() {
     calcularHitbox();
     regenerarMapa();
-}, 350);
+}, 500);
 function calcularHitbox() {
     players.forEach(function(player) {
         player.bicho.calcularHitbox();
