@@ -17,7 +17,9 @@ TipoNodo.TENTACULO = new TipoNodo("TENTACULO", [0,0,0,64], 1);
 
 var BichoProto = function(){
     this.update = function() {
-       var anguloRad = this.nodoCentral.anguloActual * Math.PI / 180.0;
+        this.matarNodos(this, this.nodoCentral);
+
+        var anguloRad = this.nodoCentral.anguloActual * Math.PI / 180.0;
         var tempx = this.x;
         var tempy = this.y;
         if(this.arriba) {
@@ -174,7 +176,6 @@ var BichoProto = function(){
         console.log("FIN Invo: "+faseInvolucion+" this: "+this.contFase);
     }
 
-
     var Nodo = function(tipoNodo, nodoPadre, anguloInicio, radio, bicho){
         this.x = 0;
         this.y = 0;
@@ -242,6 +243,23 @@ var BichoProto = function(){
         });
     }
     this.mover = mover;
+
+    matarNodos = function(bicho, nodo){
+        if(nodo === undefined){
+            return;
+        }
+        if(nodo.vida <= 0){
+            if(nodo.nodoPadre === null){
+                //MATAR BICHO
+            }else{
+                nodo.nodoPadre = null;
+            }
+        }
+        nodo.nodos.forEach(function(nodoHijo) {
+            bicho.matarNodos(bicho, nodoHijo);
+        });
+    }
+    this.matarNodos = matarNodos;
 
     this.calcularHitbox = function() {
         var xMin = this.nodoCentral.x;
