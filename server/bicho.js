@@ -21,12 +21,12 @@ var BichoProto = function(){
         var tempx = this.x;
         var tempy = this.y;
         if(this.arriba) {
-            tempx -= Math.cos(anguloRad) * 2;
-            tempy -= Math.sin(anguloRad) * 2;
+            tempx -= Math.cos(anguloRad) * 4;
+            tempy -= Math.sin(anguloRad) * 4;
         }
         if(this.abajo) {
-            tempx += Math.cos(anguloRad) * 2;
-            tempy += Math.sin(anguloRad) * 2;
+            tempx += Math.cos(anguloRad) * 4;
+            tempy += Math.sin(anguloRad) * 4;
         }
 
         if(tempx<0) tempx=0;
