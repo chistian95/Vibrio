@@ -143,10 +143,14 @@ function moverPlayers() {
 }
 setInterval(function() {
     calcularHitbox();
+    regenerarMapa();
 }, 350);
 function calcularHitbox() {
     players.forEach(function(player) {
         player.bicho.calcularHitbox();
     });
+}
+function generarPlantas() {
+
 }
 /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/

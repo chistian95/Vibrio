@@ -9,7 +9,7 @@ var Bicho = function(bichos,z,nombre) {
     this.y = 0;
     this.z = z;
     this.contenedor = bichos;
-    this.nombre = new PIXI.Text(nombre, {font:"20px Arial", fill:"#c327b7"});
+    this.nombre = new PIXI.Text(nombre, {fontFamily:'Arial', fontSize:"20px", fill:"#c327b7"});
     this.contenedor.addChild(this.nombre);
     this.debug = false;
     this.velocidadGiro = 0;
