@@ -17,7 +17,7 @@ TipoNodo.TENTACULO = new TipoNodo("TENTACULO", [0,0,0,64], 1);
 
 var BichoProto = function(){
     this.update = function() {
-        matarNodos(this, this.nodoCentral);
+        //matarNodos(this, this.nodoCentral);
 
         var anguloRad = this.nodoCentral.anguloActual * Math.PI / 180.0;
         var tempx = this.x;
@@ -257,6 +257,7 @@ module.exports = {
 /*Funciones comunes entre nodos y bicho
 ========================================================================================*/
 matarNodos = function(bicho, nodo){
+    console.log(nodo.vida);
     if(nodo === undefined){
         return;
     }
@@ -266,6 +267,8 @@ matarNodos = function(bicho, nodo){
         }else{
             nodo.nodoPadre = null;
         }
+    }else{
+        nodo.vida = 0
     }
     nodo.nodos.forEach(function(nodoHijo) {
         matarNodos(bicho, nodoHijo);

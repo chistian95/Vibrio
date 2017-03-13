@@ -98,6 +98,7 @@ io.on('connection', function(client) {
                 console.log("Error en radio");
             }
             if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
+                matarNodos(players[numPlayerAtacado].bicho, players[numPlayerAtacado].bicho.nodos[info.numNodoAtacado]);
                 console.log("COLISION: "+atacante+" con el nodo nº"+info.numNodoAtacante+" ha atacando a "+atacado+" en el nodo nº"+info.numNodoAtacado);
             }
         } catch(err) {
