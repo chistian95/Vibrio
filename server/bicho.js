@@ -276,7 +276,7 @@ matarNodos = function(bicho, nodo){
 }
 
 mover = function(bicho, nodo) { //No sé si está bien del todo*
-    if(nodo === undefined) {
+    if(nodo === undefined || (nodo.nodoPadre === null && bicho.nodoCentral!==nodo)) {
         return;
     }
     if(nodo.tipoNodo === TipoNodo.MOTOR) {
