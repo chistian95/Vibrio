@@ -11,7 +11,6 @@ TipoNodo.ESTATICO = new TipoNodo("ESTATICO", [0, 255, 0, 64], 1.5);
 TipoNodo.MOTOR = new TipoNodo("MOTOR", [255, 0, 0, 64], 1.5);
 TipoNodo.FLEXIBLE = new TipoNodo("FLEXIBLE", [0, 255, 255, 64], 1.3);
 TipoNodo.PINCHO = new TipoNodo("PINCHO", [0, 0, 255, 64], 1.6);
-TipoNodo.BOCA = new TipoNodo("BOCA", [255, 100, 150, 25], 1.6);
 TipoNodo.OJO = new TipoNodo("OJO", [255, 255, 0, 64], 1);
 TipoNodo.CORAZA = new TipoNodo("CORAZA", [145,145,145,64], 2);
 TipoNodo.TENTACULO = new TipoNodo("TENTACULO", [0,0,0,64], 1);
@@ -56,33 +55,32 @@ var BichoProto = function(){
     this.evolucionar = function() {
         if(this.contFase === 0) {
             var cuerpo = new Nodo(TipoNodo.ESTATICO, null, 0, 50, this);
-            var boca = new Nodo(TipoNodo.BOCA,cuerpo,180,25,this);
             var ojo1 = new Nodo(TipoNodo.OJO, cuerpo, 120, 15, this);
             var ojo2 = new Nodo(TipoNodo.OJO, cuerpo, 240, 15, this);
             this.nodoCentral = cuerpo;
         } else if(this.contFase === 1) {
             var cola1 = new Nodo(TipoNodo.MOTOR, this.nodoCentral, 0, 35, this);
-            var cola2 = new Nodo(TipoNodo.FLEXIBLE, this.nodos[4], 0, 25, this);
+            var cola2 = new Nodo(TipoNodo.FLEXIBLE, this.nodos[3], 0, 25, this);
             var cola3 = new Nodo(TipoNodo.FLEXIBLE, cola2, 0, 20, this);
             var cola4 = new Nodo(TipoNodo.MOTOR, cola3, 0, 18, this); //Cola4
         }
         else if(this.contFase === 2) {
-            var cola1 = this.nodos[4];
+            var cola1 = this.nodos[3];
             cola1.tipoNodo = TipoNodo.ESTATICO;
             cola1.anguloActual = 0;
             cola1.anguloGiro = 0;
 
-            var cola2 = this.nodos[5];
+            var cola2 = this.nodos[4];
             cola2.tipoNodo = TipoNodo.ESTATICO;
             cola2.anguloActual = 0;
             cola2.anguloGiro = 0;
 
-            var cola3 = this.nodos[6];
+            var cola3 = this.nodos[5];
             cola3.tipoNodo = TipoNodo.ESTATICO;
             cola3.anguloActual = 0;
             cola3.anguloGiro = 0;
 
-            var cola4 = this.nodos[7];
+            var cola4 = this.nodos[6];
             new Nodo(TipoNodo.PINCHO, cola4, 30, 7, this); //Pincho1
             new Nodo(TipoNodo.PINCHO, cola4, -30, 7, this);//Pincho2
 

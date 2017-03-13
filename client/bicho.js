@@ -49,19 +49,22 @@ var Bicho = function(bichos,z,nombre) {
         }
     }
 
-    this.chocar = function(target) {
-        this.nodos.forEach(function(nodo) {
+    this.chocar = function(target,socket,idTarget,idLocal) {
+        var numNodoLocalPlayer = 0;
+        this.nodos.forEach(function(nodo) { //LocalPlayer
             if(nodo.tipoNodo.nombre === TipoNodo.PINCHO.nombre) {
+                var numNodoEnemigo = 0;
                 target.nodos.forEach(function(nodoTarget) {
                     var distanciaX = nodo.x - nodoTarget.x;
                     var distanciaY = nodo.y - nodoTarget.y;
                     var sumaRadios = nodoTarget.radio + nodo.radio;
                     if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
-                        console.log("Test");
-
+                        socket.emit('chocar',{idAtacante: idLocal, numNodoAtacante: numNodoLocalPlayer, idAtacado: idTarget, numNodoAtacado: numNodoEnemigo})
                     }
+                    numNodoEnemigo++;
                 });
             }
+            numNodoLocalPlayer++;
         });
     }
 }

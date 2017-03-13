@@ -20,7 +20,7 @@ function Game(socket){
 	}, 40);
     setInterval(function() {
         g.colision();
-    }, 350);
+    }, 100);
     window.addEventListener("keydown", this.teclitas, true);
     window.addEventListener("keyup", this.teclitasUp, true);
     window.addEventListener('mousemove', this.actualizarRaton, true);
@@ -264,7 +264,7 @@ Game.prototype = {
             var hTarget = player.bicho.hitbox;
             if(hPlayer[2] >= hTarget[0] && hTarget[2] >= hPlayer[0]) {
                 if(hPlayer[3] >= hTarget[1] && hTarget[3] >= hPlayer[1]) {
-                    game.localPlayer.bicho.chocar(player.bicho);
+                    game.localPlayer.bicho.chocar(player.bicho,this.socket,player.id,game.localPlayer.id);
                 }
             }
         });

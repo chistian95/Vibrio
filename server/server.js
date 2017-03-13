@@ -66,6 +66,50 @@ io.on('connection', function(client) {
 		}
 	});
 
+    client.on('chocar', function(info){
+        var atacante = "Null";
+        var atacado = "Null";
+        var numPlayerAtacante = 0;
+        var numPlayerAtacado = 0;
+        var num = 0;
+        players.forEach(function(playeros) {
+            if(info.idAtacante == playeros.id) {
+                atacante = playeros.nombre;
+                numPlayerAtacante = num;
+            } else if(info.idAtacado == playeros.id) {
+                atacado = playeros.nombre;
+                playerAtacado = playeros;
+                numPlayerAtacado = num;
+            }
+            num++;
+        });
+        try {
+            try {
+                var distanciaX = players[numPlayerAtacante].bicho.nodos[info.numNodoAtacante].x - players[numPlayerAtacado].bicho.nodos[info.numNodoAtacado].x;
+                var distanciaY = players[numPlayerAtacante].bicho.nodos[info.numNodoAtacante].y - players[numPlayerAtacado].bicho.nodos[info.numNodoAtacado].y;
+             } catch(err) {
+                 console.log("Error en xy");
+             }
+            try {
+                var sumaRadios = players[numPlayerAtacado].bicho.nodos[info.numNodoAtacado].radio +  players[numPlayerAtacante].bicho.nodos[info.numNodoAtacante].radio;
+            } catch(err) {
+                console.log("Error en radio");
+            }
+            if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
+                console.log("COLISION: "+atacante+" con el nodo nº"+info.numNodoAtacante+" ha atacando a "+atacado+" en el nodo nº"+info.numNodoAtacado);
+            }
+        } catch(err) {
+            console.log("=======================================")
+            console.log("Error: "+players[numPlayerAtacante].bicho.nodos[info.numNodoAtacante]);
+            console.log("Error: "+players[numPlayerAtacado].bicho.nodos[info.numNodoAtacado]);
+            console.log("Error: "+players[numPlayerAtacante].bicho.nodos[info.numNodoAtacante].radio);
+            console.log("Error: "+players[numPlayerAtacado].bicho.nodos[info.numNodoAtacado].radio);
+            console.log(players[numPlayerAtacante].bicho.nodos[info.numNodoAtacante].x+" "+players[numPlayerAtacado].bicho.nodos[info.numNodoAtacado].x)
+            console.log(players[numPlayerAtacante].bicho.nodos[info.numNodoAtacante].y+" "+players[numPlayerAtacado].bicho.nodos[info.numNodoAtacado].y)
+            console.log("=======================================")
+        }
+    });
+
     /*Al desconecarse el cliente*/
     client.on('disconnect', function(){
         for(var i=0;i<players.length;i++){
