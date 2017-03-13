@@ -20,6 +20,8 @@ var plantasMundo = [];
 
 players = [];
 ids = [];
+idPlantas = [];
+
 for(var i=0;i<=1000;i++) ids[i]=false;
 /* Nueva conexion
 ====================================================================================*/

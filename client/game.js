@@ -87,11 +87,14 @@ Game.prototype = {
         /*==========================================================================*/
         /* Pixi - Mover la cámara y pintarlo todo
         ============================================================================*/
-        app.world.pivot.x = this.localPlayer.bicho.nodos[0].x - window.innerWidth/2
-        app.world.pivot.y = this.localPlayer.bicho.nodos[0].y - window.innerHeight/2
-        app.renderer.render(app.world);
-        app.cameraMinimapa.proxyContainer(app.world);
-        app.ContenedorMinimapa.render(app.cameraMinimapa);
+        if(this.localPlayer.bicho.nodos[0]) {
+            app.world.pivot.x = this.localPlayer.bicho.nodos[0].x - window.innerWidth/2
+            app.world.pivot.y = this.localPlayer.bicho.nodos[0].y - window.innerHeight/2
+            app.renderer.render(app.world);
+            app.cameraMinimapa.proxyContainer(app.world);
+            app.ContenedorMinimapa.render(app.cameraMinimapa);
+        }
+
         /*==========================================================================*/
 	},
     /*===================================================*/

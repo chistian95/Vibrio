@@ -17,7 +17,7 @@ TipoNodo.TENTACULO = new TipoNodo("TENTACULO", [0,0,0,64], 1);
 
 var BichoProto = function(){
     this.update = function() {
-        this.matarNodos(this, this.nodoCentral);
+        matarNodos(this, this.nodoCentral);
 
         var anguloRad = this.nodoCentral.anguloActual * Math.PI / 180.0;
         var tempx = this.x;
@@ -49,7 +49,7 @@ var BichoProto = function(){
         this.nodoCentral.anguloActual=angulo;
         this.nodoCentral.x = this.x
         this.nodoCentral.y = this.y
-        this.mover(this, this.nodoCentral);
+        mover(this, this.nodoCentral);
     }
 
     this.evolucionar = function() {
@@ -204,61 +204,6 @@ var BichoProto = function(){
         return [posicion, nodo.x, nodo.y, nodo.visible, nodo.tipoNodo, nodo.radio, nodo.anguloActual];
     }
 
-    mover = function(bicho, nodo) { //No sé si está bien del todo*
-        if(nodo === undefined) {
-            return;
-        }
-        if(nodo.tipoNodo === TipoNodo.MOTOR) {
-            if(nodo.anguloBajar) {
-                nodo.anguloGiro = nodo.anguloGiro - (this.velocidadGiro / 2) <= -nodo.anguloTope ? -nodo.anguloTope : nodo.anguloGiro - (this.velocidadGiro / 2);
-                nodo.anguloBajar = nodo.anguloGiro > -nodo.anguloTope;
-            } else {
-                nodo.anguloGiro = nodo.anguloGiro + (this.velocidadGiro / 2) >= nodo.anguloTope ? nodo.anguloTope : nodo.anguloGiro + (this.velocidadGiro / 2);
-                nodo.anguloBajar = nodo.anguloGiro >= nodo.anguloTope;
-            }
-        } else if(nodo.tipoNodo === TipoNodo.FLEXIBLE) {
-            if(nodo.nodoPadre.anguloBajar) {
-                nodo.anguloGiro = nodo.nodoPadre.anguloGiro - (this.velocidadGiro / 2);
-            } else {
-                nodo.anguloGiro = nodo.nodoPadre.anguloGiro + (this.velocidadGiro / 2);
-            }
-        }
-
-        if(nodo.nodoPadre === null) {
-            nodo.x = this.x;
-            nodo.y = this.y;
-        } else {
-            var centroX = nodo.nodoPadre.x;
-            var centroY = nodo.nodoPadre.y;
-            nodo.anguloActual = nodo.nodoPadre.anguloActual + nodo.nodoPadre.anguloGiro + nodo.anguloInicio;
-            var angulo = nodo.anguloActual * Math.PI / 180.0;
-            var radioPadre = nodo.nodoPadre.radio;
-            nodo.x = Math.cos(angulo) * radioPadre + centroX;
-            nodo.y = Math.sin(angulo) * radioPadre + centroY;
-        }
-
-        nodo.nodos.forEach(function(nodoHijo) {
-            bicho.mover(bicho, nodoHijo);
-        });
-    }
-    this.mover = mover;
-
-    matarNodos = function(bicho, nodo){
-        if(nodo === undefined){
-            return;
-        }
-        if(nodo.vida <= 0){
-            if(nodo.nodoPadre === null){
-                //MATAR BICHO
-            }else{
-                nodo.nodoPadre = null;
-            }
-        }
-        nodo.nodos.forEach(function(nodoHijo) {
-            bicho.matarNodos(bicho, nodoHijo);
-        });
-    }
-    this.matarNodos = matarNodos;
 
     this.calcularHitbox = function() {
         var xMin = this.nodoCentral.x;
@@ -306,4 +251,61 @@ module.exports = {
     Bicho: Bicho,
     TipoNodo: TipoNodo,
 };
-/* */
+
+
+/*======================================================================================*/
+/*Funciones comunes entre nodos y bicho
+========================================================================================*/
+matarNodos = function(bicho, nodo){
+    if(nodo === undefined){
+        return;
+    }
+    if(nodo.vida <= 0){
+        if(nodo.nodoPadre === null){
+            //MATAR BICHO
+        }else{
+            nodo.nodoPadre = null;
+        }
+    }
+    nodo.nodos.forEach(function(nodoHijo) {
+        matarNodos(bicho, nodoHijo);
+    });
+}
+
+mover = function(bicho, nodo) { //No sé si está bien del todo*
+    if(nodo === undefined) {
+        return;
+    }
+    if(nodo.tipoNodo === TipoNodo.MOTOR) {
+        if(nodo.anguloBajar) {
+            nodo.anguloGiro = nodo.anguloGiro - (bicho.velocidadGiro / 2) <= -nodo.anguloTope ? -nodo.anguloTope : nodo.anguloGiro - (bicho.velocidadGiro / 2);
+            nodo.anguloBajar = nodo.anguloGiro > -nodo.anguloTope;
+        } else {
+            nodo.anguloGiro = nodo.anguloGiro + (bicho.velocidadGiro / 2) >= nodo.anguloTope ? nodo.anguloTope : nodo.anguloGiro + (bicho.velocidadGiro / 2);
+            nodo.anguloBajar = nodo.anguloGiro >= nodo.anguloTope;
+        }
+    } else if(nodo.tipoNodo === TipoNodo.FLEXIBLE) {
+        if(nodo.nodoPadre.anguloBajar) {
+            nodo.anguloGiro = nodo.nodoPadre.anguloGiro - (bicho.velocidadGiro / 2);
+        } else {
+            nodo.anguloGiro = nodo.nodoPadre.anguloGiro + (bicho.velocidadGiro / 2);
+        }
+    }
+
+    if(nodo.nodoPadre === null) {
+        nodo.x = bicho.x;
+        nodo.y = bicho.y;
+    } else {
+        var centroX = nodo.nodoPadre.x;
+        var centroY = nodo.nodoPadre.y;
+        nodo.anguloActual = nodo.nodoPadre.anguloActual + nodo.nodoPadre.anguloGiro + nodo.anguloInicio;
+        var angulo = nodo.anguloActual * Math.PI / 180.0;
+        var radioPadre = nodo.nodoPadre.radio;
+        nodo.x = Math.cos(angulo) * radioPadre + centroX;
+        nodo.y = Math.sin(angulo) * radioPadre + centroY;
+    }
+
+    nodo.nodos.forEach(function(nodoHijo) {
+        mover(bicho, nodoHijo);
+    });
+}
