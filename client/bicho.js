@@ -147,3 +147,4 @@ TipoNodo.MOTOR = new TipoNodo("MOTOR", [255, 0, 0, 64]);
 TipoNodo.FLEXIBLE = new TipoNodo("FLEXIBLE", [0, 255, 255, 64]);
 TipoNodo.PINCHO = new TipoNodo("PINCHO", [0, 0, 255, 64]);
 TipoNodo.OJO = new TipoNodo("OJO", [255, 255, 0, 64]);
+TipoNodo.BOCA = new TipoNodo("BOCA", [255, 100, 150, 25]);
