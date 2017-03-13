@@ -92,7 +92,7 @@
                 </button>
                 <div id="configuracion">
                     <p id="p">Mostrar vida: </p>
-                    <select class="barrasVida ">
+                    <select class="barrasVida" id="barrasVida">
                         <option>Al ser atacado</option>
                         <option>Siempre</option>
                         <option>Nunca</option>
@@ -121,13 +121,22 @@
 
     <script>
         var juego = false;
-        var nombre = "Sin nombre e.e";
+        var opciones = {
+            sounds: true,
+            music: true,
+            barraVida: 0, //0=alSerGolpeado 1=Siempre 2=nunca
+        };
 
+        var nombre = "Sin nombre e.e";
         var input = document.getElementById('inputNombre');
         var entrar = document.getElementById('btn');
         var btConfi = document.getElementById('conf');
         var configuracion = document.getElementById('configuracion');
         var titulo = document.getElementById('titulo');
+
+        var optMusic = document.getElementById('opt_music');
+        var optSounds = document.getElementById('opt_sounds');
+        var barrasVida = document.getElementById('barrasVida');
 
         var canvasJuego = document.getElementById('canvasJuego');
         var canvasFondo = document.getElementById('canvasFondo');
@@ -149,7 +158,12 @@
                 alert("Escribe algo susia");
                 return;
             }
+            /*Valores del menú cargados*/
             nombre = input.value;
+            opciones.barraVida = barrasVida.selectedIndex;
+            opciones.sounds = optSounds.checked;
+            opciones.music = optMusic.checked;
+            /*alert(opciones.sounds + " " + opciones.music + " " + opciones.barraVida);*/
             //canvasJuego.style.display = "block";
             menu.style.display = "none";
             empezarJuego();
