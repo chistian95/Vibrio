@@ -44,6 +44,9 @@ Game.prototype = {
 		if(local) {
             this.localPlayer = t;
             var nodosSprites = [];
+            var t1 = PIXI.Texture.fromImage('assets/img/t1.png');
+            var t2 = PIXI.Texture.fromImage('assets/img/t1.png');
+            var t3 = PIXI.Texture.fromImage('assets/img/t1.png');
             servPlantas.forEach(function(p) {
                 nodosSprites = [];
                 ndSprites = [];
