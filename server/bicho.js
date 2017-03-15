@@ -17,8 +17,6 @@ TipoNodo.TENTACULO = new TipoNodo("TENTACULO", [0,0,0,64], 1);
 
 var BichoProto = function(){
     this.update = function() {
-        //matarNodos(this, this.nodoCentral);
-
         var anguloRad = this.nodoCentral.anguloActual * Math.PI / 180.0;
         var tempx = this.x;
         var tempy = this.y;
@@ -201,7 +199,7 @@ var BichoProto = function(){
     }
 
     this.crearNodoMin = function(posicion, nodo) {
-        return [posicion, nodo.x, nodo.y, nodo.visible, nodo.tipoNodo, nodo.radio, nodo.anguloActual];
+        return [posicion, nodo.x, nodo.y, nodo.tipoNodo, nodo.radio, nodo.anguloActual];
     }
 
 

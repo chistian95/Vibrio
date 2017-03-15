@@ -266,7 +266,6 @@ module.exports = {
     Planta: Planta,
     TipoNodo: TipoNodo,
 };
-/* */
 
 /*======================================================================================*/
 /*Funciones comunes entre nodos y bicho

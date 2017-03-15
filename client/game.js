@@ -1,7 +1,6 @@
-/*var canvas = document.getElementById('canvasJuego');
-var ctx = canvas.getContext("2d");*/
 var app;
 var players = [];
+var playerReady = false;
 var plantas = [];
 var plantasSprites = [];
 var plantasHitbox = [];
@@ -77,8 +76,7 @@ Game.prototype = {
                 plantas[plantas.length-1].hitbox = pHitbox[plantas.length-1];
                 plantasSprites.push(ndSprites);
             });
-            //console.log(plantas[plantas.length-1][0]);
-        ;} //Si es el player propio.
+        }
 		players.push(t);
         if(players.length==1) this.debugInit();
         if(players.length>1) this.resetGui();
@@ -109,8 +107,8 @@ Game.prototype = {
         /* Pixi - Mover la cámara y pintarlo todo
         ============================================================================*/
         if(this.localPlayer.bicho.nodos[0]) {
-            app.world.pivot.x = this.localPlayer.bicho.nodos[0].x - window.innerWidth/2
-            app.world.pivot.y = this.localPlayer.bicho.nodos[0].y - window.innerHeight/2
+            app.world.pivot.x = this.localPlayer.bicho.nodos[0].sprite.position.x - window.innerWidth/2
+            app.world.pivot.y = this.localPlayer.bicho.nodos[0].sprite.position.y - window.innerHeight/2
             app.renderer.render(app.world);
             app.cameraMinimapa.proxyContainer(app.world);
             app.ContenedorMinimapa.render(app.cameraMinimapa);
@@ -123,7 +121,6 @@ Game.prototype = {
     /*PLANTAS A BORRAR
     ====================================================*/
     borrarPlantas: function(info){
-        console.log("HOLA PAPUESSSS!!");
         app.world.removeChild(plantasSprites[info.numPlanta][info.numNodo]);
         plantasSprites[info.numPlanta].splice(info.numNodo,1);
         plantas[info.numPlanta].splice(info.numNodo,1);
@@ -137,7 +134,6 @@ Game.prototype = {
 		var t = {
 			id: this.localPlayer.id,
             arriba: this.localPlayer.arriba,
-            abajo: this.localPlayer.abajo,
             izquierda: this.localPlayer.izquierda,
             derecha: this.localPlayer.derecha,
 		};
@@ -201,21 +197,8 @@ Game.prototype = {
     /*===============================================*/
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
 	bucle: function(){
-
         this.posicionRaton();
-        //ctx.clearRect(0, 0, canvas.width, canvas.height); //Limpiar el canvas
 		if(this.localPlayer != undefined) this.enviarInfo();
-        /*if(this.playerDebug) {
-           var ok = false;
-            for(var i=1;i<=2;i++) {
-                if(!ok)this.gui.__controllers[i].onFinishChange(function(value) {
-                    game.resetGui();
-                    ok = true
-                });
-            }
-            players[Math.round(this.playerToDebug)].bicho.nodos[Math.round(this.NodoToDebug)].debug(ctx);
-            ctx.fillText(""+players[Math.round(this.playerToDebug)].id,270,30);
-        }*/
 	},
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
     /*===================================================================*/
@@ -247,8 +230,8 @@ Game.prototype = {
     ==================================================================*/
     posicionRaton: function() {
         if(this.movimiento) {
-            var relX = game.localPlayer.ratonX - game.localPlayer.bicho.nodos[0].x+app.world.pivot.x;
-            var relY = game.localPlayer.ratonY - game.localPlayer.bicho.nodos[0].y+app.world.pivot.y;
+            var relX = game.localPlayer.ratonX - game.localPlayer.bicho.nodos[0].sprite.position.x+app.world.pivot.x;
+            var relY = game.localPlayer.ratonY - game.localPlayer.bicho.nodos[0].sprite.position.y+app.world.pivot.y;
             var anguloBicho = game.localPlayer.bicho.nodos[0].anguloActual;
             var relAngulo = Math.atan2(relY, relX) * 180 / Math.PI + 180;
             var difAngulo = relAngulo - anguloBicho;
@@ -324,14 +307,13 @@ Game.prototype = {
 
 /*Constructor de los player
 =======================================*/
-function Player(id, game, local,nombrev,bichos){
+function Player(id, game, local,nombrev){
     this.nombre = nombrev;
 	this.id = id;
     this.ratonX = 0;
     this.ratonY = 0;
-	this.game = game;
 	this.local = local;
-    this.bicho = new Bicho(bichos,this.id,nombrev);
+    this.bicho = new Bicho(this.id,nombrev);
 }
 
 /*====================================================================================*/
