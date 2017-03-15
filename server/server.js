@@ -70,6 +70,9 @@ io.on('connection', function(client) {
 		}
 	});
 
+    /*===============================*/
+    /*Chocar (entre players)
+    =================================*/
     client.on('chocar', function(info){
         var atacante = "Null";
         var atacado = "Null";
@@ -82,7 +85,6 @@ io.on('connection', function(client) {
                 numPlayerAtacante = num;
             } else if(info.idAtacado == playeros.id) {
                 atacado = playeros.nombre;
-                playerAtacado = playeros;
                 numPlayerAtacado = num;
             }
             num++;
@@ -111,6 +113,51 @@ io.on('connection', function(client) {
             console.log("Error: "+players[numPlayerAtacado].bicho.nodos[info.numNodoAtacado].radio);
             console.log(players[numPlayerAtacante].bicho.nodos[info.numNodoAtacante].x+" "+players[numPlayerAtacado].bicho.nodos[info.numNodoAtacado].x)
             console.log(players[numPlayerAtacante].bicho.nodos[info.numNodoAtacante].y+" "+players[numPlayerAtacado].bicho.nodos[info.numNodoAtacado].y)
+            console.log("=======================================")
+        }
+    });
+
+    /*===============================*/
+    /*ChocarPlantas (entre plantas)
+    =================================*/
+    client.on('chocarPlantas', function(info){
+        var atacante = "Null";
+        var numPlayer = 0;
+        var numPlanta = 0;
+        var num = 0;
+        players.forEach(function(player) {
+            if(info.idAtacante == player.id) {
+                atacante = player.nombre;
+                numPlayer = num;
+                //break;
+            }
+            num++;
+        });
+        try {
+            try {
+                var distanciaX = players[numPlayer].bicho.nodos[info.numNodoAtacante].x - plantas[numPlanta].nodos[info.numNodoAtacado].x;
+                var distanciaY = players[numPlayer].bicho.nodos[info.numNodoAtacante].y - planta[numPlanta].nodos[info.numNodoAtacado].y;
+             } catch(err) {
+                 console.log("Error en xy");
+             }
+            try {
+                var sumaRadios = planta[numPlanta].nodos[info.numNodoAtacado].radio +  players[numPlayer].bicho.nodos[info.numNodoAtacante].radio;
+            } catch(err) {
+                console.log("Error en radio");
+            }
+            if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
+                //matarNodos(players[numPlanta].bicho, players[numPlanta].bicho.nodos[info.numNodoAtacado]);
+                alert("COMIDO POR NO COMER!!!!");
+                console.log("COLISION: "+atacante+" con el nodo nº"+info.numNodoAtacante+" ha atacando a plantucho en el nodo nº"+info.numNodoAtacado);
+            }
+        } catch(err) {
+            console.log("=======================================")
+            console.log("Error: "+players[numPlayer].bicho.nodos[info.numNodoAtacante]);
+            console.log("Error: "+players[numPlanta].bicho.nodos[info.numNodoAtacado]);
+            console.log("Error: "+players[numPlayer].bicho.nodos[info.numNodoAtacante].radio);
+            console.log("Error: "+players[numPlanta].bicho.nodos[info.numNodoAtacado].radio);
+            console.log(players[numPlayer].bicho.nodos[info.numNodoAtacante].x+" "+players[numPlanta].bicho.nodos[info.numNodoAtacado].x)
+            console.log(players[numPlayer].bicho.nodos[info.numNodoAtacante].y+" "+players[numPlanta].bicho.nodos[info.numNodoAtacado].y)
             console.log("=======================================")
         }
     });

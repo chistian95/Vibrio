@@ -2,7 +2,7 @@
 var ctx = canvas.getContext("2d");*/
 var app;
 var players = [];
-var plantasSprites = [];
+var plantas = [];
 var plantasHitbox = [];
 var numPlantas = 0;
 /*Crear juego
@@ -39,13 +39,14 @@ Game.prototype = {
     },
     /*Eventos recibidos del server
     ======================================================*/
-	crearPlayerCliente: function(id, local,nombrev, plantas, plantasHitbox){
+	crearPlayerCliente: function(id, local,nombrev, servPlantas, pHitbox){
 		var t = new Player(id, this, local,nombrev,app.bichos);
 		if(local) {
-            this.localPlayer = t
-            plantas.forEach(function(planta) {
-                planta.forEach(function(nodoPlanta) {
-                    this.plantasHitbox = plantasHitbox;
+            this.localPlayer = t;
+            var nodosSprites = [];
+            servPlantas.forEach(function(p) {
+                nodosSprites = [];
+                p.forEach(function(nodoPlanta) {
                     //nodo.x, nodo.y, nodo.visible, nodo.tipoNodo, nodo.radio
                     var graphics = new PIXI.Graphics();
                     graphics.lineStyle(0);
@@ -60,9 +61,16 @@ Game.prototype = {
                     sprite.interactive = true;
                     app.world.addChild(sprite);
 
-                    plantasSprites.push(sprite);
-                    plantasSprites[plantasSprites.length-1].tipo = nodoPlanta[3].tipo;
+                    var datos = {
+                        x: nodoPlanta[0],
+                        y: nodoPlanta[1],
+                        radio: nodoPlanta[4],
+                    }
+                    nodosSprites.push(datos);
                 });
+                plantas.push(nodosSprites);
+                plantas[plantas.length-1].tipo = p[0][3].tipo;
+                plantas[plantas.length-1].hitbox = pHitbox[plantas.length-1];
             });
         ;} //Si es el player propio.
 		players.push(t);
@@ -283,12 +291,12 @@ Game.prototype = {
     /*Colision las plantas
     ====================================================*/
     colisionPlantas: function(){
-		plantasSprites.forEach(function(planta) {
+		plantas.forEach(function(planta) {
             var hPlayer = game.localPlayer.bicho.hitbox;
-            var hTarget = plantasHitbox[plantasSprites.indexOf(planta)];
+            var hTarget = plantas[plantas.indexOf(planta)].hitbox;
             if(hPlayer[2] >= hTarget[0] && hTarget[2] >= hPlayer[0]) {
                 if(hPlayer[3] >= hTarget[1] && hTarget[3] >= hPlayer[1]) {
-                    game.localPlayer.bicho.chocarPlanta(planta, this.socket, game.localPlayer.id);
+                    game.localPlayer.bicho.chocarPlanta(planta, this.socket, plantas.indexOf(planta),game.localPlayer.id);
                 }
             }
         });

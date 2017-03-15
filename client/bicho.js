@@ -59,7 +59,28 @@ var Bicho = function(bichos,z,nombre) {
                     var distanciaY = nodo.y - nodoTarget.y;
                     var sumaRadios = nodoTarget.radio + nodo.radio;
                     if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
-                        socket.emit('chocar',{idAtacante: idLocal, numNodoAtacante: numNodoLocalPlayer, idAtacado: idTarget, numNodoAtacado: numNodoEnemigo})
+                        socket.emit('chocar',{idAtacante: idLocal, numNodoAtacante: numNodoLocalPlayer, idAtacado: idTarget, numNodoAtacado: numNodoEnemigo});
+                    }
+                    numNodoEnemigo++;
+                });
+            }
+            numNodoLocalPlayer++;
+        });
+    }
+
+    this.chocarPlanta = function(target,socket,idTarget,idLocal) {
+        var numNodoLocalPlayer = 0;
+        var central = this.nodos[0];
+        this.nodos.forEach(function(nodo) { //LocalPlayer
+            if(central===nodo) {
+                var numNodoEnemigo = 0;
+                target.forEach(function(nodoTarget) {
+                    var distanciaX = nodo.x - nodoTarget.x;
+                    var distanciaY = nodo.y - nodoTarget.y;
+                    var sumaRadios = nodoTarget.radio + nodo.radio;
+                    if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
+                        console.log("OH NOOOOOOOO");
+                        socket.emit('chocarPlanta',{idAtacante: idLocal, numNodoAtacante: numNodoLocalPlayer, idAtacado: idTarget, numNodoAtacado: numNodoEnemigo});
                     }
                     numNodoEnemigo++;
                 });
