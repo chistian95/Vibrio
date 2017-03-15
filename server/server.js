@@ -17,10 +17,12 @@ var Bicho = b.Bicho;
 var p = require('./plantas');
 var Planta = p.Planta;
 var plantasMundo = [];
+var plantasHitbox = [];
+var plantas = [];
 
 players = [];
 ids = [];
-idPlantas = [];
+//idPlantas = [];
 
 for(var i=0;i<=1000;i++) ids[i]=false;
 /* Nueva conexion
@@ -48,7 +50,7 @@ io.on('connection', function(client) {
         players.forEach(function(player){
             client.emit('crearPlayerCliente', {id: player.id, local: false, nombre: player.nombre});
         });
-        client.emit('crearPlayerCliente', { id: playerid, local: true,nombre: nombre,width:width,height:height, plantas: plantasMundo});
+        client.emit('crearPlayerCliente', { id: playerid, local: true,nombre: nombre,width:width,height:height, plantas: plantasMundo, plantasHitbox: plantasHitbox});
         /*Enviar a todos los clientes "broadcast" la información del nuevo juegador*/
         client.broadcast.emit('crearPlayerCliente', { id: playerid, local: false,nombre: nombre})
         new Player(playerid,initX,initY,nombre);
@@ -218,7 +220,9 @@ function generarPlantas() {
         planta.nodos.forEach(function(nodo) {
             nodosPlanta.push(planta.crearNodoMin(nodo));
         });
+        plantas.push(planta);
         plantasMundo.push(nodosPlanta);
+        plantasHitbox.push(planta.hitbox);
     }
 }
 generarPlantas();

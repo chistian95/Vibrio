@@ -53,6 +53,7 @@ var PlantaProto = function(){
     }
 
     this.generar = function(){ //Función que genera la planta
+        this.nodoPadre = null;
         if(this.tipo == 0) { //MAGNA
             this.nodoPadre = new Nodo(TipoNodo.MAGNA, null, 0, 50, this, 0);
         } else if(this.tipo == 1) {//SPICIS
@@ -61,9 +62,10 @@ var PlantaProto = function(){
             this.nodoPadre = new Nodo(TipoNodo.CORNELISU, null, 0, 50, this, 0);
         } else if(this.tipo == 3) {//XPAGUETOES
             this.nodoPadre = new Nodo(TipoNodo.XP, null, 0, 30, this, 0);
-        } else if(this.tipo == 3) {//MAGIS
+        } else if(this.tipo == 4) {//MAGIS
             this.nodoPadre = new Nodo(TipoNodo.MAGIS, null, 0, 50, this, 0);
         }
+        this.nodoCentral = this.nodoPadre;
         this.update();
     }
 
@@ -253,8 +255,10 @@ var Planta = function(x,y,tipo) {
     this.tipo = tipo;
     this.nodos = [];
     this.nodoCentral = null;
-    this.hitbox = [];
     this.generar();
+    this.hitbox = [];
+    this.calcularHitbox();
+    console.log(this.hitbox);
 }
 Planta.prototype = Object.create(PlantaProto.prototype);
 
