@@ -30,5 +30,9 @@ function empezarJuego(){
     socket.on('playerDesconectadoCliente', function(info){
         game.playerDesconectadoCliente(info);
     });
+
+    socket.on('borrarPlantas', function(info){
+        game.borrarPlantas(info);
+    });
     /*========================================================================*/
 }

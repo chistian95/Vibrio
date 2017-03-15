@@ -153,9 +153,9 @@ io.on('connection', function(client) {
             if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
                 matarNodosPlanta(plantas[numPlanta], plantas[numPlanta].nodos[info.numNodoAtacado]);
                 //console.log("COLISION: "+atacante+" con el nodo nº"+info.numNodoAtacante+" ha atacando a plantucho en el nodo nº"+info.numNodoAtacado);
-                //client.emit('borrarPlantas', { numPlanta: numPlanta, numNodo: info.numNodoAtacado});
-                /*Enviar a todos los clientes "broadcast" la información del nuevo juegador*/
-                //client.broadcast.emit('borrarPlantas', { numPlanta: numPlanta, numNodo: info.numNodoAtacado})
+                client.emit('borrarPlantas', { numPlanta: numPlanta, numNodo: info.numNodoAtacado});
+                /*Enviar a todos los clientes "broadcast" la información de las plantas a borrar*/
+                client.broadcast.emit('borrarPlantas', { numPlanta: numPlanta, numNodo: info.numNodoAtacado})
             }
         } catch(err) {
             console.log("=======================================")
@@ -163,8 +163,8 @@ io.on('connection', function(client) {
             console.log("Error: "+players[numPlanta].bicho.nodos[info.numNodoAtacado]);
             console.log("Error: "+players[numPlayer].bicho.nodos[info.numNodoAtacante].radio);
             console.log("Error: "+players[numPlanta].bicho.nodos[info.numNodoAtacado].radio);
-            console.log(players[numPlayer].bicho.nodos[info.numNodoAtacante].x+" "+players[numPlanta].bicho.nodos[info.numNodoAtacado].x)
-            console.log(players[numPlayer].bicho.nodos[info.numNodoAtacante].y+" "+players[numPlanta].bicho.nodos[info.numNodoAtacado].y)
+            console.log(players[numPlayer].bicho.nodos[info.numNodoAtacante].x+" "+planta[numPlanta].nodos[info.numNodoAtacado].x)
+            console.log(players[numPlayer].bicho.nodos[info.numNodoAtacante].y+" "+planta[numPlanta].nodos[info.numNodoAtacado].y)
             console.log("=======================================")
         }
     });

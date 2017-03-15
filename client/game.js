@@ -3,6 +3,7 @@ var ctx = canvas.getContext("2d");*/
 var app;
 var players = [];
 var plantas = [];
+var plantasSprites = [];
 var plantasHitbox = [];
 var numPlantas = 0;
 /*Crear juego
@@ -46,6 +47,7 @@ Game.prototype = {
             var nodosSprites = [];
             servPlantas.forEach(function(p) {
                 nodosSprites = [];
+                ndSprites = [];
                 p.forEach(function(nodoPlanta) {
                     //nodo.x, nodo.y, nodo.visible, nodo.tipoNodo, nodo.radio
                     var graphics = new PIXI.Graphics();
@@ -61,6 +63,8 @@ Game.prototype = {
                     sprite.interactive = true;
                     app.world.addChild(sprite);
 
+                    ndSprites.push(sprite);
+
                     var datos = {
                         x: nodoPlanta[0],
                         y: nodoPlanta[1],
@@ -71,6 +75,7 @@ Game.prototype = {
                 plantas.push(nodosSprites);
                 plantas[plantas.length-1].tipo = p[0][3].tipo;
                 plantas[plantas.length-1].hitbox = pHitbox[plantas.length-1];
+                plantasSprites.push(ndSprites);
             });
             //console.log(plantas[plantas.length-1][0]);
         ;} //Si es el player propio.
@@ -113,6 +118,17 @@ Game.prototype = {
 
         /*==========================================================================*/
 	},
+
+    /*===================================================*/
+    /*PLANTAS A BORRAR
+    ====================================================*/
+    borrarPlantas: function(info){
+        console.log("HOLA PAPUESSSS!!");
+        app.world.removeChild(plantasSprites[info.numPlanta][info.numNodo]);
+        delete plantasSprites[info.numPlanta][info.numNodo];
+        delete plantas[info.numPlanta][info.numNodo];
+    },
+
     /*===================================================*/
     /*Eventos para enviar al server
     ====================================================*/
@@ -297,7 +313,7 @@ Game.prototype = {
             var hTarget = plantas[plantas.indexOf(planta)].hitbox;
             if(hPlayer[2] >= hTarget[0] && hTarget[2] >= hPlayer[0]) {
                 if(hPlayer[3] >= hTarget[1] && hTarget[3] >= hPlayer[1]) {
-                    alert(plantas.indexOf(planta));
+                    //alert(plantas.indexOf(planta));
                     game.localPlayer.bicho.chocarPlanta(planta, this.socket, plantas.indexOf(planta),game.localPlayer.id);
                 }
             }
