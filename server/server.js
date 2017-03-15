@@ -152,7 +152,7 @@ io.on('connection', function(client) {
             //console.log("D: "+(distanciaX * distanciaX + distanciaY * distanciaY)+" SR: "+(sumaRadios*sumaRadios))
             if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
                 matarNodosPlanta(plantas[numPlanta], plantas[numPlanta].nodos[info.numNodoAtacado]);
-                delete plantas[numPlanta].nodos[info.numNodoAtacado];
+                plantasMundo[numPlanta].splice(info.numNodoAtacado, 1);
                 //console.log("COLISION: "+atacante+" con el nodo nº"+info.numNodoAtacante+" ha atacando a plantucho en el nodo nº"+info.numNodoAtacado);
                 client.emit('borrarPlantas', { numPlanta: numPlanta, numNodo: info.numNodoAtacado});
                 /*Enviar a todos los clientes "broadcast" la información de las plantas a borrar*/

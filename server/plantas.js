@@ -272,5 +272,5 @@ module.exports = {
 /*Funciones comunes entre nodos y bicho
 ========================================================================================*/
 matarNodosPlanta = function(planta, nodo){
-    delete planta.nodos[planta.nodos.indexOf(nodo)];
+    planta.nodos.splice(planta.nodos.indexOf(nodo),1);
 }

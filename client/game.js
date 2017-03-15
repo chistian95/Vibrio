@@ -125,8 +125,8 @@ Game.prototype = {
     borrarPlantas: function(info){
         console.log("HOLA PAPUESSSS!!");
         app.world.removeChild(plantasSprites[info.numPlanta][info.numNodo]);
-        delete plantasSprites[info.numPlanta][info.numNodo];
-        delete plantas[info.numPlanta][info.numNodo];
+        plantasSprites[info.numPlanta].splice(info.numNodo,1);
+        plantas[info.numPlanta].splice(info.numNodo,1);
     },
 
     /*===================================================*/
