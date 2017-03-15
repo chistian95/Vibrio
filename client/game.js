@@ -72,6 +72,7 @@ Game.prototype = {
                 plantas[plantas.length-1].tipo = p[0][3].tipo;
                 plantas[plantas.length-1].hitbox = pHitbox[plantas.length-1];
             });
+            //console.log(plantas[plantas.length-1][0]);
         ;} //Si es el player propio.
 		players.push(t);
         if(players.length==1) this.debugInit();
@@ -296,6 +297,7 @@ Game.prototype = {
             var hTarget = plantas[plantas.indexOf(planta)].hitbox;
             if(hPlayer[2] >= hTarget[0] && hTarget[2] >= hPlayer[0]) {
                 if(hPlayer[3] >= hTarget[1] && hTarget[3] >= hPlayer[1]) {
+                    alert(plantas.indexOf(planta));
                     game.localPlayer.bicho.chocarPlanta(planta, this.socket, plantas.indexOf(planta),game.localPlayer.id);
                 }
             }

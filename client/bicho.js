@@ -79,8 +79,8 @@ var Bicho = function(bichos,z,nombre) {
                     var distanciaY = nodo.y - nodoTarget.y;
                     var sumaRadios = nodoTarget.radio + nodo.radio;
                     if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
-                        console.log("OH NOOOOOOOO");
                         socket.emit('chocarPlanta',{idAtacante: idLocal, numNodoAtacante: numNodoLocalPlayer, idAtacado: idTarget, numNodoAtacado: numNodoEnemigo});
+                        //console.log("PLANTA X: "+nodoTarget.x+"     PLANTA Y: "+nodoTarget.y);
                     }
                     numNodoEnemigo++;
                 });

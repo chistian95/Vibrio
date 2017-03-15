@@ -120,10 +120,10 @@ io.on('connection', function(client) {
     /*===============================*/
     /*ChocarPlantas (entre plantas)
     =================================*/
-    client.on('chocarPlantas', function(info){
+    client.on('chocarPlanta', function(info){
         var atacante = "Null";
         var numPlayer = 0;
-        var numPlanta = 0;
+        var numPlanta = info.idAtacado;
         var num = 0;
         players.forEach(function(player) {
             if(info.idAtacante == player.id) {
@@ -133,22 +133,29 @@ io.on('connection', function(client) {
             }
             num++;
         });
+
         try {
             try {
                 var distanciaX = players[numPlayer].bicho.nodos[info.numNodoAtacante].x - plantas[numPlanta].nodos[info.numNodoAtacado].x;
-                var distanciaY = players[numPlayer].bicho.nodos[info.numNodoAtacante].y - planta[numPlanta].nodos[info.numNodoAtacado].y;
+                var distanciaY = players[numPlayer].bicho.nodos[info.numNodoAtacante].y - plantas[numPlanta].nodos[info.numNodoAtacado].y;
+                //console.log("DISTANCIA X: "+distanciaX +" ========== XPLAYER: "+players[numPlayer].bicho.nodos[info.numNodoAtacante].x+ " XPLANTAS: "+plantas[numPlanta].nodos[info.numNodoAtacado].x);
+                //console.log("DISTANCIA Y: "+distanciaY +" ========== YPLAYER: "+players[numPlayer].bicho.nodos[info.numNodoAtacante].y+ " YPLANTAS: "+plantas[numPlanta].nodos[info.numNodoAtacado].y);
              } catch(err) {
                  console.log("Error en xy");
              }
             try {
-                var sumaRadios = planta[numPlanta].nodos[info.numNodoAtacado].radio +  players[numPlayer].bicho.nodos[info.numNodoAtacante].radio;
+                var sumaRadios = plantas[numPlanta].nodos[info.numNodoAtacado].radio +  players[numPlayer].bicho.nodos[info.numNodoAtacante].radio;
             } catch(err) {
                 console.log("Error en radio");
+                //console.log(err.message);
             }
+            //console.log("D: "+(distanciaX * distanciaX + distanciaY * distanciaY)+" SR: "+(sumaRadios*sumaRadios))
             if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
-                //matarNodos(players[numPlanta].bicho, players[numPlanta].bicho.nodos[info.numNodoAtacado]);
-                alert("COMIDO POR NO COMER!!!!");
-                console.log("COLISION: "+atacante+" con el nodo nº"+info.numNodoAtacante+" ha atacando a plantucho en el nodo nº"+info.numNodoAtacado);
+                matarNodosPlanta(plantas[numPlanta], plantas[numPlanta].nodos[info.numNodoAtacado]);
+                //console.log("COLISION: "+atacante+" con el nodo nº"+info.numNodoAtacante+" ha atacando a plantucho en el nodo nº"+info.numNodoAtacado);
+                //client.emit('borrarPlantas', { numPlanta: numPlanta, numNodo: info.numNodoAtacado});
+                /*Enviar a todos los clientes "broadcast" la información del nuevo juegador*/
+                //client.broadcast.emit('borrarPlantas', { numPlanta: numPlanta, numNodo: info.numNodoAtacado})
             }
         } catch(err) {
             console.log("=======================================")

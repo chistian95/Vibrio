@@ -267,3 +267,13 @@ module.exports = {
     TipoNodo: TipoNodo,
 };
 /* */
+
+/*======================================================================================*/
+/*Funciones comunes entre nodos y bicho
+========================================================================================*/
+matarNodosPlanta = function(planta, nodo){
+    if(nodo === undefined){
+        return;
+    }
+    delete planta.nodos[planta.nodos.indexOf(nodo)];
+}
