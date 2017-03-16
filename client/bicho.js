@@ -1,6 +1,3 @@
-var texturas = {
-}
-
 var Bicho = function(z,nombre) {
     this.z = z;
     this.nodos = [];
@@ -36,6 +33,7 @@ var Bicho = function(z,nombre) {
                     var distanciaY = nodo.sprite.position.y - nodoTarget.sprite.position.y;
                     var sumaRadios = nodoTarget.radio + nodo.radio;
                     if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
+                        console.log("Miau")
                         socket.emit('chocar',{idAtacante: idLocal, numNodoAtacante: numNodoLocalPlayer, idAtacado: idTarget, numNodoAtacado: numNodoEnemigo});
                     }
                     numNodoEnemigo++;
@@ -69,22 +67,27 @@ var Bicho = function(z,nombre) {
 
 var Nodo = function(x, y, tipoNodo, radio, anguloActual,z){
     var graphics = new PIXI.Graphics();
-    graphics.lineStyle(0);
+    graphics.lineStyle(2);
     graphics.beginFill(rgb2hex('rgba(' + tipoNodo.color[0] + ', ' + tipoNodo.color[1] + ', ' + tipoNodo.color[2]), 0.5);
     graphics.drawCircle(radio, radio,radio);
     graphics.endFill();
     //this.sprite = new PIXI.Sprite(graphics.generateCanvasTexture());
-    this.sprite = new PIXI.extras.TilingSprite(PIXI.Texture.fromImage(texturas[0]), radio*2,radio*2);
-    this.sprite.anchor.set(0.5);
-    this.sprite.interactive = true;
+    if(tipoNodo.nombre != "OJO" && tipoNodo.nombre != "PINCHO")
+        this.sprite = new PIXI.Sprite(textura);
+    else this.sprite = new PIXI.Sprite(graphics.generateCanvasTexture());
+    //this.sprite.interactive = true;
     this.sprite.zOrder =z;
     var mascara = new PIXI.Graphics();
-    mascara.beginFill();
-    mascara.drawCircle(0, 0, 300);
+    mascara.beginFill(0xFF0000);
+    mascara.drawCircle(-radio, -radio, radio+1);
     mascara.endFill();
-    mascara.lineStyle(0);
+    mascara.lineStyle(30, 0x8d8dc9, 30);;
     this.sprite.mask = mascara;
-    app.bichos.addChild(this.sprite);
+    this.sprite.mask.x += radio;
+    this.sprite.mask.y += radio;
+    this.sprite.anchor.set(0.5);
+    this.sprite.addChild(mascara);
+    app.world.addChild(this.sprite);
     this.sprite.position.x = x;
     this.sprite.position.y = y;
     this.tipoNodo = tipoNodo;

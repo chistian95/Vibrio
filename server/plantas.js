@@ -258,7 +258,6 @@ var Planta = function(x,y,tipo) {
     this.generar();
     this.hitbox = [];
     this.calcularHitbox();
-    console.log(this.hitbox);
 }
 Planta.prototype = Object.create(PlantaProto.prototype);
 

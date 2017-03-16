@@ -2,8 +2,8 @@
 =================================================================*/
 var express = require('express');
 var app = express();
-var width = 3000;
-var height = 3000;
+var width = 10000;
+var height = 10000;
 app.use(express.static(__dirname));
 var server = app.listen(process.env.PORT || 8082, function () {
 	var puerto = server.address().port;
@@ -29,31 +29,31 @@ for(var i=0;i<=1000;i++) ids[i]=false;
 ====================================================================================*/
 io.on('connection', function(client) {
     console.log('Nueva conexión.');
-    var playerid;
+    this.playerid;
     client.on('crearJugadorServer', function(player){
         var nombre = player.nombre;
-        var initX = Math.random()*width;
-        var initY = Math.random()*height;
+        var initX = Math.random()*(width-200)+100;
+        var initY = Math.random()*(height-200)+100;
         /*Crear al cliente su jugador*/
-        playerid = 0;
+        this.playerid = 0;
         var id = false;
         while(!id) {
-            if(ids[playerid]) {
-                playerid++
+            if(ids[this.playerid]) {
+                this.playerid++
             } else {
-                ids[playerid] = true;
+                ids[this.playerid] = true;
                 id = true;
             }
         }
-        console.log(nombre + ' se ha conectado Id: '+playerid);
+        console.log(nombre + ' se ha conectado Id: '+this.playerid);
         /*Enviarle al nuevo player los jugadores existentes.*/
         players.forEach(function(player){
             client.emit('crearPlayerCliente', {id: player.id, local: false, nombre: player.nombre});
         });
-        client.emit('crearPlayerCliente', { id: playerid, local: true,nombre: nombre,width:width,height:height, plantas: plantasMundo, plantasHitbox: plantasHitbox});
+        client.emit('crearPlayerCliente', { id: this.playerid, local: true,nombre: nombre,width:width,height:height, plantas: plantasMundo, plantasHitbox: plantasHitbox});
         /*Enviar a todos los clientes "broadcast" la información del nuevo juegador*/
-        client.broadcast.emit('crearPlayerCliente', { id: playerid, local: false,nombre: nombre})
-        new Player(playerid,initX,initY,nombre);
+        client.broadcast.emit('crearPlayerCliente', { id: this.playerid, local: false,nombre: nombre})
+        new Player(this.playerid,initX,initY,nombre,client);
     });
     /*Función para recibir información del cliente, en este caso la dirección si ha cambiado*/
     client.on('sync', function(info){
@@ -62,7 +62,6 @@ io.on('connection', function(client) {
             players.forEach( function(player){
                 if(player.id == info.player.id){
                     player.bicho.arriba = info.player.arriba;
-                    player.bicho.abajo = info.player.abajo;
                     player.bicho.izquierda = info.player.izquierda;
                     player.bicho.derecha = info.player.derecha;
                 }
@@ -74,14 +73,11 @@ io.on('connection', function(client) {
     /*Chocar (entre players)
     =================================*/
     client.on('chocar', function(info){
-        var atacante = "Null";
-        var atacado = "Null";
         var numPlayerAtacante = 0;
         var numPlayerAtacado = 0;
         var num = 0;
         players.forEach(function(playeros) {
             if(info.idAtacante == playeros.id) {
-                atacante = playeros.nombre;
                 numPlayerAtacante = num;
             } else if(info.idAtacado == playeros.id) {
                 atacado = playeros.nombre;
@@ -103,7 +99,6 @@ io.on('connection', function(client) {
             }
             if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
                 matarNodos(players[numPlayerAtacado].bicho, players[numPlayerAtacado].bicho.nodos[info.numNodoAtacado]);
-                console.log("COLISION: "+atacante+" con el nodo nº"+info.numNodoAtacante+" ha atacando a "+atacado+" en el nodo nº"+info.numNodoAtacado);
             }
         } catch(err) {
             console.log("=======================================")
@@ -147,15 +142,11 @@ io.on('connection', function(client) {
                 var sumaRadios = plantas[numPlanta].nodos[info.numNodoAtacado].radio +  players[numPlayer].bicho.nodos[info.numNodoAtacante].radio;
             } catch(err) {
                 console.log("Error en radio");
-                //console.log(err.message);
             }
-            //console.log("D: "+(distanciaX * distanciaX + distanciaY * distanciaY)+" SR: "+(sumaRadios*sumaRadios))
             if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
                 matarNodosPlanta(plantas[numPlanta], plantas[numPlanta].nodos[info.numNodoAtacado]);
                 plantasMundo[numPlanta].splice(info.numNodoAtacado, 1);
-                //console.log("COLISION: "+atacante+" con el nodo nº"+info.numNodoAtacante+" ha atacando a plantucho en el nodo nº"+info.numNodoAtacado);
                 client.emit('borrarPlantas', { numPlanta: numPlanta, numNodo: info.numNodoAtacado});
-                /*Enviar a todos los clientes "broadcast" la información de las plantas a borrar*/
                 client.broadcast.emit('borrarPlantas', { numPlanta: numPlanta, numNodo: info.numNodoAtacado})
             }
         } catch(err) {
@@ -173,7 +164,7 @@ io.on('connection', function(client) {
     /*Al desconecarse el cliente*/
     client.on('disconnect', function(){
         for(var i=0;i<players.length;i++){
-            if(players[i].id === playerid){
+            if(players[i].id === this.playerid){
                 console.log(players[i].nombre+" desconectado.")
                 client.broadcast.emit("playerDesconectadoCliente",{id: players[i].id})
                 players.splice(i, 1);
@@ -230,22 +221,63 @@ function getInfo(){
 }
 /*================================================*/
 /*Constructor de los player
-===============================*/
+==================================================*/
 
-function Player(id, x, y,nombre){
+function Player(id, x, y,nombre,socket){
     this.nombre = nombre;
 	this.id = id;
+    this.socket = socket;
     this.bicho = new Bicho(x,y,width,height);
-    //this.bicho.evolucionar();
     players.push(this);
+    //===========================================
+    var hPlayer = this.bicho.hitbox;
+    var idsTemp = [];
+    players.forEach(function(player) {
+        if(player.id === id) return;
+        var hTarget = player.bicho.hitbox;
+        if(hPlayer[2] >= hTarget[0] && hTarget[2] >= hPlayer[0]) {
+            if(hPlayer[3] >= hTarget[1] && hTarget[3] >= hPlayer[1]) {
+                idsTemp.push(player.id);
+            }
+        }
+    });
+    this.idsCercanas = idsTemp;
 }
 /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
 setInterval(function(){
     moverPlayers();
+    var info = [];
     var clients = io.sockets.clients(); // This returns an array with all connected clients
     /*Enviarle a todos los clientes el arraylist de players y de playersDesconectadosd (y mas cosas, pero por ahora solo eso)*/
-    io.sockets.emit('sync', getInfo());
+    players.forEach(function(player) {
+        if(player.nombre === 'bot') return;
+        player.idsCercanas = calcularCercanos(player.bicho.hitbox,player.id);
+        player.idsCercanas.forEach(function(id) {
+            players.forEach(function(playerCercano) {
+                if(playerCercano.id == id) info.push([playerCercano.id,playerCercano.bicho.crearNodosMin(),playerCercano.bicho.hitbox]);
+            });
+        });
+        info.push([player.id,player.bicho.crearNodosMin(),player.bicho.hitbox]);
+        player.socket.emit('sync', info);
+    });
+
+    //io.sockets.emit('sync', getInfo());
 }, 20);
+
+function calcularCercanos(hitbox,id) {
+    var idsTemp = [];
+    var hPlayer = hitbox;
+    players.forEach(function(player) {
+        if(player.id === id) return;
+        var hTarget = player.bicho.hitbox;
+        if(hPlayer[2] >= hTarget[0]-400 && hTarget[2]+400 >= hPlayer[0]) {
+            if(hPlayer[3] >= hTarget[1]-200 && hTarget[3]+200 >= hPlayer[1]) {
+                idsTemp.push(player.id);
+            }
+        }
+    });
+    return idsTemp;
+}
 function moverPlayers() {
     players.forEach( function(player){
         player.bicho.update();
@@ -266,7 +298,7 @@ function regenerarMapa() {
 /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
 /* GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS */
 function generarPlantas() {
-    for(var i=0; i<15; i++) {
+    for(var i=0; i<100; i++) {
         var tipoPlanta = Math.round(Math.random() * 4);
         var x = Math.random()*(width-200)+100;
         var y = Math.random()*(width-200)+100;
@@ -281,7 +313,7 @@ function generarPlantas() {
     }
 }
 generarPlantas();
-for(var i=0;i<10;i++) {
+for(var i=0;i<100;i++) {
     var p = new Player(i,Math.random()*width,Math.random()*height,"bot");
     var derechizqr = Math.round(Math.random()*1);
     if(derechizqr==0)p.bicho.derecha = true;

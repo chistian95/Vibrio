@@ -1,4 +1,5 @@
 var app;
+textura = PIXI.Texture.fromImage('assets/img/t3.png');
 var players = [];
 var playerReady = false;
 var plantas = [];
@@ -21,8 +22,10 @@ function Game(socket){
 		g.bucle();
 	}, 40);
     setInterval(function() {
-        g.colision();
-        g.colisionPlantas();
+        if(game.localPlayer) {
+            g.cerca();
+            g.colisionPlantas();
+        }
     }, 100);
     window.addEventListener("keydown", this.teclitas, true);
     window.addEventListener("keyup", this.teclitasUp, true);
@@ -35,12 +38,11 @@ function Game(socket){
 Game.prototype = {
     reescalar: function () {
       app.renderer.resize(window.innerWidth, window.innerHeight);
-      app.ContenedorMinimapa.resize(window.innerWidth/10, window.innerHeight/10);
     },
     /*Eventos recibidos del server
     ======================================================*/
 	crearPlayerCliente: function(id, local,nombrev, servPlantas, pHitbox){
-		var t = new Player(id, this, local,nombrev,app.bichos);
+		var t = new Player(id, this, local,nombrev);
 		if(local) {
             this.localPlayer = t;
             var nodosSprites = [];
@@ -85,7 +87,7 @@ Game.prototype = {
         if(players.length>1) this.resetGui();
 	},
 
-    recibirInfo: function(serverInfo){
+    recibirInfo: function(serverInfo){ //serverInfo[id "NUM", nodos "Array nodos min", Hitbox]
         //Borramos players desconectados
         if(serverInfo[0].playersDesc != undefined){
             for(var i = 0; i < serverInfo[0].playersDesc.length; i++)
@@ -95,15 +97,19 @@ Game.prototype = {
         //Por cada player recibido del servidor
         var numserver = 0;
         if(players.length>=1) {
-            serverInfo[0].forEach(function(serverPlayer){ //Cada player del server info[]
-                if(serverPlayer.length>players[numserver].bicho.nodos.length) players[numserver].bicho.nodos.slice(0,serverPlayer.length-1)
-                serverPlayer[0].forEach(function(nodoServer) { //Cada nodo del player del server info[][]
-                    if(nodoServer != undefined && numserver<=players.length-1) {
-                        players[numserver].bicho.parsearNodo(nodoServer);
+            game.localPlayer.idsCercanas = [];
+            serverInfo.forEach(function(serverPlayer){ //Cada player del server info[]
+                game.localPlayer.idsCercanas.push(serverPlayer[0]);
+                players.forEach(function(player){
+                    if(player.id === serverPlayer[0]) {
+                        player.bicho.hitbox = serverPlayer[2];
+                        console.log(player.id+" encontrado, hitbox: ")
+                        console.log(serverPlayer[2])
+                        serverPlayer[1].forEach(function(nodo){
+                            player.bicho.parsearNodo(nodo);
+                        });
                     }
                 });
-                players[numserver].bicho.hitbox = serverPlayer[1];
-                numserver++;
             });
         }
         /*==========================================================================*/
@@ -113,8 +119,6 @@ Game.prototype = {
             app.world.pivot.x = this.localPlayer.bicho.nodos[0].sprite.position.x - window.innerWidth/2
             app.world.pivot.y = this.localPlayer.bicho.nodos[0].sprite.position.y - window.innerHeight/2
             app.renderer.render(app.world);
-            app.cameraMinimapa.proxyContainer(app.world);
-            app.ContenedorMinimapa.render(app.cameraMinimapa);
         }
 
         /*==========================================================================*/
@@ -200,7 +204,7 @@ Game.prototype = {
     /*===============================================*/
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
 	bucle: function(){
-        this.posicionRaton();
+        if(game.localPlayer)this.posicionRaton();
 		if(this.localPlayer != undefined) this.enviarInfo();
 	},
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
@@ -276,18 +280,22 @@ Game.prototype = {
     /*====================================*/
     /*Colision con otros players
     ====================================================*/
-    colision: function(){
+    cerca: function(){
 		players.forEach(function(player) {
             if(player.id === game.localPlayer.id) {
                 return true;
             }
+            if(!game.localPlayer.idsCercanas.indexOf(player.id)<0) return;
             var hPlayer = game.localPlayer.bicho.hitbox;
             var hTarget = player.bicho.hitbox;
-            if(hPlayer[2] >= hTarget[0] && hTarget[2] >= hPlayer[0]) {
-                if(hPlayer[3] >= hTarget[1] && hTarget[3] >= hPlayer[1]) {
-                    game.localPlayer.bicho.chocar(player.bicho,this.socket,player.id,game.localPlayer.id);
+
+            try {
+               if(hPlayer[2] >= hTarget[0] && hTarget[2] >= hPlayer[0]) {
+                    if(hPlayer[3] >= hTarget[1] && hTarget[3] >= hPlayer[1]) {
+                        game.localPlayer.bicho.chocar(player.bicho,this.socket,player.id,game.localPlayer.id);
+                    }
                 }
-            }
+            } catch(err) {} //*
         });
 	},
     /*====================================*/
@@ -316,6 +324,7 @@ function Player(id, game, local,nombrev){
     this.ratonX = 0;
     this.ratonY = 0;
 	this.local = local;
+    if(local)this.idsCercanas = [];
     this.bicho = new Bicho(this.id,nombrev);
 }
 
@@ -325,51 +334,25 @@ function Player(id, game, local,nombrev){
 function app(){
     /*Declarar contenedores de imágenes
     =====================================*/
-    this.bichos = new PIXI.Container();
     this.world = new PIXI.Container();
     this.borde = new PIXI.Container();
     /*==================================*/
     /*Declarar renderer de imágenes
     =================================================================================================*/
-    this.renderer = new PIXI.CanvasRenderer(800, 600,{backgroundColor : 0x3498db});
-    this.ContenedorMinimapa = new PIXI.CanvasRenderer(250, 200, {backgroundColor : 0x1099bb}, true)
+    this.renderer = new PIXI.autoDetectRenderer(800, 600,{backgroundColor : 0x3498db});
+    //Añadirlos al body para que se vean
+    document.body.appendChild(this.renderer.view);
     /*===============================================================================================*/
     /*Preparar los renderer (Estilos)
     ==============================================================================*/
     this.renderer.resize(window.innerWidth, window.innerHeight);
-    this.ContenedorMinimapa.resize(window.innerWidth/10, window.innerHeight/7);
-
     this.renderer.view.style.position = "absolute";
-    this.ContenedorMinimapa.view.style.position = "absolute";
-
     this.renderer.view.style.display = "block";
-    this.ContenedorMinimapa.view.style.display = "block";
-
-    this.ContenedorMinimapa.view.style.border= "5px solid black";
-    this.ContenedorMinimapa.view.style.borderRadius= "10px";
-    this.ContenedorMinimapa.view.style.zIndex = 1; //ContenedorMinimapa se ve por encima del renderer normal si no no se vería
-
-    //Añadirlos al body para que se vean
-    document.body.appendChild(this.renderer.view);
-    document.body.appendChild(this.ContenedorMinimapa.view);
     /*========================================================================= */
     /*Que se autoajusten cuando se les cambie de tamaño en reescalar
     ===========================================================================*/
     this.renderer.autoResize = true;
     this.autoResize = true;
-    /*=========================================================================*/
-    /*Cámera
-    =============================================*/
-    this.cameraMinimapa = new PIXI.Camera2d();
-    this.cameraMinimapa.position.x = 0;
-    this.cameraMinimapa.position.y = 0;
-    //Quitarle escala al minimapa para que sea un mundo en miniatura.
-    this.cameraMinimapa.scale.x = .1;
-    this.cameraMinimapa.scale.y = .1;
-    /*=======================================================================*/
-    /*Añadir los bichos al mundo
-    =========================================================================*/
-    this.world.addChild(this.bichos);
 }
 /*=============================================================s==============*/
 

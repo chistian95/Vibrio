@@ -164,14 +164,10 @@ var BichoProto = function(){
     this.involucionar = function(faseInvolucion) {
         this.contFase = 0;
         var ang = this.nodoCentral.anguloActual;
-        console.log(this.nodoCentral.anguloActual);
         while(this.contFase<faseInvolucion) {
-            console.log("Invo: "+faseInvolucion+" this: "+this.contFase);
             this.evolucionar();
         }
         this.nodoCentral.anguloActual = ang;
-        console.log(this.nodoCentral.anguloActual);
-        console.log("FIN Invo: "+faseInvolucion+" this: "+this.contFase);
     }
 
     var Nodo = function(tipoNodo, nodoPadre, anguloInicio, radio, bicho){
@@ -200,6 +196,15 @@ var BichoProto = function(){
 
     this.crearNodoMin = function(posicion, nodo) {
         return [posicion, nodo.x, nodo.y, nodo.tipoNodo, nodo.radio, nodo.anguloActual];
+    }
+
+    this.crearNodosMin = function() {
+        var temp = [];
+        var nodos = this.nodos;
+        this.nodos.forEach(function(nodo){
+            temp.push([nodos.indexOf(nodo), nodo.x, nodo.y, nodo.tipoNodo, nodo.radio, nodo.anguloActual]);
+        });
+        return temp;
     }
 
 
@@ -255,7 +260,6 @@ module.exports = {
 /*Funciones comunes entre nodos y bicho
 ========================================================================================*/
 matarNodos = function(bicho, nodo){
-    console.log(nodo.vida);
     if(nodo === undefined){
         return;
     }
