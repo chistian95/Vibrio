@@ -37,5 +37,9 @@ function empezarJuego(){
     socket.on('borrarPlantas', function(info){
         game.borrarPlantas(info);
     });
+
+    socket.on('actualizarPlanta', function(info){
+        game.actualizarPlanta(info);
+    });
     /*========================================================================*/
 }

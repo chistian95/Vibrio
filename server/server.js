@@ -324,15 +324,15 @@ function actualizarPlayersCercanos() {
 
 function regenerarMapa() {
     plantas.forEach(function(planta){
-        planta.regenerar();
-        io.sockets.emit('actualizarPlanta', {id: plantas.indexOf(planta), nodos: planta.nodos});
+        planta.regenerar(io,plantas.indexOf(planta));
+        console.log(planta.hitbox)
     });
 }
 
 
 /* GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS */
 function generarPlantas() {
-    for(var i=0; i<100; i++) {
+    for(var i=0; i<30; i++) {
         var tipoPlanta = Math.round(Math.random() * 4);
         var x = Math.random()*(width-200)+100;
         var y = Math.random()*(width-200)+100;

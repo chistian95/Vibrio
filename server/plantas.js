@@ -52,31 +52,12 @@ var PlantaProto = function(){
         }
     }
 
-    this.regenerar = function(){
-        if(this.nodos.length === 0 || !this.nodoPadre) {
-            if(this.tipo == 0) { //MAGNA
-                this.nodoPadre = new Nodo(TipoNodo.MAGNA, null, 0, 50, this, 0);
-            } else if(this.tipo == 1) {//SPICIS
-                this.nodoPadre = new Nodo(TipoNodo.SPICIS, null, 0, 30, this, 0);
-            } else if(this.tipo == 2) {//CORNELISU
-                this.nodoPadre = new Nodo(TipoNodo.CORNELISU, null, 0, 50, this, 0);
-            } else if(this.tipo == 3) {//XPAGUETOES
-                this.nodoPadre = new Nodo(TipoNodo.XP, null, 0, 30, this, 0);
-            } else if(this.tipo == 4) {//MAGIS
-                this.nodoPadre = new Nodo(TipoNodo.MAGIS, null, 0, 50, this, 0);
-            }
-        } else if(this.nodos.length <= 10) {
-            if(this.tipo == 0) { //MAGNA
-                new Nodo(TipoNodo.MAGNA, null, 0, 50, this, Math.floor(Math.random()*1)+1);
-            } else if(this.tipo == 1) {//SPICIS
-                new Nodo(TipoNodo.SPICIS, null, 0, 30, this, Math.floor(Math.random()*1)+1);
-            } else if(this.tipo == 2) {//CORNELISU
-                new Nodo(TipoNodo.CORNELISU, null, 0, 50, this, Math.floor(Math.random()*1)+1);
-            } else if(this.tipo == 3) {//XPAGUETOES
-                new Nodo(TipoNodo.XP, null, 0, 30, this, Math.floor(Math.random()*1)+1);
-            } else if(this.tipo == 4) {//MAGIS
-                new Nodo(TipoNodo.MAGIS, null, 0, 50, this, Math.floor(Math.random()*1)+1);
-            }
+    this.regenerar = function(io,id){
+        var temp = false;
+        if(this.nodos.length === 0 || !this.nodoPadre || !this.nodoCentral) {
+            this.generar();
+            this.calcularHitbox();
+            io.sockets.emit('actualizarPlanta', {id: id, nodos: this.crearNodosMin(), hitbox: this.hitbox});
         }
     }
 

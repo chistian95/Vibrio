@@ -305,13 +305,52 @@ Game.prototype = {
             var hTarget = plantas[plantas.indexOf(planta)].hitbox;
             if(hPlayer[2] >= hTarget[0] && hTarget[2] >= hPlayer[0]) {
                 if(hPlayer[3] >= hTarget[1] && hTarget[3] >= hPlayer[1]) {
-                    //alert(plantas.indexOf(planta));
                     game.localPlayer.bicho.chocarPlanta(planta, this.socket, plantas.indexOf(planta),game.localPlayer.id);
                 }
             }
         });
 	},
     /*===================================================*/
+    actualizarPlanta: function(info) {
+        var num = 0;
+        info.nodos.forEach(function(nodoPlanta){
+            app.world.removeChild(plantasSprites[info.id][num]);
+            num++;
+        });
+        delete plantas[info.id];
+        delete plantasSprites[info.id];
+
+        var nodosSprites = [];
+        var ndSprites = [];
+        info.nodos.forEach(function(nodoPlanta){
+            //nodo.x, nodo.y, nodo.visible, nodo.tipoNodo, nodo.radio
+            var graphics = new PIXI.Graphics();
+            graphics.lineStyle(0);
+            graphics.beginFill(nodoPlanta[3].colorHex, 0.75);
+            graphics.drawCircle(nodoPlanta[4], nodoPlanta[4], nodoPlanta[4]);
+            graphics.endFill();
+            var sprite = new PIXI.Sprite(graphics.generateCanvasTexture());
+
+            sprite.anchor.set(0.5);
+            sprite.position.x = nodoPlanta[0];
+            sprite.position.y = nodoPlanta[1];
+            sprite.interactive = true;
+            app.world.addChild(sprite);
+
+            ndSprites.push(sprite);
+
+            var datos = {
+                x: nodoPlanta[0],
+                y: nodoPlanta[1],
+                radio: nodoPlanta[4],
+            }
+            nodosSprites.push(datos);
+        });
+        plantas[info.id] = nodosSprites;
+        plantas[info.id].tipo = info.nodos[0][3].tipo;
+        plantas[info.id].hitbox = info.hitbox;
+        plantasSprites[info.id]=ndSprites;
+    }
 }
 
 /*Constructor de los player
