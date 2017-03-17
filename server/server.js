@@ -177,6 +177,59 @@ io.on('connection', function(client) {
         } catch(err) {console.log(err.message);}
     });
 
+    /*===============================*/
+    /*ComerNodo (entre bichos)
+    =================================*/
+    client.on('comerBicho', function(info){
+        var numPlayerAtacante = 0;
+        var numPlayerAtacado = 0;
+        var num = 0;
+        //1.- Busca el player que tiene la id que envia el cliente en info
+        players.forEach(function(playeros) {
+            if(info.idAtacante == playeros.id) {
+                numPlayerAtacante = num;
+            } else if(info.idAtacado == playeros.id) {
+                atacado = playeros.nombre;
+                numPlayerAtacado = num;
+            }
+            num++;
+        });
+        //================================================================
+        try {
+            try {
+                //2.- declara variables con cada nodo cocado de cada uno (del atacado y el atacante)
+                var atacante = players[numPlayerAtacante].bicho.nodos[info.numNodoAtacante];
+                var atacado = players[numPlayerAtacado].bicho.nodos[info.numNodoAtacado];
+                if(atacado.vida > 0) return;
+                console.log("pepe");
+            } catch(err) {
+                console.log("==============================================")
+                console.log("Error al declarar el atacante y el atacado.")
+            }
+            //3.- prepara variables para usarlas en el checkeo de distancia.
+            try {
+                var distanciaX = atacante.x - atacado.x;
+                var distanciaY = atacante.y - atacado.y;
+             } catch(err) {
+                 console.log("==============================================")
+                 console.log("Error en xy");
+             }
+            try {
+                var sumaRadios = atacado.radio +  atacante.radio;
+            } catch(err) {
+                console.log("==============================================")
+                console.log("Error en radio");
+            }
+            /*4.- checkea distancia y si choca mata el nodo con la función matar nodos en bicho.js
+              internamente esta función mata también todos los hijos de ese nodo.*/
+            if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
+                //players[numPlayerAtacado].bicho.nodos.splice(atacado, 1);
+                var nodos = players[numPlayerAtacado].bicho.nodos;
+                delete nodos[nodos.indexOf(atacado)];
+            }
+        } catch(err) {console.log(err.message);}
+    });
+
     /*Al desconecarse el cliente*/
     client.on('disconnect', function(){
         for(var i=0;i<players.length;i++){
