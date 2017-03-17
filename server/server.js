@@ -16,7 +16,6 @@ var b = require('./bicho');
 var Bicho = b.Bicho;
 var p = require('./plantas');
 var Planta = p.Planta;
-var plantasMundo = [];
 var plantasHitbox = [];
 var plantas = [];
 
@@ -51,7 +50,11 @@ io.on('connection', function(client) {
         players.forEach(function(player){
             playersTemp.push({id: player.id, local: false, nombre: player.nombre});
         });
-        client.emit('crearPlayerCliente', { id: this.playerid, local: true,nombre: nombre,width:width,height:height, plantas: plantasMundo, plantasHitbox: plantasHitbox,players: playersTemp});
+        var plantasMin = [];
+        plantas.forEach(function(planta){
+            plantasMin.push(planta.crearNodosMin());
+        });
+        client.emit('crearPlayerCliente', { id: this.playerid, local: true,nombre: nombre,width:width,height:height, plantas: plantasMin, plantasHitbox: plantasHitbox,players: playersTemp});
         /*Enviar a todos los clientes "broadcast" la información del nuevo juegador*/
         client.broadcast.emit('crearPlayerCliente', {id: this.playerid, local: false,nombre: nombre})
         new Player(this.playerid,initX,initY,nombre,client);
@@ -169,9 +172,7 @@ io.on('connection', function(client) {
             }
             if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
                 matarNodosPlanta(plantas[numPlanta], planta);
-                plantasMundo[numPlanta].splice(info.numNodoAtacado, 1);
-                client.emit('borrarPlantas', { numPlanta: numPlanta, numNodo: info.numNodoAtacado});
-                client.broadcast.emit('borrarPlantas', { numPlanta: numPlanta, numNodo: info.numNodoAtacado})
+                io.sockets.emit('borrarPlantas', { numPlanta: numPlanta, numNodo: info.numNodoAtacado});
             }
         } catch(err) {console.log(err.message);}
     });
@@ -292,12 +293,14 @@ setInterval(function() {
     players.forEach(function(player) {
         player.bicho.calcularHitbox();
     });
-    regenerarMapa();
 }, 500);
 
 setInterval(function() {
+    regenerarMapa()
+}, 5000);
+
+setInterval(function() {
     actualizarPlayersCercanos();
-    regenerarMapa();
 }, 100);
 
 function actualizarPlayersCercanos() {
@@ -320,7 +323,10 @@ function actualizarPlayersCercanos() {
 }
 
 function regenerarMapa() {
-
+    plantas.forEach(function(planta){
+        planta.regenerar();
+        io.sockets.emit('actualizarPlanta', {id: plantas.indexOf(planta), nodos: planta.nodos});
+    });
 }
 
 
@@ -336,12 +342,11 @@ function generarPlantas() {
             nodosPlanta.push(planta.crearNodoMin(nodo));
         });
         plantas.push(planta);
-        plantasMundo.push(nodosPlanta);
         plantasHitbox.push(planta.hitbox);
     }
 }
 generarPlantas();
-for(var i=0;i<150;i++) {
+for(var i=0;i<5;i++) {
     var p = new Player(i,Math.random()*width,Math.random()*height,"bot");
     var derechizqr = Math.round(Math.random()*1);
     if(derechizqr==0)p.bicho.derecha = true;

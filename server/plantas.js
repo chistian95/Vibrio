@@ -52,6 +52,34 @@ var PlantaProto = function(){
         }
     }
 
+    this.regenerar = function(){
+        if(this.nodos.length === 0 || !this.nodoPadre) {
+            if(this.tipo == 0) { //MAGNA
+                this.nodoPadre = new Nodo(TipoNodo.MAGNA, null, 0, 50, this, 0);
+            } else if(this.tipo == 1) {//SPICIS
+                this.nodoPadre = new Nodo(TipoNodo.SPICIS, null, 0, 30, this, 0);
+            } else if(this.tipo == 2) {//CORNELISU
+                this.nodoPadre = new Nodo(TipoNodo.CORNELISU, null, 0, 50, this, 0);
+            } else if(this.tipo == 3) {//XPAGUETOES
+                this.nodoPadre = new Nodo(TipoNodo.XP, null, 0, 30, this, 0);
+            } else if(this.tipo == 4) {//MAGIS
+                this.nodoPadre = new Nodo(TipoNodo.MAGIS, null, 0, 50, this, 0);
+            }
+        } else if(this.nodos.length <= 10) {
+            if(this.tipo == 0) { //MAGNA
+                new Nodo(TipoNodo.MAGNA, null, 0, 50, this, Math.floor(Math.random()*1)+1);
+            } else if(this.tipo == 1) {//SPICIS
+                new Nodo(TipoNodo.SPICIS, null, 0, 30, this, Math.floor(Math.random()*1)+1);
+            } else if(this.tipo == 2) {//CORNELISU
+                new Nodo(TipoNodo.CORNELISU, null, 0, 50, this, Math.floor(Math.random()*1)+1);
+            } else if(this.tipo == 3) {//XPAGUETOES
+                new Nodo(TipoNodo.XP, null, 0, 30, this, Math.floor(Math.random()*1)+1);
+            } else if(this.tipo == 4) {//MAGIS
+                new Nodo(TipoNodo.MAGIS, null, 0, 50, this, Math.floor(Math.random()*1)+1);
+            }
+        }
+    }
+
     this.generar = function(){ //Función que genera la planta
         this.nodoPadre = null;
         if(this.tipo == 0) { //MAGNA
@@ -200,6 +228,14 @@ var PlantaProto = function(){
         return [nodo.x, nodo.y, nodo.visible, nodo.tipoNodo, nodo.radio];
     }
 
+    this.crearNodosMin = function() {
+        var temp = [];
+        this.nodos.forEach(function(nodo){
+            temp.push([nodo.x, nodo.y, nodo.visible, nodo.tipoNodo, nodo.radio]);
+        });
+        return temp;
+    }
+
     this.calcularHitbox = function() {
         var xMin = this.nodoCentral.x;
         var xMax = this.nodoCentral.x;
@@ -246,6 +282,7 @@ var PlantaProto = function(){
             nodo.update();
         });
     }
+
 }
 
 var Planta = function(x,y,tipo) {
