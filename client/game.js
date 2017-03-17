@@ -337,7 +337,8 @@ function app(){
     /*==================================*/
     /*Declarar renderer de imágenes
     =================================================================================================*/
-    this.renderer = new PIXI.autoDetectRenderer(800, 600,{backgroundColor : 0x3498db});
+    this.renderer = new PIXI.autoDetectRenderer(800, 600,null,false,true,false,true,1,false,true,false);
+    this.renderer.backgroundColor = 0x3498db;
     //Añadirlos al body para que se vean
     document.body.appendChild(this.renderer.view);
     /*===============================================================================================*/
@@ -346,11 +347,6 @@ function app(){
     this.renderer.resize(window.innerWidth, window.innerHeight);
     this.renderer.view.style.position = "absolute";
     this.renderer.view.style.display = "block";
-    /*========================================================================= */
-    /*Que se autoajusten cuando se les cambie de tamaño en reescalar
-    ===========================================================================*/
-    this.renderer.autoResize = true;
-    this.autoResize = true;
 }
 /*=============================================================s==============*/
 
