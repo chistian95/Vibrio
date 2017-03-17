@@ -2,8 +2,8 @@
 =================================================================*/
 var express = require('express');
 var app = express();
-var width = 2000;
-var height = 2000;
+var width = 5000;
+var height = 5000;
 app.use(express.static(__dirname));
 var server = app.listen(process.env.PORT || 8082, function () {
 	var puerto = server.address().port;
@@ -296,7 +296,7 @@ setInterval(function() {
 }, 500);
 
 setInterval(function() {
-    regenerarMapa()
+    //regenerarMapa()
 }, 5000);
 
 setInterval(function() {
@@ -311,8 +311,8 @@ function actualizarPlayersCercanos() {
             players.forEach(function(playerTarget) {
                 if(player.id != playerTarget.id) {
                     var hTarget = playerTarget.bicho.hitbox;
-                    if(hPlayer[2] >= hTarget[0]-500 && hTarget[2]+500 >= hPlayer[0]) {
-                        if(hPlayer[3] >= hTarget[1]-300 && hTarget[3]+300 >= hPlayer[1]) {
+                    if(hPlayer[2] >= hTarget[0]-300 && hTarget[2]+300 >= hPlayer[0]) {
+                        if(hPlayer[3] >= hTarget[1]-200 && hTarget[3]+200 >= hPlayer[1]) {
                             player.idsCercanas.push(playerTarget.id);
                         }
                     }
@@ -325,14 +325,13 @@ function actualizarPlayersCercanos() {
 function regenerarMapa() {
     plantas.forEach(function(planta){
         planta.regenerar(io,plantas.indexOf(planta));
-        console.log(planta.hitbox)
     });
 }
 
 
 /* GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS */
 function generarPlantas() {
-    for(var i=0; i<30; i++) {
+    for(var i=0; i<5; i++) {
         var tipoPlanta = Math.round(Math.random() * 4);
         var x = Math.random()*(width-200)+100;
         var y = Math.random()*(width-200)+100;
@@ -346,7 +345,7 @@ function generarPlantas() {
     }
 }
 generarPlantas();
-for(var i=0;i<5;i++) {
+for(var i=0;i<1;i++) {
     var p = new Player(i,Math.random()*width,Math.random()*height,"bot");
     var derechizqr = Math.round(Math.random()*1);
     if(derechizqr==0)p.bicho.derecha = true;

@@ -97,6 +97,15 @@ var BichoProto = function(){
             var pataDrc3 = new Nodo(TipoNodo.MOTOR, cola3, -90, 7, this);
             new Nodo(TipoNodo.FLEXIBLE, pataIzq3, 0, 7, this);
             new Nodo(TipoNodo.FLEXIBLE, pataDrc3, 0, 7, this);
+
+            this.tentacles.push(this.nodos.indexOf(pataIzq1));
+            this.tentacles.push(this.nodos.indexOf(pataIzq2));
+            this.tentacles.push(this.nodos.indexOf(pataIzq3));
+
+            this.tentacles.push(this.nodos.indexOf(pataDrc1));
+            this.tentacles.push(this.nodos.indexOf(pataDrc2));
+            this.tentacles.push(this.nodos.indexOf(pataDrc3));
+
         }
         else if(this.contFase === 3) {
             new Nodo(TipoNodo.OJO, this.nodoCentral, 100, 15, this);//Ojo3
@@ -157,6 +166,7 @@ var BichoProto = function(){
             var pataDrc3_3 = new Nodo(TipoNodo.MOTOR, pataDrc3_2, 0, 7, this);
             var pataDrc3_4 = new Nodo(TipoNodo.FLEXIBLE, pataDrc3_3, 0, 7, this);
             new Nodo(TipoNodo.ESTATICO, pataDrc3_4, 0, 7, this);
+            console.log(this.nodos.length)
         }
         this.contFase++;
     }
@@ -251,6 +261,7 @@ var Bicho = function(x,y,w,h) {
     this.velocidadGiro = 2.0;
     this.contFase = 0;
     this.nodos = [];
+    this.tencacles = [];
     this.nodoCentral = null;
     this.arriba = false;
     this.abajo = false;
