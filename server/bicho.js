@@ -229,6 +229,17 @@ var BichoProto = function(){
         yMax = yMax + this.nodoCentral.radio * 2;
         this.hitbox = [xMin, yMin, xMax, yMax];
     }
+
+    this.calcularDaño = function() {
+        var daño = 0;
+        this.nodos.forEach(function(nodo) {
+            if(nodo.tipoNodo === TipoNodo.PINCHO) {
+                daño += 1;
+            }
+        });
+        console.log("DAÑO: " + daño);
+        return daño;
+    }
 }
 
 var Bicho = function(x,y,w,h) {
@@ -259,7 +270,7 @@ module.exports = {
 /*======================================================================================*/
 /*Funciones comunes entre nodos y bicho
 ========================================================================================*/
-matarNodos = function(bicho, nodo){
+matarNodos = function(nodo){
     if(nodo === undefined){
         return;
     }
@@ -270,11 +281,18 @@ matarNodos = function(bicho, nodo){
             nodo.nodoPadre = null;
         }
     }else{
-        nodo.vida = 0
+        nodo.vida = 0;
     }
     nodo.nodos.forEach(function(nodoHijo) {
-        matarNodos(bicho, nodoHijo);
+        matarNodos(nodoHijo);
     });
+}
+
+dañarNodo = function(bicho, nodo) {
+    nodo.vida -= bicho.calcularDaño();
+    if(nodo.vida <= 0) {
+        matarNodos(nodo);
+    }
 }
 
 mover = function(bicho, nodo) { //No sé si está bien del todo*

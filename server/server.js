@@ -128,7 +128,7 @@ io.on('connection', function(client) {
             /*4.- checkea distancia y si choca mata el nodo con la función matar nodos en bicho.js
               internamente esta función mata también todos los hijos de ese nodo.*/
             if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
-                matarNodos(players[numPlayerAtacado].bicho, atacado);
+                dañarNodo(players[numPlayerAtacante].bicho, atacado);
             }
         } catch(err) {console.log(err.message);}
     });
