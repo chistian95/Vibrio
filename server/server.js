@@ -47,12 +47,13 @@ io.on('connection', function(client) {
         }
         console.log(nombre + ' se ha conectado Id: '+this.playerid);
         /*Enviarle al nuevo player los jugadores existentes.*/
+        var playersTemp = [];
         players.forEach(function(player){
-            client.emit('crearPlayerCliente', {id: player.id, local: false, nombre: player.nombre});
+            playersTemp.push({id: player.id, local: false, nombre: player.nombre});
         });
-        client.emit('crearPlayerCliente', { id: this.playerid, local: true,nombre: nombre,width:width,height:height, plantas: plantasMundo, plantasHitbox: plantasHitbox});
+        client.emit('crearPlayerCliente', { id: this.playerid, local: true,nombre: nombre,width:width,height:height, plantas: plantasMundo, plantasHitbox: plantasHitbox,players: playersTemp});
         /*Enviar a todos los clientes "broadcast" la información del nuevo juegador*/
-        client.broadcast.emit('crearPlayerCliente', { id: this.playerid, local: false,nombre: nombre})
+        client.broadcast.emit('crearPlayerCliente', {id: this.playerid, local: false,nombre: nombre})
         new Player(this.playerid,initX,initY,nombre,client);
     });
     /*Función para recibir información del cliente, en este caso la dirección si ha cambiado*/
@@ -69,13 +70,25 @@ io.on('connection', function(client) {
 		}
 	});
 
-    /*===============================*/
-    /*Chocar (entre players)
-    =================================*/
+    /*==================================================================================*/
+    /*Chocar (entre players):
+    /************************************************************************************
+    /*Llamada:
+        Se llama desde bicho.js del cliente cuando éste detecta colisión, esta
+        función comprueba que la colisión realmente es válida para que los usuarios
+        no puedan hacer exploitear el sistema ya sea por trucos o lag.
+    /*Pasos:
+        1.- Busca el player que tiene la id que envia el cliente en info
+        2.- declara variables con cada nodo cocado de cada uno (del atacado y el atacante)
+        3.- prepara variables para usarlas en el checkeo de distancia.
+        4.- checkea distancia y si choca mata el nodo con la función matar nodos en bicho.js
+            internamente esta función mata también todos los hijos de ese nodo.
+    ====================================================================================*/
     client.on('chocar', function(info){
         var numPlayerAtacante = 0;
         var numPlayerAtacado = 0;
         var num = 0;
+        //1.- Busca el player que tiene la id que envia el cliente en info
         players.forEach(function(playeros) {
             if(info.idAtacante == playeros.id) {
                 numPlayerAtacante = num;
@@ -85,38 +98,42 @@ io.on('connection', function(client) {
             }
             num++;
         });
+        //================================================================
         try {
             try {
-                var distanciaX = players[numPlayerAtacante].bicho.nodos[info.numNodoAtacante].x - players[numPlayerAtacado].bicho.nodos[info.numNodoAtacado].x;
-                var distanciaY = players[numPlayerAtacante].bicho.nodos[info.numNodoAtacante].y - players[numPlayerAtacado].bicho.nodos[info.numNodoAtacado].y;
+                //2.- declara variables con cada nodo cocado de cada uno (del atacado y el atacante)
+                var atacante = players[numPlayerAtacante].bicho.nodos[info.numNodoAtacante];
+                var atacado = players[numPlayerAtacado].bicho.nodos[info.numNodoAtacado];
+            } catch(err) {
+                console.log("==============================================")
+                console.log("Error al declarar el atacante y el atacado.")
+            }
+            //3.- prepara variables para usarlas en el checkeo de distancia.
+            try {
+                var distanciaX = atacante.x - atacado.x;
+                var distanciaY = atacante.y - atacado.y;
              } catch(err) {
+                 console.log("==============================================")
                  console.log("Error en xy");
              }
             try {
-                var sumaRadios = players[numPlayerAtacado].bicho.nodos[info.numNodoAtacado].radio +  players[numPlayerAtacante].bicho.nodos[info.numNodoAtacante].radio;
+                var sumaRadios = atacado.radio +  atacante.radio;
             } catch(err) {
+                console.log("==============================================")
                 console.log("Error en radio");
             }
+            /*4.- checkea distancia y si choca mata el nodo con la función matar nodos en bicho.js
+              internamente esta función mata también todos los hijos de ese nodo.*/
             if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
-                matarNodos(players[numPlayerAtacado].bicho, players[numPlayerAtacado].bicho.nodos[info.numNodoAtacado]);
+                matarNodos(players[numPlayerAtacado].bicho, atacado);
             }
-        } catch(err) {
-            console.log("=======================================")
-            console.log("Error: "+players[numPlayerAtacante].bicho.nodos[info.numNodoAtacante]);
-            console.log("Error: "+players[numPlayerAtacado].bicho.nodos[info.numNodoAtacado]);
-            console.log("Error: "+players[numPlayerAtacante].bicho.nodos[info.numNodoAtacante].radio);
-            console.log("Error: "+players[numPlayerAtacado].bicho.nodos[info.numNodoAtacado].radio);
-            console.log(players[numPlayerAtacante].bicho.nodos[info.numNodoAtacante].x+" "+players[numPlayerAtacado].bicho.nodos[info.numNodoAtacado].x)
-            console.log(players[numPlayerAtacante].bicho.nodos[info.numNodoAtacante].y+" "+players[numPlayerAtacado].bicho.nodos[info.numNodoAtacado].y)
-            console.log("=======================================")
-        }
+        } catch(err) {console.log(err.message);}
     });
 
     /*===============================*/
     /*ChocarPlantas (entre plantas)
     =================================*/
     client.on('chocarPlanta', function(info){
-        var atacante = "Null";
         var numPlayer = 0;
         var numPlanta = info.idAtacado;
         var num = 0;
@@ -131,34 +148,32 @@ io.on('connection', function(client) {
 
         try {
             try {
-                var distanciaX = players[numPlayer].bicho.nodos[info.numNodoAtacante].x - plantas[numPlanta].nodos[info.numNodoAtacado].x;
-                var distanciaY = players[numPlayer].bicho.nodos[info.numNodoAtacante].y - plantas[numPlanta].nodos[info.numNodoAtacado].y;
-                //console.log("DISTANCIA X: "+distanciaX +" ========== XPLAYER: "+players[numPlayer].bicho.nodos[info.numNodoAtacante].x+ " XPLANTAS: "+plantas[numPlanta].nodos[info.numNodoAtacado].x);
-                //console.log("DISTANCIA Y: "+distanciaY +" ========== YPLAYER: "+players[numPlayer].bicho.nodos[info.numNodoAtacante].y+ " YPLANTAS: "+plantas[numPlanta].nodos[info.numNodoAtacado].y);
+                var player = players[numPlayer].bicho.nodos[info.numNodoAtacante];
+                var planta = plantas[numPlanta].nodos[info.numNodoAtacado];
+            } catch(err) {
+                console.log("==================");
+                console.log("Error al declarar el player o la planta.");
+            }
+            try {
+                var distanciaX =player.x - planta.x;
+                var distanciaY = player.y - planta.y;
              } catch(err) {
+                 console.log("===================")
                  console.log("Error en xy");
              }
             try {
-                var sumaRadios = plantas[numPlanta].nodos[info.numNodoAtacado].radio +  players[numPlayer].bicho.nodos[info.numNodoAtacante].radio;
+                var sumaRadios = planta.radio +  player.radio;
             } catch(err) {
-                console.log("Error en radio");
+                console.log("===================")
+                console.log("Error en sumaRadios");
             }
             if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
-                matarNodosPlanta(plantas[numPlanta], plantas[numPlanta].nodos[info.numNodoAtacado]);
+                matarNodosPlanta(plantas[numPlanta], planta);
                 plantasMundo[numPlanta].splice(info.numNodoAtacado, 1);
                 client.emit('borrarPlantas', { numPlanta: numPlanta, numNodo: info.numNodoAtacado});
                 client.broadcast.emit('borrarPlantas', { numPlanta: numPlanta, numNodo: info.numNodoAtacado})
             }
-        } catch(err) {
-            console.log("=======================================")
-            console.log("Error: "+players[numPlayer].bicho.nodos[info.numNodoAtacante]);
-            console.log("Error: "+players[numPlanta].bicho.nodos[info.numNodoAtacado]);
-            console.log("Error: "+players[numPlayer].bicho.nodos[info.numNodoAtacante].radio);
-            console.log("Error: "+players[numPlanta].bicho.nodos[info.numNodoAtacado].radio);
-            console.log(players[numPlayer].bicho.nodos[info.numNodoAtacante].x+" "+planta[numPlanta].nodos[info.numNodoAtacado].x)
-            console.log(players[numPlayer].bicho.nodos[info.numNodoAtacante].y+" "+planta[numPlanta].nodos[info.numNodoAtacado].y)
-            console.log("=======================================")
-        }
+        } catch(err) {console.log(err.message);}
     });
 
     /*Al desconecarse el cliente*/
@@ -243,59 +258,72 @@ function Player(id, x, y,nombre,socket){
     });
     this.idsCercanas = idsTemp;
 }
-/*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
+
+/*===============================================================================================
+/*Bucle nº1:
+/************************************************************************************************
+/*Función:
+        Mueve todos los player.
+        Envía a intérvalos la información a cada player de los otros player que tiene cerca.
+/*Pasos:
+        1.- Mueve los player.
+        2.-
+*/
 setInterval(function(){
-    moverPlayers();
-    var info = [];
-    var clients = io.sockets.clients(); // This returns an array with all connected clients
-    /*Enviarle a todos los clientes el arraylist de players y de playersDesconectadosd (y mas cosas, pero por ahora solo eso)*/
-    players.forEach(function(player) {
-        if(player.nombre === 'bot') return;
-        player.idsCercanas = calcularCercanos(player.bicho.hitbox,player.id);
-        player.idsCercanas.forEach(function(id) {
-            players.forEach(function(playerCercano) {
-                if(playerCercano.id == id) info.push([playerCercano.id,playerCercano.bicho.crearNodosMin(),playerCercano.bicho.hitbox]);
-            });
-        });
-        info.push([player.id,player.bicho.crearNodosMin(),player.bicho.hitbox]);
-        player.socket.emit('sync', info);
-    });
-
-    //io.sockets.emit('sync', getInfo());
-}, 20);
-
-function calcularCercanos(hitbox,id) {
-    var idsTemp = [];
-    var hPlayer = hitbox;
-    players.forEach(function(player) {
-        if(player.id === id) return;
-        var hTarget = player.bicho.hitbox;
-        if(hPlayer[2] >= hTarget[0]-400 && hTarget[2]+400 >= hPlayer[0]) {
-            if(hPlayer[3] >= hTarget[1]-200 && hTarget[3]+200 >= hPlayer[1]) {
-                idsTemp.push(player.id);
-            }
-        }
-    });
-    return idsTemp;
-}
-function moverPlayers() {
+    //1.- Mueve los player.
     players.forEach( function(player){
         player.bicho.update();
     });
-}
+    var info = [];
+    players.forEach(function(player) {
+        if(player.nombre != 'bot') {
+            player.idsCercanas.forEach(function(id) {
+                players.forEach(function(playerCercano) {
+                    if(playerCercano.id == id) info.push([playerCercano.id,playerCercano.bicho.crearNodosMin(),playerCercano.bicho.hitbox]);
+                });
+            });
+            info.push([player.id,player.bicho.crearNodosMin(false),player.bicho.hitbox]);
+            player.socket.emit('sync', info);
+        }
+    });
+}, 20);
+
 setInterval(function() {
-    calcularHitbox();
-    regenerarMapa();
-}, 500);
-function calcularHitbox() {
     players.forEach(function(player) {
         player.bicho.calcularHitbox();
     });
+    regenerarMapa();
+}, 500);
+
+setInterval(function() {
+    actualizarPlayersCercanos();
+    regenerarMapa();
+}, 100);
+
+function actualizarPlayersCercanos() {
+    players.forEach(function(player) {
+        if(player.nombre != 'bot') {
+            player.idsCercanas = [];
+            var hPlayer = player.bicho.hitbox;
+            players.forEach(function(playerTarget) {
+                if(player.id != playerTarget.id) {
+                    var hTarget = playerTarget.bicho.hitbox;
+                    if(hPlayer[2] >= hTarget[0]-500 && hTarget[2]+500 >= hPlayer[0]) {
+                        if(hPlayer[3] >= hTarget[1]-300 && hTarget[3]+300 >= hPlayer[1]) {
+                            player.idsCercanas.push(playerTarget.id);
+                        }
+                    }
+                }
+            });
+        }
+    });
 }
+
 function regenerarMapa() {
 
 }
-/*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
+
+
 /* GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS */
 function generarPlantas() {
     for(var i=0; i<100; i++) {
@@ -313,7 +341,7 @@ function generarPlantas() {
     }
 }
 generarPlantas();
-for(var i=0;i<100;i++) {
+for(var i=0;i<150;i++) {
     var p = new Player(i,Math.random()*width,Math.random()*height,"bot");
     var derechizqr = Math.round(Math.random()*1);
     if(derechizqr==0)p.bicho.derecha = true;

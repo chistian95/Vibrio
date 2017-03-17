@@ -103,8 +103,6 @@ Game.prototype = {
                 players.forEach(function(player){
                     if(player.id === serverPlayer[0]) {
                         player.bicho.hitbox = serverPlayer[2];
-                        console.log(player.id+" encontrado, hitbox: ")
-                        console.log(serverPlayer[2])
                         serverPlayer[1].forEach(function(nodo){
                             player.bicho.parsearNodo(nodo);
                         });
