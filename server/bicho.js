@@ -202,7 +202,7 @@ var BichoProto = function(){
         var temp = [];
         var nodos = this.nodos;
         this.nodos.forEach(function(nodo){
-            temp.push([nodos.indexOf(nodo), nodo.x, nodo.y, nodo.tipoNodo, nodo.radio, nodo.anguloActual]);
+            temp.push([nodos.indexOf(nodo), nodo.x, nodo.y, nodo.tipoNodo, nodo.radio, nodo.anguloActual, nodo.vida]);
         });
         return temp;
     }

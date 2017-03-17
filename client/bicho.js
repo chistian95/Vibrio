@@ -11,11 +11,13 @@ var Bicho = function(z,nombre) {
         if(pos === undefined) return;
         if(this.nodos.length > pos) {
             var nodo = this.nodos[pos];
+            if(nodo === undefined || nodo.sprite === undefined) return;
             nodo.sprite.position.x = nodoMin[1];
             nodo.sprite.position.y = nodoMin[2];
-            //nodo.tipoNodo = nodoMin[3];
-            //nodo.radio = nodoMin[4];
+            nodo.tipoNodo = nodoMin[3];
+            nodo.radio = nodoMin[4];
             nodo.anguloActual = nodoMin[5]; //Solo al player local
+            nodo.vida = nodoMin[6];
         } else {
             var nodo = new Nodo(nodoMin[1], nodoMin[2], nodoMin[3], nodoMin[4], nodoMin[5],this.z);
             if(pos===0) nodo.sprite.addChild(new PIXI.Text(this.nombre, {fontFamily:'Arial', fontSize:"20px", fill:"#c327b7"}));
@@ -25,18 +27,30 @@ var Bicho = function(z,nombre) {
 
     this.chocar = function(target,socket,idTarget,idLocal) {
         var numNodoLocalPlayer = 0;
+        var self = this;
         this.nodos.forEach(function(nodo) { //LocalPlayer
-            if(nodo.tipoNodo.nombre === TipoNodo.PINCHO.nombre) {
+            if(nodo.tipoNodo.nombre === TipoNodo.PINCHO.nombre || nodo === self.nodos[0]) {
                 var numNodoEnemigo = 0;
+                var borrarNodos = [];
                 target.nodos.forEach(function(nodoTarget) {
                     var distanciaX = nodo.sprite.position.x - nodoTarget.sprite.position.x;
                     var distanciaY = nodo.sprite.position.y - nodoTarget.sprite.position.y;
                     var sumaRadios = nodoTarget.radio + nodo.radio;
                     if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
-                        console.log("Miau")
-                        socket.emit('chocar',{idAtacante: idLocal, numNodoAtacante: numNodoLocalPlayer, idAtacado: idTarget, numNodoAtacado: numNodoEnemigo});
+                        if(nodo.tipoNodo.nombre === TipoNodo.PINCHO.nombre) {
+                            socket.emit('chocar',{idAtacante: idLocal, numNodoAtacante: numNodoLocalPlayer, idAtacado: idTarget, numNodoAtacado: numNodoEnemigo});
+                        } else {
+                            if(nodoTarget.vida <= 0) {
+                                borrarNodos.push(nodoTarget);
+                                socket.emit('comerBicho',{idAtacante: idLocal, numNodoAtacante: numNodoLocalPlayer, idAtacado: idTarget, numNodoAtacado: numNodoEnemigo});
+                            }
+                        }
                     }
                     numNodoEnemigo++;
+                });
+                borrarNodos.forEach(function(nodo) {
+                    app.world.removeChild(nodo.sprite);
+                    delete target.nodos[target.nodos.indexOf(nodo)];
                 });
             }
             numNodoLocalPlayer++;
@@ -67,7 +81,6 @@ var Bicho = function(z,nombre) {
 
 var Nodo = function(x, y, tipoNodo, radio, anguloActual,z){
     var graphics = new PIXI.Graphics();
-    graphics.lineStyle(2);
     graphics.beginFill(rgb2hex('rgba(' + tipoNodo.color[0] + ', ' + tipoNodo.color[1] + ', ' + tipoNodo.color[2]), 0.5);
     graphics.drawCircle(radio, radio,radio);
     graphics.endFill();
@@ -94,6 +107,7 @@ var Nodo = function(x, y, tipoNodo, radio, anguloActual,z){
     this.tipoNodo = tipoNodo;
     this.radio = radio;
     this.anguloActual = anguloActual;
+    this.vida = 0;
 }
 
 var TipoNodo = function(nombre, color){
