@@ -253,6 +253,7 @@ var BichoProto = function(){
 }
 
 var Bicho = function(x,y,w,h) {
+    this.tencacles = [];
     BichoProto.call(this);
     width = w;
     height = h;
@@ -261,7 +262,6 @@ var Bicho = function(x,y,w,h) {
     this.velocidadGiro = 2.0;
     this.contFase = 0;
     this.nodos = [];
-    this.tencacles = [];
     this.nodoCentral = null;
     this.arriba = false;
     this.abajo = false;
