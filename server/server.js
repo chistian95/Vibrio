@@ -45,16 +45,11 @@ io.on('connection', function(client) {
             }
         }
         console.log(nombre + ' se ha conectado Id: '+this.playerid);
-        /*Enviarle al nuevo player los jugadores existentes.*/
-        var playersTemp = [];
-        players.forEach(function(player){
-            playersTemp.push({id: player.id, local: false, nombre: player.nombre});
-        });
         var plantasMin = [];
         plantas.forEach(function(planta){
             plantasMin.push(planta.crearNodosMin());
         });
-        client.emit('crearPlayerCliente', { id: this.playerid, local: true,nombre: nombre,width:width,height:height, plantas: plantasMin, plantasHitbox: plantasHitbox,players: playersTemp});
+        client.emit('crearPlayerCliente', { id: this.playerid, local: true,nombre: nombre,width:width,height:height, plantas: plantasMin, plantasHitbox: plantasHitbox});
         /*Enviar a todos los clientes "broadcast" la información del nuevo juegador*/
         client.broadcast.emit('crearPlayerCliente', {id: this.playerid, local: false,nombre: nombre})
         new Player(this.playerid,initX,initY,nombre,client);
@@ -358,20 +353,35 @@ setInterval(function() {
 
 function actualizarPlayersCercanos() {
     players.forEach(function(player) {
+        var idsTemp = [];
         if(player.nombre != 'bot') {
-            player.idsCercanas = [];
             var hPlayer = player.bicho.hitbox;
             players.forEach(function(playerTarget) {
                 if(player.id != playerTarget.id) {
                     var hTarget = playerTarget.bicho.hitbox;
                     if(hPlayer[2] >= hTarget[0]-300 && hTarget[2]+300 >= hPlayer[0]) {
                         if(hPlayer[3] >= hTarget[1]-200 && hTarget[3]+200 >= hPlayer[1]) {
-                            player.idsCercanas.push(playerTarget.id);
+                            idsTemp.push(playerTarget.id);
                         }
                     }
                 }
             });
         }
+        var pTemp = [];
+        idsTemp.forEach(function(idTemp){
+            var exist = false;
+            player.idsCercanas.forEach(function(id){
+                if(id === idTemp) exist = true;
+            });
+
+            if(exist === false) {
+                players.forEach(function(playero) {
+                    if(playero.id === idTemp) pTemp.push({id: playero.id, local: false, nombre: playero.nombre});
+                });
+                player.socket.emit('crearPlayersCliente', {players: pTemp});
+            }
+        });
+        player.idsCercanas = idsTemp;
     });
 }
 
@@ -398,7 +408,7 @@ function generarPlantas() {
     }
 }
 generarPlantas();
-for(var i=0;i<1;i++) {
+for(var i=0;i<500;i++) {
     var p = new Player(i,Math.random()*width,Math.random()*height,"bot");
     var derechizqr = Math.round(Math.random()*1);
     if(derechizqr==0)p.bicho.derecha = true;

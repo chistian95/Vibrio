@@ -18,12 +18,18 @@ function empezarJuego(){
         if(!player.local) game.crearPlayerCliente(player.id, false, player.nombre, null);
         else {
             game.crearPlayerCliente(player.id, true, player.nombre, player.plantas, player.plantasHitbox);
-            player.players.forEach(function(playerServer){
+            /*player.players.forEach(function(playerServer){
                game.crearPlayerCliente(playerServer.id, false, playerServer.nombre);
-            });
+            });*/
             console.log(player.width)
             game.crearBorde(player.width,player.height);
         }
+    });
+
+    socket.on('crearPlayersCliente', function(player){
+        player.players.forEach(function(playerServer){
+            game.crearPlayerCliente(playerServer.id, false, playerServer.nombre);
+        });
     });
 
     socket.on('sync', function(info){

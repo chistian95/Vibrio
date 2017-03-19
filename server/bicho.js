@@ -98,13 +98,13 @@ var BichoProto = function(){
             new Nodo(TipoNodo.FLEXIBLE, pataIzq3, 0, 7, this);
             new Nodo(TipoNodo.FLEXIBLE, pataDrc3, 0, 7, this);
 
-            this.tentacles.push(this.nodos.indexOf(pataIzq1));
+            /*this.tentacles.push(this.nodos.indexOf(pataIzq1));
             this.tentacles.push(this.nodos.indexOf(pataIzq2));
             this.tentacles.push(this.nodos.indexOf(pataIzq3));
 
             this.tentacles.push(this.nodos.indexOf(pataDrc1));
             this.tentacles.push(this.nodos.indexOf(pataDrc2));
-            this.tentacles.push(this.nodos.indexOf(pataDrc3));
+            this.tentacles.push(this.nodos.indexOf(pataDrc3));*/
 
         }
         else if(this.contFase === 3) {
@@ -166,7 +166,6 @@ var BichoProto = function(){
             var pataDrc3_3 = new Nodo(TipoNodo.MOTOR, pataDrc3_2, 0, 7, this);
             var pataDrc3_4 = new Nodo(TipoNodo.FLEXIBLE, pataDrc3_3, 0, 7, this);
             new Nodo(TipoNodo.ESTATICO, pataDrc3_4, 0, 7, this);
-            console.log(this.nodos.length)
         }
         this.contFase++;
     }

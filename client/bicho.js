@@ -84,14 +84,14 @@ var Nodo = function(x, y, tipoNodo, radio, anguloActual,z){
     graphics.beginFill(rgb2hex('rgba(' + tipoNodo.color[0] + ', ' + tipoNodo.color[1] + ', ' + tipoNodo.color[2]), 0.5);
     graphics.drawCircle(radio, radio,radio);
     graphics.endFill();
-    //this.sprite = new PIXI.Sprite(graphics.generateCanvasTexture());
-    //if(tipoNodo.nombre != "OJO" && tipoNodo.nombre != "PINCHO")
-      //  this.sprite = new PIXI.Sprite(textura);
-    /*else*/ this.sprite = new PIXI.Sprite(graphics.generateCanvasTexture());
+    this.sprite = new PIXI.Sprite(graphics.generateCanvasTexture());
+    if(tipoNodo.nombre != "OJO" && tipoNodo.nombre != "PINCHO")
+        this.sprite = new PIXI.Sprite(textura);
+    else this.sprite = new PIXI.Sprite(graphics.generateCanvasTexture());
     //this.sprite.interactive = true;
     this.sprite.zOrder =z;
     this.sprite.anchor.set(0.5);
-    /*var mascara = new PIXI.Graphics();
+    var mascara = new PIXI.Graphics();
     mascara.beginFill(0xFF0000);
     mascara.drawCircle(-radio, -radio, radio+1);
     mascara.endFill();
@@ -100,7 +100,7 @@ var Nodo = function(x, y, tipoNodo, radio, anguloActual,z){
     this.sprite.mask.x += radio;
     this.sprite.mask.y += radio;
 
-    this.sprite.addChild(mascara);*/
+    this.sprite.addChild(mascara);
     app.world.addChild(this.sprite);
     this.sprite.position.x = x;
     this.sprite.position.y = y;
