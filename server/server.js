@@ -273,8 +273,12 @@ io.on('connection', function(client) {
         if(idPlayer!=null){
             players.forEach(function(player){
                if(player.id === idPlayer){
-                   console.log(player.nombre+" quiere evolucionar!");
-                   resetearExperiencia(player.bicho.exp);
+                   console.log(player.nombre+" quiere evolucionar al nivel "+(player.bicho.nivel+1));
+                   if((calcularExperienciaTotal(player.bicho.exp)/100)>=(player.bicho.nivel+1)){
+                       resetearExperiencia(player.bicho.exp);
+                       player.bicho.nivel++;
+                       console.log(player.nombre + "se merece evolucionar, pero Chistulari no le deja :c");
+                   }
                }
             });
         }
@@ -479,5 +483,9 @@ function resetearExperiencia(exp){
     exp.size = 0;
     exp.coraza = 0;
     exp.tentaculos = 0;
+}
+
+function calcularExperienciaTotal(exp){
+    return exp.nodos+exp.ojos+exp.tentaculos+exp.size+exp.pinchos+exp.coraza;
 }
 /* GANAR EXPERIENCIA - GANAR EXPERIENCIA - GANAR EXPERIENCIA - GANAR EXPERIENCIA*/
