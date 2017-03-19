@@ -7,6 +7,9 @@ var plantas = [];
 var plantasSprites = [];
 var plantasHitbox = [];
 var numPlantas = 0;
+var nivel = 0;
+var expActual = null;
+var expAntigua = null;
 /*Crear juego
 =========================================================*/
 function Game(socket){
@@ -26,6 +29,12 @@ function Game(socket){
         if(game.localPlayer) {
             g.cerca();
             g.colisionPlantas();
+            var exp = g.calcularExpTotal(expActual);
+            if(exp !== expAntigua){
+                ctxUI.clearRect(0, 0, canvasUI.width, canvasUI.height);
+                ctxUI.fillText("EXP: "+exp, 20, 20);
+                expAntigua = exp;
+            }
         }
     }, 100);
     window.addEventListener("keydown", this.teclitas, true);
@@ -39,6 +48,15 @@ function Game(socket){
 Game.prototype = {
     reescalar: function () {
       app.renderer.resize(window.innerWidth, window.innerHeight);
+    },
+
+    calcularExpTotal(exp){
+        var exp = exp.nodos+exp.ojos+exp.tentaculos+exp.size+exp.pinchos+exp.coraza;
+        if(exp>((nivel+1)*100)){
+            this.socket.emit('evo', game.localPlayer.id);
+            expAntigua = 0;
+        }
+        return exp;
     },
     /*Eventos recibidos del server
     ======================================================*/
@@ -94,7 +112,7 @@ Game.prototype = {
         }
 	},
 
-    recibirInfo: function(serverInfo){ //serverInfo[id "NUM", nodos "Array nodos min", Hitbox]
+    recibirInfo: function(serverInfo){ //serverInfo[id "NUM", nodos "Array nodos min", Hitbox, exp]
         //Borramos players desconectados
         if(serverInfo[0].playersDesc != undefined){
             for(var i = 0; i < serverInfo[0].playersDesc.length; i++)
@@ -126,6 +144,9 @@ Game.prototype = {
             app.renderer.render(app.world);
         }
         /*==========================================================================*/
+        expActual = serverInfo[serverInfo.length-1][3];
+        nivel = serverInfo[serverInfo.length-1][4];
+        //console.log(serverInfo[serverInfo.length-1]);
 	},
 
     /*===================================================*/
