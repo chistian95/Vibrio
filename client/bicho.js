@@ -1,3 +1,5 @@
+var g = new PIXI.Graphics();
+var count = 0;
 var Bicho = function(z,nombre) {
     this.z = z;
     this.nodos = [];
@@ -85,22 +87,48 @@ var Nodo = function(x, y, tipoNodo, radio, anguloActual,z){
     graphics.drawCircle(radio, radio,radio);
     graphics.endFill();
     this.sprite = new PIXI.Sprite(graphics.generateCanvasTexture());
-    if(tipoNodo.nombre != "OJO" && tipoNodo.nombre != "PINCHO")
-        this.sprite = new PIXI.Sprite(textura);
-    else this.sprite = new PIXI.Sprite(graphics.generateCanvasTexture());
-    //this.sprite.interactive = true;
-    this.sprite.zOrder =z;
-    this.sprite.anchor.set(0.5);
-    var mascara = new PIXI.Graphics();
-    mascara.beginFill(0xFF0000);
-    mascara.drawCircle(-radio, -radio, radio+1);
-    mascara.endFill();
-    mascara.lineStyle(30, 0x8d8dc9, 30);;
-    this.sprite.mask = mascara;
-    this.sprite.mask.x += radio;
-    this.sprite.mask.y += radio;
+    if(tipoNodo.nombre != "OJO" && tipoNodo.nombre != "PINCHO" && tipoNodo.nombre != "TENTACULO") this.sprite = new PIXI.Sprite(textura);
+    else if(tipoNodo.nombre != "TENTACULO") this.sprite = new PIXI.Sprite(graphics.generateCanvasTexture());
+    if(tipoNodo.nombre != "TENTACULO") {
+        var mascara = new PIXI.Graphics();
+        mascara.beginFill(0xFF0000);
+        mascara.drawCircle(-radio, -radio, radio+1);
+        mascara.endFill();
+        mascara.lineStyle(30, 0x8d8dc9, 30);;
+        this.sprite.mask = mascara;
+        this.sprite.mask.x += radio;
+        this.sprite.mask.y += radio;
 
-    this.sprite.addChild(mascara);
+        this.sprite.addChild(mascara);
+    } else { //Tentaculo
+        console.log("tentaculo")
+        var ropeLength = 5;
+        this.tentaculines = [];
+
+        for (var i = 0; i < 25; i++) {
+            this.tentaculines.push(new PIXI.Point(i * ropeLength, 0));
+        }
+        this.sprite = new PIXI.mesh.Rope(PIXI.Texture.fromImage('assets/img/tentacle.png'), this.tentaculines);
+        var tent = this.tentaculines;
+        setInterval(function(){
+            count += 0.1;
+
+            // make the snake
+            for (var i = 2; i < tent.length; i++) {
+                tent[i].y = Math.sin((i * 0.5) + count) * 5;
+                tent[i].x = i * ropeLength + Math.cos((i * 0.3) + count) * 3;
+            }
+            game.localPlayer.bicho.nodos[3].sprite.rotation = game.localPlayer.bicho.nodos[3].anguloActual*Math.PI/180;
+            game.localPlayer.bicho.nodos[4].sprite.rotation = game.localPlayer.bicho.nodos[4].anguloActual*Math.PI/180;
+            game.localPlayer.bicho.nodos[5].sprite.rotation = game.localPlayer.bicho.nodos[5].anguloActual*Math.PI/180;
+            game.localPlayer.bicho.nodos[6].sprite.rotation = game.localPlayer.bicho.nodos[6].anguloActual*Math.PI/180;
+        }, 40);
+    }
+    //var strip = new PIXI.mesh.Rope(PIXI.Texture.fromImage('required/assets/snake.png'), points);
+    this.sprite.zOrder =10;
+    if(tipoNodo.nombre === "TENTACULO") {this.sprite.zOrder =0}
+    if(tipoNodo.nombre != "TENTACULO")this.sprite.anchor.set(0.5);
+
     app.world.addChild(this.sprite);
     this.sprite.position.x = x;
     this.sprite.position.y = y;
@@ -121,6 +149,8 @@ TipoNodo.FLEXIBLE = new TipoNodo("FLEXIBLE", [0, 255, 255, 64]);
 TipoNodo.PINCHO = new TipoNodo("PINCHO", [0, 0, 255, 64]);
 TipoNodo.OJO = new TipoNodo("OJO", [255, 255, 0, 64]);
 TipoNodo.BOCA = new TipoNodo("BOCA", [255, 100, 150, 25]);
+TipoNodo.TENTACULO = new TipoNodo("TENTACULO", [0,0,0,64]);
+TipoNodo.HIJOTENTACULO = new TipoNodo("HIJOTENTACULO", [0,0,0,64]);
 
 function rgb2hex(rgb){
  rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);

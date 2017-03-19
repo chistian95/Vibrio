@@ -413,7 +413,7 @@ function generarPlantas() {
     }
 }
 generarPlantas();
-for(var i=0;i<500;i++) {
+/*for(var i=0;i<500;i++) {
     var p = new Player(i,Math.random()*width,Math.random()*height,"bot");
     var derechizqr = Math.round(Math.random()*1);
     if(derechizqr==0)p.bicho.derecha = true;
@@ -424,7 +424,7 @@ for(var i=0;i<500;i++) {
     var evolucion = Math.round(Math.random()*3);
     if(evolucion!=0) for(var x=evolucion;x>0;x--) p.bicho.evolucionar();
     ids[i] = true;
-}
+}*/
 /* GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS */
 
 /* GANAR EXPERIENCIA - GANAR EXPERIENCIA - GANAR EXPERIENCIA - GANAR EXPERIENCIA*/

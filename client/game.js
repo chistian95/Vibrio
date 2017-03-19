@@ -1,5 +1,5 @@
 var app;
-textura = PIXI.Texture.fromImage('assets/img/t9.jpg');
+textura = PIXI.Texture.fromImage('assets/img/t10.jpg');
 tentaculo = PIXI.Texture.fromImage('assets/img/tentacle.png');
 var players = [];
 var playerReady = false;
@@ -389,6 +389,7 @@ function app(){
     =====================================*/
     this.world = new PIXI.Container();
     this.borde = new PIXI.Container();
+    this.world.addChild(g);
     /*==================================*/
     /*Declarar renderer de imágenes
     =================================================================================================*/
