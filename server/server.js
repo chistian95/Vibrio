@@ -169,7 +169,7 @@ io.on('connection', function(client) {
             if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
                 matarNodosPlanta(plantas[numPlanta], planta);
                 io.sockets.emit('borrarPlantas', { numPlanta: numPlanta, numNodo: info.numNodoAtacado});
-                ganarExperiencia(playerAtacante.bicho, planta.tipoNodo.tipo, planta.radio);
+                ganarExperienciaPlanta(playerAtacante.bicho, planta.tipoNodo.tipo, planta.radio);
             }
         } catch(err) {console.log(err.message);}
     });
@@ -181,9 +181,12 @@ io.on('connection', function(client) {
         var numPlayerAtacante = 0;
         var numPlayerAtacado = 0;
         var num = 0;
+        var playerAtacante = null;
+        var atacado = null;
         //1.- Busca el player que tiene la id que envia el cliente en info
         players.forEach(function(playeros) {
             if(info.idAtacante == playeros.id) {
+                playerAtacante = playeros;
                 numPlayerAtacante = num;
             } else if(info.idAtacado == playeros.id) {
                 atacado = playeros.nombre;
@@ -196,9 +199,8 @@ io.on('connection', function(client) {
             try {
                 //2.- declara variables con cada nodo cocado de cada uno (del atacado y el atacante)
                 var atacante = players[numPlayerAtacante].bicho.nodos[info.numNodoAtacante];
-                var atacado = players[numPlayerAtacado].bicho.nodos[info.numNodoAtacado];
+                atacado = players[numPlayerAtacado].bicho.nodos[info.numNodoAtacado];
                 if(atacado.vida > 0) return;
-                console.log("pepe");
             } catch(err) {
                 console.log("==============================================")
                 console.log("Error al declarar el atacante y el atacado.")
@@ -223,6 +225,7 @@ io.on('connection', function(client) {
                 //players[numPlayerAtacado].bicho.nodos.splice(atacado, 1);
                 var nodos = players[numPlayerAtacado].bicho.nodos;
                 delete nodos[nodos.indexOf(atacado)];
+                ganarExperienciaBicho(playerAtacante.bicho, atacado.tipoNodo.nombre, atacado.radio);
             }
         } catch(err) {console.log(err.message);}
     });
@@ -425,7 +428,7 @@ for(var i=0;i<500;i++) {
 /* GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS */
 
 /* GANAR EXPERIENCIA - GANAR EXPERIENCIA - GANAR EXPERIENCIA - GANAR EXPERIENCIA*/
-function ganarExperiencia(bicho, tipoPlanta, radioNodo){
+function ganarExperienciaPlanta(bicho, tipoPlanta, radioNodo){
     //0=size, 1=pinchos, 2=tentaculos, 3=coraza, 4=nodos
     if(tipoPlanta === 0){
         bicho.exp.size += (radioNodo/10);
@@ -437,6 +440,22 @@ function ganarExperiencia(bicho, tipoPlanta, radioNodo){
         bicho.exp.coraza += (radioNodo/10);
     }else if(tipoPlanta === 4){
         bicho.exp.nodos += (radioNodo/10);
+    }
+    //console.log(bicho.exp);
+}
+
+function ganarExperienciaBicho(bicho, nombreNodo, radioNodo){
+    //0=size, 1=pinchos, 2=tentaculos, 3=coraza, 4=nodos
+    if(nombreNodo === "ESTATICO" || nombreNodo === "MOTOR" || nombreNodo === "FLEXIBLE"){
+        bicho.exp.nodos += (radioNodo);
+    }else if(nombreNodo === "PINCHO"){
+        bicho.exp.pinchos += (radioNodo);
+    }else if(nombreNodo === "OJO"){
+        bicho.exp.ojos += (radioNodo);
+    }else if(nombreNodo === "CORAZA"){
+        bicho.exp.coraza += (radioNodo);
+    }else if(nombreNodo === "TENTACULO"){
+        bicho.exp.tentaculos += (radioNodo);
     }
     console.log(bicho.exp);
 }
