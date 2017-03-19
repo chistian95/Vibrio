@@ -241,7 +241,7 @@ io.on('connection', function(client) {
         }
     });
 
-    /*Al evolucionar*/
+    /*Al evolucionar (trampa)*/
     client.on('evolucionar', function(info) {
         if(info.player != undefined){
             /*Actualizar la dirección según lo que ha enviado el cliente*/
@@ -252,7 +252,7 @@ io.on('connection', function(client) {
             });
 		}
     });
-    /*Al involucionar*/
+    /*Al involucionar (trampa)*/
     client.on('involucionar', function(info) {
         if(info.player != undefined){
             /*Actualizar la dirección según lo que ha enviado el cliente*/
@@ -266,6 +266,18 @@ io.on('connection', function(client) {
                 }
             });
 		}
+    });
+
+    /*Al evolucionar*/
+    client.on('evo', function(idPlayer){
+        if(idPlayer!=null){
+            players.forEach(function(player){
+               if(player.id === idPlayer){
+                   console.log(player.nombre+" quiere evolucionar!");
+                   resetearExperiencia(player.bicho.exp);
+               }
+            });
+        }
     });
 });
 /*==============================================================================*/
@@ -336,7 +348,7 @@ setInterval(function(){
                     if(playerCercano.id == id) info.push([playerCercano.id,playerCercano.bicho.crearNodosMin(),playerCercano.bicho.hitbox]);
                 });
             });
-            info.push([player.id, player.bicho.crearNodosMin(false),player.bicho.hitbox, player.bicho.exp]);
+            info.push([player.id, player.bicho.crearNodosMin(false),player.bicho.hitbox, player.bicho.exp, player.bicho.nivel]);
             player.socket.emit('sync', info);
         }
     });
@@ -458,5 +470,14 @@ function ganarExperienciaBicho(bicho, nombreNodo, radioNodo){
         bicho.exp.tentaculos += (radioNodo);
     }
     console.log(bicho.exp);
+}
+
+function resetearExperiencia(exp){
+    exp.nodos = 0;
+    exp.ojos = 0;
+    exp.pinchos = 0;
+    exp.size = 0;
+    exp.coraza = 0;
+    exp.tentaculos = 0;
 }
 /* GANAR EXPERIENCIA - GANAR EXPERIENCIA - GANAR EXPERIENCIA - GANAR EXPERIENCIA*/

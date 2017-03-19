@@ -7,7 +7,9 @@ var plantas = [];
 var plantasSprites = [];
 var plantasHitbox = [];
 var numPlantas = 0;
+var nivel = 0;
 var expActual = null;
+var expAntigua = null;
 /*Crear juego
 =========================================================*/
 function Game(socket){
@@ -18,8 +20,6 @@ function Game(socket){
     this.playerDebug = false;
     this.debugNodosLength = 0;
 	this.socket = socket;
-
-    var expAntigua = null;
 
 	var g = this;
 	setInterval(function(){
@@ -51,7 +51,12 @@ Game.prototype = {
     },
 
     calcularExpTotal(exp){
-        return exp.nodos+exp.ojos+exp.tentaculos+exp.size+exp.pinchos+exp.coraza;
+        var exp = exp.nodos+exp.ojos+exp.tentaculos+exp.size+exp.pinchos+exp.coraza;
+        if(exp>((nivel+1)*100)){
+            this.socket.emit('evo', game.localPlayer.id);
+            expAntigua = 0;
+        }
+        return exp;
     },
     /*Eventos recibidos del server
     ======================================================*/
@@ -140,7 +145,8 @@ Game.prototype = {
         }
         /*==========================================================================*/
         expActual = serverInfo[serverInfo.length-1][3];
-        console.log(serverInfo[serverInfo.length-1]);
+        nivel = serverInfo[serverInfo.length-1][4];
+        //console.log(serverInfo[serverInfo.length-1]);
 	},
 
     /*===================================================*/
