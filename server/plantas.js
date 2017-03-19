@@ -5,7 +5,7 @@ var TipoNodo = function(tipo, colorHex){ //0=MAGNA, 1=SPICIS, 2=XP, 3=CORNELISU,
 
 TipoNodo.MAGNA = new TipoNodo(0, "0x00ff00"); //TAMAÑO
 TipoNodo.SPICIS = new TipoNodo(1, "0x42c8f4"); //PINCHOS
-TipoNodo.XP = new TipoNodo(2, [0, "0xcccccc"]); //XPAGUETOES (OJOS)
+TipoNodo.XP = new TipoNodo(2, [0, "0xcccccc"]); //XPAGUETOES (tentaculos)
 TipoNodo.CORNELISU = new TipoNodo(3, "0xb4e22b"); //CORAZA
 TipoNodo.MAGIS = new TipoNodo(4, "0xe27a2f"); //MAGIS CORPUS (MÁS NODOS)
 

@@ -129,17 +129,18 @@ io.on('connection', function(client) {
     });
 
     /*===============================*/
-    /*ChocarPlantas (entre plantas)
+    /*ChocarPlantas
     =================================*/
     client.on('chocarPlanta', function(info){
         var numPlayer = 0;
         var numPlanta = info.idAtacado;
         var num = 0;
+        var playerAtacante = null;
+        var planta = null;
         players.forEach(function(player) {
             if(info.idAtacante == player.id) {
-                atacante = player.nombre;
+                playerAtacante = player;
                 numPlayer = num;
-                //break;
             }
             num++;
         });
@@ -147,7 +148,7 @@ io.on('connection', function(client) {
         try {
             try {
                 var player = players[numPlayer].bicho.nodos[info.numNodoAtacante];
-                var planta = plantas[numPlanta].nodos[info.numNodoAtacado];
+                planta = plantas[numPlanta].nodos[info.numNodoAtacado];
             } catch(err) {
                 console.log("==================");
                 console.log("Error al declarar el player o la planta.");
@@ -168,6 +169,7 @@ io.on('connection', function(client) {
             if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
                 matarNodosPlanta(plantas[numPlanta], planta);
                 io.sockets.emit('borrarPlantas', { numPlanta: numPlanta, numNodo: info.numNodoAtacado});
+                ganarExperiencia(playerAtacante.bicho, planta.tipoNodo.tipo, planta.radio);
             }
         } catch(err) {console.log(err.message);}
     });
@@ -421,3 +423,21 @@ for(var i=0;i<500;i++) {
     ids[i] = true;
 }
 /* GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS */
+
+/* GANAR EXPERIENCIA - GANAR EXPERIENCIA - GANAR EXPERIENCIA - GANAR EXPERIENCIA*/
+function ganarExperiencia(bicho, tipoPlanta, radioNodo){
+    //0=size, 1=pinchos, 2=tentaculos, 3=coraza, 4=nodos
+    if(tipoPlanta === 0){
+        bicho.exp.size += (radioNodo/10);
+    }else if(tipoPlanta === 1){
+        bicho.exp.pinchos += (radioNodo/10);
+    }else if(tipoPlanta === 2){
+        bicho.exp.tentaculos += (radioNodo/10);
+    }else if(tipoPlanta === 3){
+        bicho.exp.coraza += (radioNodo/10);
+    }else if(tipoPlanta === 4){
+        bicho.exp.nodos += (radioNodo/10);
+    }
+    console.log(bicho.exp);
+}
+/* GANAR EXPERIENCIA - GANAR EXPERIENCIA - GANAR EXPERIENCIA - GANAR EXPERIENCIA*/

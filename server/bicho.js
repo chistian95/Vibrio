@@ -268,6 +268,17 @@ var Bicho = function(x,y,w,h) {
     this.derecha = false;
     this.evolucionar();
     this.hitbox = [];
+
+    this.nivel = 0; /*La experiencia necesaria para subir de nivel es igual a (nivelASubir*100), es decir, para subir del nivel 1 al nivel 2 necesitas 200 de experiencia.*/
+    this.exp = {
+        //0=size, 1=pinchos, 2=tentaculos, 3=coraza, 4=nodos, 5=ojos
+        size: 0,
+        pinchos: 0,
+        tentaculos: 0,
+        coraza: 0,
+        nodos: 0,
+        ojos: 0
+    }
 }
 Bicho.prototype = Object.create(BichoProto.prototype);
 

@@ -1,5 +1,5 @@
 var app;
-textura = PIXI.Texture.fromImage('assets/img/t3.png');
+textura = PIXI.Texture.fromImage('assets/img/t9.jpg');
 tentaculo = PIXI.Texture.fromImage('assets/img/tentacle.png');
 var players = [];
 var playerReady = false;
