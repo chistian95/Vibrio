@@ -125,7 +125,6 @@ Game.prototype = {
             app.world.pivot.y = this.localPlayer.bicho.nodos[0].sprite.position.y - window.innerHeight/2
             app.renderer.render(app.world);
         }
-
         /*==========================================================================*/
 	},
 

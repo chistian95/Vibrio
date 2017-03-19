@@ -17,37 +17,39 @@ TipoNodo.TENTACULO = new TipoNodo("TENTACULO", [0,0,0,64], 1);
 
 var BichoProto = function(){
     this.update = function() {
-        var anguloRad = this.nodoCentral.anguloActual * Math.PI / 180.0;
-        var tempx = this.x;
-        var tempy = this.y;
-        if(this.arriba) {
-            tempx -= Math.cos(anguloRad) * 4;
-            tempy -= Math.sin(anguloRad) * 4;
-        }
-        if(this.abajo) {
-            tempx += Math.cos(anguloRad) * 4;
-            tempy += Math.sin(anguloRad) * 4;
-        }
+        if(this.nodoCentral.vida>0) {
+            var anguloRad = this.nodoCentral.anguloActual * Math.PI / 180.0;
+            var tempx = this.x;
+            var tempy = this.y;
+            if(this.arriba) {
+                tempx -= Math.cos(anguloRad) * 4;
+                tempy -= Math.sin(anguloRad) * 4;
+            }
+            if(this.abajo) {
+                tempx += Math.cos(anguloRad) * 4;
+                tempy += Math.sin(anguloRad) * 4;
+            }
 
-        if(tempx<0) tempx=0;
-        else if(tempx>width) tempx=width;
-        this.x = tempx;
+            if(tempx<0) tempx=0;
+            else if(tempx>width) tempx=width;
+            this.x = tempx;
 
-        if(tempy<0) tempy=0;
-        else if(tempy>height) tempy=height;
-        this.y = tempy;
+            if(tempy<0) tempy=0;
+            else if(tempy>height) tempy=height;
+            this.y = tempy;
 
-        var angulo = this.nodoCentral.anguloActual;
-        if(this.izquierda) {
-            angulo = angulo - this.velocidadGiro < 0 ? 360 : angulo - this.velocidadGiro;
+            var angulo = this.nodoCentral.anguloActual;
+            if(this.izquierda) {
+                angulo = angulo - this.velocidadGiro < 0 ? 360 : angulo - this.velocidadGiro;
+            }
+            if(this.derecha) {
+                angulo = angulo + this.velocidadGiro > 360 ? 0 : angulo + this.velocidadGiro;
+            }
+            this.nodoCentral.anguloActual=angulo;
+            this.nodoCentral.x = this.x
+            this.nodoCentral.y = this.y
+            mover(this, this.nodoCentral);
         }
-        if(this.derecha) {
-            angulo = angulo + this.velocidadGiro > 360 ? 0 : angulo + this.velocidadGiro;
-        }
-        this.nodoCentral.anguloActual=angulo;
-        this.nodoCentral.x = this.x
-        this.nodoCentral.y = this.y
-        mover(this, this.nodoCentral);
     }
 
     this.evolucionar = function() {
@@ -98,13 +100,13 @@ var BichoProto = function(){
             new Nodo(TipoNodo.FLEXIBLE, pataIzq3, 0, 7, this);
             new Nodo(TipoNodo.FLEXIBLE, pataDrc3, 0, 7, this);
 
-            /*this.tentacles.push(this.nodos.indexOf(pataIzq1));
+            this.tentacles.push(this.nodos.indexOf(pataIzq1));
             this.tentacles.push(this.nodos.indexOf(pataIzq2));
             this.tentacles.push(this.nodos.indexOf(pataIzq3));
 
             this.tentacles.push(this.nodos.indexOf(pataDrc1));
             this.tentacles.push(this.nodos.indexOf(pataDrc2));
-            this.tentacles.push(this.nodos.indexOf(pataDrc3));*/
+            this.tentacles.push(this.nodos.indexOf(pataDrc3));
 
         }
         else if(this.contFase === 3) {
@@ -243,7 +245,7 @@ var BichoProto = function(){
         var daño = 0;
         this.nodos.forEach(function(nodo) {
             if(nodo.tipoNodo === TipoNodo.PINCHO) {
-                daño += 1;
+                daño += 4;
             }
         });
         console.log("DAÑO: " + daño);
@@ -252,7 +254,7 @@ var BichoProto = function(){
 }
 
 var Bicho = function(x,y,w,h) {
-    this.tencacles = [];
+    this.tentacles = [];
     BichoProto.call(this);
     width = w;
     height = h;
