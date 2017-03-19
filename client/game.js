@@ -7,6 +7,7 @@ var plantas = [];
 var plantasSprites = [];
 var plantasHitbox = [];
 var numPlantas = 0;
+var expActual = null;
 /*Crear juego
 =========================================================*/
 function Game(socket){
@@ -18,6 +19,8 @@ function Game(socket){
     this.debugNodosLength = 0;
 	this.socket = socket;
 
+    var expAntigua = null;
+
 	var g = this;
 	setInterval(function(){
 		g.bucle();
@@ -26,6 +29,12 @@ function Game(socket){
         if(game.localPlayer) {
             g.cerca();
             g.colisionPlantas();
+            var exp = g.calcularExpTotal(expActual);
+            if(exp !== expAntigua){
+                ctxUI.clearRect(0, 0, canvasUI.width, canvasUI.height);
+                ctxUI.fillText("EXP: "+exp, 20, 20);
+                expAntigua = exp;
+            }
         }
     }, 100);
     window.addEventListener("keydown", this.teclitas, true);
@@ -39,6 +48,10 @@ function Game(socket){
 Game.prototype = {
     reescalar: function () {
       app.renderer.resize(window.innerWidth, window.innerHeight);
+    },
+
+    calcularExpTotal(exp){
+        return exp.nodos+exp.ojos+exp.tentaculos+exp.size+exp.pinchos+exp.coraza;
     },
     /*Eventos recibidos del server
     ======================================================*/
@@ -94,7 +107,7 @@ Game.prototype = {
         }
 	},
 
-    recibirInfo: function(serverInfo){ //serverInfo[id "NUM", nodos "Array nodos min", Hitbox]
+    recibirInfo: function(serverInfo){ //serverInfo[id "NUM", nodos "Array nodos min", Hitbox, exp]
         //Borramos players desconectados
         if(serverInfo[0].playersDesc != undefined){
             for(var i = 0; i < serverInfo[0].playersDesc.length; i++)
@@ -125,8 +138,9 @@ Game.prototype = {
             app.world.pivot.y = this.localPlayer.bicho.nodos[0].sprite.position.y - window.innerHeight/2
             app.renderer.render(app.world);
         }
-
         /*==========================================================================*/
+        expActual = serverInfo[serverInfo.length-1][3];
+        console.log(serverInfo[serverInfo.length-1]);
 	},
 
     /*===================================================*/

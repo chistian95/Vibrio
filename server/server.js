@@ -336,7 +336,7 @@ setInterval(function(){
                     if(playerCercano.id == id) info.push([playerCercano.id,playerCercano.bicho.crearNodosMin(),playerCercano.bicho.hitbox]);
                 });
             });
-            info.push([player.id,player.bicho.crearNodosMin(false),player.bicho.hitbox]);
+            info.push([player.id, player.bicho.crearNodosMin(false),player.bicho.hitbox, player.bicho.exp]);
             player.socket.emit('sync', info);
         }
     });
