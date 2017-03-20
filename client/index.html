@@ -64,10 +64,6 @@
             margin-top: 10px;
         }
 
-        #canvasUI{
-            z-index: 50;
-        }
-
 
         @media screen and (max-width:768px) {
             .ajustar {
@@ -112,8 +108,6 @@
 
     <!--==========JUEGO==========-->
     <canvas id="canvasFondo" style="display:none;"></canvas>
-    <!--canvas id="canvasJuego" style="display:none;"></canvas-->
-    <canvas id="canvasUI" style="display:none;"></canvas>
 
     <!--SCRIPTS-->
     <script type="text/javascript" src="lib/dat.gui.min.js"></script>
@@ -144,9 +138,6 @@
 
         var canvasJuego = document.getElementById('canvasJuego');
         var canvasFondo = document.getElementById('canvasFondo');
-        var canvasUI = document.getElementById('canvasUI');
-        var ctxUI = canvasUI.getContext("2d");
-        ctxUI.font = "20px Helvetica";
 
         btConfi.onclick = function(){
             if(configuracion.style.display === "block")
@@ -171,8 +162,6 @@
             opciones.music = optMusic.checked;
             /*alert(opciones.sounds + " " + opciones.music + " " + opciones.barraVida);*/
             //canvasJuego.style.display = "block";
-            canvasUI.style.display = "block";
-            canvasUI.style.position = "absolute";
             menu.style.display = "none";
             empezarJuego();
         }

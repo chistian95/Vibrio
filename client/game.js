@@ -31,8 +31,6 @@ function Game(socket){
             g.colisionPlantas();
             var exp = g.calcularExpTotal(expActual);
             if(exp !== expAntigua){
-                ctxUI.clearRect(0, 0, canvasUI.width, canvasUI.height);
-                ctxUI.fillText("EXP: "+exp, 20, 20);
                 expAntigua = exp;
             }
         }
@@ -146,6 +144,7 @@ Game.prototype = {
         /*==========================================================================*/
         expActual = serverInfo[serverInfo.length-1][3];
         nivel = serverInfo[serverInfo.length-1][4];
+        actualizarExp();
         //console.log(serverInfo[serverInfo.length-1]);
 	},
 
@@ -409,13 +408,16 @@ function app(){
     /*Declarar contenedores de imágenes
     =====================================*/
     this.world = new PIXI.Container();
+    this.exp = new PIXI.Container();
     this.borde = new PIXI.Container();
     this.world.addChild(g);
     /*==================================*/
     /*Declarar renderer de imágenes
     =================================================================================================*/
-    this.renderer = new PIXI.autoDetectRenderer(800, 600,null,false,true,false,true,1,false,true,false);
+    this.renderer = new PIXI.autoDetectRenderer(400, 50,null,false,true,false,true,1,false,true,false);
+    this.expRenderer = new PIXI.autoDetectRenderer(800, 600,null,true,true,false,true,1,false,true,false);
     this.renderer.backgroundColor = 0x3498db;
+    this.expRenderer.backgroundColor = 0x2c3e50;
     //Añadirlos al body para que se vean
     document.body.appendChild(this.renderer.view);
     /*===============================================================================================*/
@@ -424,6 +426,34 @@ function app(){
     this.renderer.resize(window.innerWidth, window.innerHeight);
     this.renderer.view.style.position = "absolute";
     this.renderer.view.style.display = "block";
+    document.body.appendChild(this.expRenderer.view);
+    this.expRenderer.resize(window.innerWidth/2, window.innerHeight/20);
+    this.expRenderer.view.style.position = "absolute";
+    this.expRenderer.view.style.display = "block";
+    this.expRenderer.view.style.zIndex = 1;
+    this.expRenderer.view.style.left = "25%";
+    this.expRenderer.view.style.top = "90%";
+    this.expRenderer.view.style.border = "5px solid black";
+    this.expRenderer.view.style.borderRadius = "50px";
+
+    this.expSprite = new PIXI.Graphics();
+    this.exp.addChild(this.expSprite);
+    this.expText = new PIXI.Text(expActual, {fontFamily:'Arial', fontSize:"50px", fill:"#1f27f2"});
+    this.expText.position.x = window.innerWidth/4;
+    this.expText.position.y = window.innerWidth/80;
+    this.expText.anchor.set(0.5);
+    this.expSprite.addChild(this.expText);
+    this.expRenderer.render(this.exp);
+}
+
+function actualizarExp() {
+    app.expSprite.clear();
+    app.expSprite.lineStyle(0);
+    app.expSprite.beginFill(0x16a085, 0.75);
+    app.expSprite.drawRoundedRect(0, 0, (expAntigua/((nivel+1)*100))*window.innerWidth/2, window.innerHeight/20, 15);
+    app.expSprite.endFill();
+    app.expText.text = expAntigua+" / "+ ((nivel+1)*100);
+    app.expRenderer.render(app.exp);
 }
 /*=============================================================s==============*/
 

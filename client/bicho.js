@@ -22,7 +22,11 @@ var Bicho = function(z,nombre) {
             nodo.vida = nodoMin[6];
         } else {
             var nodo = new Nodo(nodoMin[1], nodoMin[2], nodoMin[3], nodoMin[4], nodoMin[5],this.z);
-            if(pos===0) nodo.sprite.addChild(new PIXI.Text(this.nombre, {fontFamily:'Arial', fontSize:"20px", fill:"#c327b7"}));
+            if(pos===0) {
+                var texto = new PIXI.Text(this.nombre, {fontFamily:'Arial', fontSize:"20px", fill:"#1f27f2"});
+                texto.anchor.set(0.5);
+                nodo.sprite.addChild(texto);
+            }
             this.nodos.push(nodo);
         }
     }
