@@ -43,5 +43,9 @@ function empezarJuego(){
     socket.on('actualizarPlanta', function(info){
         game.actualizarPlanta(info);
     });
+
+    socket.on('borrarNodo',function(info){
+       game.borrarNodos(info);
+    });
     /*========================================================================*/
 }

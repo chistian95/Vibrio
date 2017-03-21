@@ -1,5 +1,4 @@
 var g = new PIXI.Graphics();
-var count = 0;
 var Bicho = function(z,nombre) {
     this.z = z;
     this.nodos = [];
@@ -47,16 +46,11 @@ var Bicho = function(z,nombre) {
                             socket.emit('chocar',{idAtacante: idLocal, numNodoAtacante: numNodoLocalPlayer, idAtacado: idTarget, numNodoAtacado: numNodoEnemigo});
                         } else {
                             if(nodoTarget.vida <= 0) {
-                                borrarNodos.push(nodoTarget);
                                 socket.emit('comerBicho',{idAtacante: idLocal, numNodoAtacante: numNodoLocalPlayer, idAtacado: idTarget, numNodoAtacado: numNodoEnemigo});
                             }
                         }
                     }
                     numNodoEnemigo++;
-                });
-                borrarNodos.forEach(function(nodo) {
-                    app.world.removeChild(nodo.sprite);
-                    delete target.nodos[target.nodos.indexOf(nodo)];
                 });
             }
             numNodoLocalPlayer++;
@@ -105,30 +99,12 @@ var Nodo = function(x, y, tipoNodo, radio, anguloActual,z){
 
         this.sprite.addChild(mascara);
     } else { //Tentaculo
-        console.log("tentaculo")
-        var ropeLength = 5;
         this.tentaculines = [];
-
         for (var i = 0; i < 25; i++) {
             this.tentaculines.push(new PIXI.Point(i * ropeLength, 0));
         }
         this.sprite = new PIXI.mesh.Rope(PIXI.Texture.fromImage('assets/img/tentacle.png'), this.tentaculines);
-        var tent = this.tentaculines;
-        setInterval(function(){
-            count += 0.1;
-
-            // make the snake
-            for (var i = 2; i < tent.length; i++) {
-                tent[i].y = Math.sin((i * 0.5) + count) * 5;
-                tent[i].x = i * ropeLength + Math.cos((i * 0.3) + count) * 3;
-            }
-            game.localPlayer.bicho.nodos[3].sprite.rotation = game.localPlayer.bicho.nodos[3].anguloActual*Math.PI/180;
-            game.localPlayer.bicho.nodos[4].sprite.rotation = game.localPlayer.bicho.nodos[4].anguloActual*Math.PI/180;
-            game.localPlayer.bicho.nodos[5].sprite.rotation = game.localPlayer.bicho.nodos[5].anguloActual*Math.PI/180;
-            game.localPlayer.bicho.nodos[6].sprite.rotation = game.localPlayer.bicho.nodos[6].anguloActual*Math.PI/180;
-        }, 40);
     }
-    //var strip = new PIXI.mesh.Rope(PIXI.Texture.fromImage('required/assets/snake.png'), points);
     this.sprite.zOrder =10;
     if(tipoNodo.nombre === "TENTACULO") {this.sprite.zOrder =0}
     if(tipoNodo.nombre != "TENTACULO")this.sprite.anchor.set(0.5);

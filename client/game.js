@@ -10,6 +10,10 @@ var numPlantas = 0;
 var nivel = 0;
 var expActual = null;
 var expAntigua = null;
+var ropeLength = 2;
+var movimientoXtentaculos = 5;
+var movimientoYtentaculos = 5;
+
 /*Crear juego
 =========================================================*/
 function Game(socket){
@@ -20,10 +24,23 @@ function Game(socket){
     this.playerDebug = false;
     this.debugNodosLength = 0;
 	this.socket = socket;
-
+    var count = 0;
 	var g = this;
 	setInterval(function(){
+        count += 0.2;
 		g.bucle();
+        players.forEach(function(player){
+            player.bicho.nodos.forEach(function(nodo){
+                if(nodo.tipoNodo.nombre === "TENTACULO") {
+                    if(!nodo.tentaculines || !nodo.tentaculines.length) return;
+                    for (var i = 2; i <nodo.tentaculines.length; i++) {
+                        nodo.tentaculines[i].y = Math.sin((i * 0.5) + count) * movimientoXtentaculos;
+                        nodo.tentaculines[i].x = i * ropeLength + Math.cos((i * 0.3) + count) * movimientoYtentaculos;
+                    }
+                    player.bicho.nodos[player.bicho.nodos.indexOf(nodo)].sprite.rotation = player.bicho.nodos[player.bicho.nodos.indexOf(nodo)].anguloActual*Math.PI/180;
+                }
+            });
+        });
 	}, 40);
     setInterval(function() {
         if(game.localPlayer) {
@@ -157,6 +174,20 @@ Game.prototype = {
         plantas[info.numPlanta].splice(info.numNodo,1);
     },
 
+    borrarNodos: function(info) {
+        var pl = null;
+        players.forEach(function(player){
+            if(player.id === info.idPlayer) {
+                pl = player;
+            }
+        });
+        var spriteBorrar = pl.bicho.nodos[info.numNodo].sprite;
+        app.world.removeChild(spriteBorrar);
+        pl.bicho.nodos.splice(info.numNodo,1);
+
+        //delete target.nodos[target.nodos.indexOf(nodo)];
+    },
+
     /*===================================================*/
     /*Eventos para enviar al server
     ====================================================*/
@@ -243,7 +274,6 @@ Game.prototype = {
         this.gui.add(game, 'evolucionar');
         this.gui.add(game, 'involucionar');
         this.gui.add(this, 'movimiento');
-
     },
 
     resetGui: function() {
@@ -456,5 +486,6 @@ function actualizarExp() {
     app.expRenderer.render(app.exp);
 }
 /*=============================================================s==============*/
+
 
 

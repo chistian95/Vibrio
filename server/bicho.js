@@ -59,10 +59,8 @@ var BichoProto = function(){
             var ojo1 = new Nodo(TipoNodo.OJO, cuerpo, 120, 15, this);
             var ojo2 = new Nodo(TipoNodo.OJO, cuerpo, 240, 15, this);
 
-            /*var Tentaculo1 = new Nodo(TipoNodo.TENTACULO, cuerpo, 35, 7, this)
-            var Tentaculo2 = new Nodo(TipoNodo.TENTACULO, cuerpo, 80, 7, this)
-            var Tentaculo3 = new Nodo(TipoNodo.TENTACULO, cuerpo, -35, 7, this)
-            var Tentaculo4 = new Nodo(TipoNodo.TENTACULO, cuerpo, -80, 7, this)*/
+            var Tentaculo2 = new Nodo(TipoNodo.TENTACULO, cuerpo, 180, 7, this);
+
 
             this.nodoCentral = cuerpo;
         } else if(this.contFase === 1) {
@@ -92,82 +90,12 @@ var BichoProto = function(){
             new Nodo(TipoNodo.PINCHO, cola4, 30, 7, this); //Pincho1
             new Nodo(TipoNodo.PINCHO, cola4, -30, 7, this);//Pincho2
 
-            var pataIzq1 = new Nodo(TipoNodo.MOTOR, cola1, 90, 7, this);
-            this.indexpataizq1 = this.nodos.indexOf(pataIzq1);
-            var pataDrc1 = new Nodo(TipoNodo.MOTOR, cola1, -90, 7, this);
-            new Nodo(TipoNodo.FLEXIBLE, pataIzq1, 0, 7, this);
-            new Nodo(TipoNodo.FLEXIBLE, pataDrc1, 0, 7, this);
-
-            var pataIzq2 = new Nodo(TipoNodo.MOTOR, cola2, 90, 7, this);
-            var pataDrc2 = new Nodo(TipoNodo.MOTOR, cola2, -90, 7, this);
-            new Nodo(TipoNodo.FLEXIBLE, pataIzq2, 0, 7, this);
-            new Nodo(TipoNodo.FLEXIBLE, pataDrc2, 0, 7, this);
-
-            var pataIzq3 = new Nodo(TipoNodo.MOTOR, cola3, 90, 7, this);
-            var pataDrc3 = new Nodo(TipoNodo.MOTOR, cola3, -90, 7, this);
-            new Nodo(TipoNodo.FLEXIBLE, pataIzq3, 0, 7, this);
-            new Nodo(TipoNodo.FLEXIBLE, pataDrc3, 0, 7, this);
-
         }
         else if(this.contFase === 3) {
             new Nodo(TipoNodo.OJO, this.nodoCentral, 100, 15, this);//Ojo3
             new Nodo(TipoNodo.OJO, this.nodoCentral, 260, 15, this);//Ojo4
             new Nodo(TipoNodo.PINCHO, this.nodoCentral, 200, 7, this);//Pincho3
             new Nodo(TipoNodo.PINCHO, this.nodoCentral, 160, 7, this);//Pincho4
-
-            var pataIzq1_1 = this.nodos[this.indexpataizq1];
-            var pataDrc1_1 = this.nodos[this.indexpataizq1+1];
-            pataIzq1_1.tipoNodo = TipoNodo.ESTATICO;
-            pataIzq1_1.anguloActual = 0;
-            pataIzq1_1.anguloGiro = 0;
-            pataDrc1_1.tipoNodo = TipoNodo.ESTATICO;
-            pataDrc1_1.anguloActual = 0;
-            pataDrc1_1.anguloGiro = 0;
-
-            var pataIzq2_1 = this.nodos[this.nodos.indexOf(pataIzq1_1)+4];
-            var pataDrc2_1 = this.nodos[this.nodos.indexOf(pataIzq1_1)+5];
-            pataIzq2_1.tipoNodo = TipoNodo.ESTATICO;
-            pataIzq2_1.anguloActual = 0;
-            pataIzq2_1.anguloGiro = 0;
-            pataDrc2_1.tipoNodo = TipoNodo.ESTATICO;
-            pataDrc2_1.anguloActual = 0;
-            pataDrc2_1.anguloGiro = 0;
-
-            var pataIzq3_1 = this.nodos[this.nodos.indexOf(pataIzq1_1)+8];
-            var pataDrc3_1 = this.nodos[this.nodos.indexOf(pataIzq1_1)+9];
-            pataIzq3_1.tipoNodo = TipoNodo.ESTATICO;
-            pataIzq3_1.anguloActual = 0;
-            pataIzq3_1.anguloGiro = 0;
-            pataDrc3_1.tipoNodo = TipoNodo.ESTATICO;
-            pataDrc3_1.anguloActual = 0;
-            pataDrc3_1.anguloGiro = 0
-
-            var pataIzq1_2 = new Nodo(TipoNodo.FLEXIBLE, pataIzq1_1, 0, 7, this);
-            var pataIzq1_3 = new Nodo(TipoNodo.MOTOR, pataIzq1_2, 0, 7, this);
-            var pataIzq1_4 = new Nodo(TipoNodo.FLEXIBLE, pataIzq1_3, 0, 7, this);
-            new Nodo(TipoNodo.ESTATICO, pataIzq1_4, 0, 7, this);
-            var pataDrc1_2 = new Nodo(TipoNodo.FLEXIBLE, pataDrc1_1, 0, 7, this);
-            var pataDrc1_3 = new Nodo(TipoNodo.MOTOR, pataDrc1_2, 0, 7, this);
-            var pataDrc1_4 = new Nodo(TipoNodo.FLEXIBLE, pataDrc1_3, 0, 7, this);
-            new Nodo(TipoNodo.ESTATICO, pataDrc1_4, 0, 7, this);
-
-            var pataIzq2_2 = new Nodo(TipoNodo.FLEXIBLE, pataIzq2_1, 0, 7, this);
-            var pataIzq2_3 = new Nodo(TipoNodo.MOTOR, pataIzq2_2, 0, 7, this);
-            var pataIzq2_4 = new Nodo(TipoNodo.FLEXIBLE, pataIzq2_3, 0, 7, this);
-            new Nodo(TipoNodo.ESTATICO, pataIzq2_4, 0, 7, this);
-            var pataDrc2_2 = new Nodo(TipoNodo.FLEXIBLE, pataDrc2_1, 0, 7, this);
-            var pataDrc2_3 = new Nodo(TipoNodo.MOTOR, pataDrc2_2, 0, 7, this);
-            var pataDrc2_4 = new Nodo(TipoNodo.FLEXIBLE, pataDrc2_3, 0, 7, this);
-            new Nodo(TipoNodo.ESTATICO, pataDrc2_4, 0, 7, this);
-
-            var pataIzq3_2 = new Nodo(TipoNodo.FLEXIBLE, pataIzq3_1, 0, 7, this);
-            var pataIzq3_3 = new Nodo(TipoNodo.MOTOR, pataIzq3_2, 0, 7, this);
-            var pataIzq3_4 = new Nodo(TipoNodo.FLEXIBLE, pataIzq3_3, 0, 7, this);
-            new Nodo(TipoNodo.ESTATICO, pataIzq3_4, 0, 7, this);
-            var pataDrc3_2 = new Nodo(TipoNodo.FLEXIBLE, pataDrc3_1, 0, 7, this);
-            var pataDrc3_3 = new Nodo(TipoNodo.MOTOR, pataDrc3_2, 0, 7, this);
-            var pataDrc3_4 = new Nodo(TipoNodo.FLEXIBLE, pataDrc3_3, 0, 7, this);
-            new Nodo(TipoNodo.ESTATICO, pataDrc3_4, 0, 7, this);
         }
         this.contFase++;
     }

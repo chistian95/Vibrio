@@ -222,9 +222,9 @@ io.on('connection', function(client) {
             /*4.- checkea distancia y si choca mata el nodo con la función matar nodos en bicho.js
               internamente esta función mata también todos los hijos de ese nodo.*/
             if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
-                //players[numPlayerAtacado].bicho.nodos.splice(atacado, 1);
                 var nodos = players[numPlayerAtacado].bicho.nodos;
-                delete nodos[nodos.indexOf(atacado)];
+                io.sockets.emit('borrarNodo', { idPlayer: players[numPlayerAtacado].id, numNodo: nodos.indexOf(atacado)});
+                nodos.splice(nodos.indexOf(atacado),1);
                 ganarExperienciaBicho(playerAtacante.bicho, atacado.tipoNodo.nombre, atacado.radio);
             }
         } catch(err) {console.log(err.message);}
@@ -380,8 +380,8 @@ function actualizarPlayersCercanos() {
             players.forEach(function(playerTarget) {
                 if(player.id != playerTarget.id) {
                     var hTarget = playerTarget.bicho.hitbox;
-                    if(hPlayer[2] >= hTarget[0]-300 && hTarget[2]+300 >= hPlayer[0]) {
-                        if(hPlayer[3] >= hTarget[1]-200 && hTarget[3]+200 >= hPlayer[1]) {
+                    if(hPlayer[2] >= hTarget[0]-800 && hTarget[2]+800 >= hPlayer[0]) {
+                        if(hPlayer[3] >= hTarget[1]-600 && hTarget[3]+600 >= hPlayer[1]) {
                             idsTemp.push(playerTarget.id);
                         }
                     }
