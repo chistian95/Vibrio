@@ -1,6 +1,6 @@
 var app;
-textura = PIXI.Texture.fromImage('assets/img/t10.jpg');
-tentaculo = PIXI.Texture.fromImage('assets/img/tentacle.png');
+textura = PIXI.Texture.fromImage('assets/img/t2.jpg');
+tentaculo = PIXI.Texture.fromImage('assets/img/tent2.png');
 var players = [];
 var playerReady = false;
 var plantas = [];
@@ -8,34 +8,40 @@ var plantasSprites = [];
 var plantasHitbox = [];
 var numPlantas = 0;
 var nivel = 0;
+var lengthTentaculo = 2;
 var expActual = null;
 var expAntigua = null;
-var ropeLength = 2;
-var movimientoXtentaculos = 5;
-var movimientoYtentaculos = 5;
+var texture2 = PIXI.Texture.fromImage('assets/img/Fondo_back_p.png');
+var texture1 = PIXI.Texture.fromImage('assets/img/Fondo_puntitos.png');
+// new sprite
 
 /*Crear juego
 =========================================================*/
 function Game(socket){
     app = new app();
+    this.movimientoXtentaculos = 2;
+    this.movimientoYtentaculos = 5;
     this.movimiento = true
     this.playerToDebug = 0;
     this.NodoToDebug = 0;
+    this.velocidadTentaculos = 0.2;
     this.playerDebug = false;
     this.debugNodosLength = 0;
 	this.socket = socket;
     var count = 0;
 	var g = this;
 	setInterval(function(){
-        count += 0.2;
+        count += game.velocidadTentaculos;
 		g.bucle();
         players.forEach(function(player){
             player.bicho.nodos.forEach(function(nodo){
                 if(nodo.tipoNodo.nombre === "TENTACULO") {
+                    nodo.sprite.zOrder = -10;
                     if(!nodo.tentaculines || !nodo.tentaculines.length) return;
+                    nodo.tentaculines[1].x = -5;
                     for (var i = 2; i <nodo.tentaculines.length; i++) {
-                        nodo.tentaculines[i].y = Math.sin((i * 0.5) + count) * movimientoXtentaculos;
-                        nodo.tentaculines[i].x = i * ropeLength + Math.cos((i * 0.3) + count) * movimientoYtentaculos;
+                        nodo.tentaculines[i].y = Math.sin((i * 0.5) + count) * game.movimientoXtentaculos;
+                        nodo.tentaculines[i].x = (i * lengthTentaculo + Math.cos((i * 0.3) + count) * game.movimientoYtentaculos)-5;
                     }
                     player.bicho.nodos[player.bicho.nodos.indexOf(nodo)].sprite.rotation = player.bicho.nodos[player.bicho.nodos.indexOf(nodo)].anguloActual*Math.PI/180;
                 }
@@ -123,7 +129,7 @@ Game.prototype = {
             }
             players.push(t);
             if(players.length==1) this.debugInit();
-            if(players.length>1) this.resetGui();
+            //if(players.length>1) this.resetGui();
         }
 	},
 
@@ -268,12 +274,15 @@ Game.prototype = {
     =====================================================================*/
     debugInit: function(){
         this.gui = new dat.GUI();
-        this.gui.add(this, 'playerDebug');
-        this.gui.add(this, 'playerToDebug',0,Math.max(players.length-1,0))
-        this.gui.add(this, 'NodoToDebug',0,0);
+        //this.gui.add(this, 'playerDebug');
+        //this.gui.add(this, 'playerToDebug',0,Math.max(players.length-1,0))
+        //this.gui.add(this, 'NodoToDebug',0,0);
+        this.gui.add(this, 'movimientoXtentaculos',0,10);
+        this.gui.add(this, 'movimientoYtentaculos',0,10);
+        this.gui.add(this, 'velocidadTentaculos',0,2);
+        this.gui.add(this, 'movimiento');
         this.gui.add(game, 'evolucionar');
         this.gui.add(game, 'involucionar');
-        this.gui.add(this, 'movimiento');
     },
 
     resetGui: function() {
@@ -438,25 +447,35 @@ function app(){
     /*Declarar contenedores de imágenes
     =====================================*/
     this.world = new PIXI.Container();
+    this.back = new PIXI.Container();
     this.exp = new PIXI.Container();
     this.borde = new PIXI.Container();
     this.world.addChild(g);
     /*==================================*/
     /*Declarar renderer de imágenes
     =================================================================================================*/
-    this.renderer = new PIXI.autoDetectRenderer(400, 50,null,false,true,false,true,1,false,true,false);
+    this.renderer = new PIXI.autoDetectRenderer(256, 256, {antialias: false, transparent: true, resolution: 1});
+    this.backrenderer = new PIXI.autoDetectRenderer(400, 50,null,true,true,false,true,1,false,true,false);
     this.expRenderer = new PIXI.autoDetectRenderer(800, 600,null,true,true,false,true,1,false,true,false);
-    this.renderer.backgroundColor = 0x3498db;
     this.expRenderer.backgroundColor = 0x2c3e50;
     //Añadirlos al body para que se vean
     document.body.appendChild(this.renderer.view);
     /*===============================================================================================*/
     /*Preparar los renderer (Estilos)
     ==============================================================================*/
+    this.backrenderer.resize(window.innerWidth, window.innerHeight);
+    this.backrenderer.view.style.position = "absolute";
+    this.backrenderer.view.style.display = "block";
+
     this.renderer.resize(window.innerWidth, window.innerHeight);
     this.renderer.view.style.position = "absolute";
     this.renderer.view.style.display = "block";
+
+    this.backrenderer.view.style.zIndex = -1;
+
+    document.body.appendChild(this.backrenderer.view);
     document.body.appendChild(this.expRenderer.view);
+
     this.expRenderer.resize(window.innerWidth/2, window.innerHeight/20);
     this.expRenderer.view.style.position = "absolute";
     this.expRenderer.view.style.display = "block";
@@ -466,9 +485,18 @@ function app(){
     this.expRenderer.view.style.border = "5px solid black";
     this.expRenderer.view.style.borderRadius = "50px";
 
+    this.background = new PIXI.Sprite(texture2);
+    this.background.width = window.innerWidth;
+    this.background.height = window.innerHeight;
+
+    this.background.position.x = 0;
+    this.background.position.y = 0;
+    this.back.addChild(this.back);
+    this.backrenderer.render(this.background);
+
     this.expSprite = new PIXI.Graphics();
     this.exp.addChild(this.expSprite);
-    this.expText = new PIXI.Text(expActual, {fontFamily:'Arial', fontSize:"50px", fill:"#1f27f2"});
+    this.expText = new PIXI.Text(Math.floor(expActual), {fontFamily:'Arial', fontSize:"50px", fill:"#1f27f2"});
     this.expText.position.x = window.innerWidth/4;
     this.expText.position.y = window.innerWidth/80;
     this.expText.anchor.set(0.5);

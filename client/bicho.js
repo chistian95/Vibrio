@@ -101,15 +101,14 @@ var Nodo = function(x, y, tipoNodo, radio, anguloActual,z){
     } else { //Tentaculo
         this.tentaculines = [];
         for (var i = 0; i < 25; i++) {
-            this.tentaculines.push(new PIXI.Point(i * ropeLength, 0));
+            this.tentaculines.push(new PIXI.Point(i * lengthTentaculo, 0));
         }
-        this.sprite = new PIXI.mesh.Rope(PIXI.Texture.fromImage('assets/img/tentacle.png'), this.tentaculines);
+        this.sprite = new PIXI.mesh.Rope(tentaculo, this.tentaculines);
+        this.sprite.zOrder =-1;
     }
-    this.sprite.zOrder =10;
-    if(tipoNodo.nombre === "TENTACULO") {this.sprite.zOrder =0}
-    if(tipoNodo.nombre != "TENTACULO")this.sprite.anchor.set(0.5);
-
+    this.sprite.zOrder =z;
     app.world.addChild(this.sprite);
+    if(tipoNodo.nombre != "TENTACULO")this.sprite.anchor.set(0.5);
     this.sprite.position.x = x;
     this.sprite.position.y = y;
     this.tipoNodo = tipoNodo;

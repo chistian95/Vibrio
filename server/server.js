@@ -365,7 +365,7 @@ setInterval(function() {
 }, 500);
 
 setInterval(function() {
-    //regenerarMapa()
+    regenerarMapa()
 }, 5000);
 
 setInterval(function() {
@@ -415,7 +415,7 @@ function regenerarMapa() {
 
 /* GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS */
 function generarPlantas() {
-    for(var i=0; i<5; i++) {
+    for(var i=0; i<60; i++) {
         var tipoPlanta = Math.round(Math.random() * 4);
         var x = Math.random()*(width-200)+100;
         var y = Math.random()*(width-200)+100;
