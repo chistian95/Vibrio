@@ -85,32 +85,33 @@ var Nodo = function(x, y, tipoNodo, radio, anguloActual,z){
     graphics.drawCircle(radio, radio,radio);
     graphics.endFill();
     this.sprite = new PIXI.Sprite(graphics.generateCanvasTexture());
-    if(tipoNodo.nombre != "OJO" && tipoNodo.nombre != "PINCHO" && tipoNodo.nombre != "TENTACULO") this.sprite = new PIXI.Sprite(textura);
+    if(tipoNodo.nombre != "OJO" && tipoNodo.nombre != "PINCHO" && tipoNodo.nombre != "TENTACULO") this.sprite = declararSpriteDesdeTextura(textura,app.world,x,y,0.5,z);
     else if(tipoNodo.nombre != "TENTACULO") this.sprite = new PIXI.Sprite(graphics.generateCanvasTexture());
-    if(tipoNodo.nombre != "TENTACULO") {
+    if(tipoNodo.nombre != "TENTACULO" && tipoNodo.nombre != "OJO") {
         var mascara = new PIXI.Graphics();
         mascara.beginFill(0xFF0000);
         mascara.drawCircle(-radio, -radio, radio+1);
         mascara.endFill();
-        mascara.lineStyle(30, 0x8d8dc9, 30);;
+        mascara.lineStyle(30, 0x8d8dc9, 30);
         this.sprite.mask = mascara;
         this.sprite.mask.x += radio;
         this.sprite.mask.y += radio;
-
         this.sprite.addChild(mascara);
-    } else { //Tentaculo
+        this.sprite.zOrder =z;
+        app.world.addChild(this.sprite);
+    } else if(tipoNodo.nombre != "OJO"){ //Tentaculo
         this.tentaculines = [];
         for (var i = 0; i < 25; i++) {
             this.tentaculines.push(new PIXI.Point(i * lengthTentaculo, 0));
         }
         this.sprite = new PIXI.mesh.Rope(tentaculo, this.tentaculines);
         this.sprite.zOrder =-1;
+        this.sprite.position.x = x;
+        this.sprite.position.y = y;
+        app.world.addChild(this.sprite);
+    } else { //Ojo
+        this.sprite = declararSpriteDesdeTextura(ojo,app.world,x,y,0.5,z);
     }
-    this.sprite.zOrder =z;
-    app.world.addChild(this.sprite);
-    if(tipoNodo.nombre != "TENTACULO")this.sprite.anchor.set(0.5);
-    this.sprite.position.x = x;
-    this.sprite.position.y = y;
     this.tipoNodo = tipoNodo;
     this.radio = radio;
     this.anguloActual = anguloActual;

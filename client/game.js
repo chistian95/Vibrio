@@ -1,6 +1,4 @@
 var app;
-textura = PIXI.Texture.fromImage('assets/img/t2.jpg');
-tentaculo = PIXI.Texture.fromImage('assets/img/tent2.png');
 var players = [];
 var playerReady = false;
 var plantas = [];
@@ -11,8 +9,7 @@ var nivel = 0;
 var lengthTentaculo = 2;
 var expActual = null;
 var expAntigua = null;
-var texture2 = PIXI.Texture.fromImage('assets/img/Fondo_back_p.png');
-var texture1 = PIXI.Texture.fromImage('assets/img/Fondo_puntitos.png');
+
 // new sprite
 
 /*Crear juego
@@ -21,7 +18,7 @@ function Game(socket){
     app = new app();
     this.movimientoXtentaculos = 2;
     this.movimientoYtentaculos = 5;
-    this.movimiento = true
+    this.movimiento = true;
     this.playerToDebug = 0;
     this.NodoToDebug = 0;
     this.velocidadTentaculos = 0.2;
@@ -55,6 +52,7 @@ function Game(socket){
             var exp = g.calcularExpTotal(expActual);
             if(exp !== expAntigua){
                 expAntigua = exp;
+                actualizarExp();
             }
         }
     }, 100);
@@ -167,7 +165,7 @@ Game.prototype = {
         /*==========================================================================*/
         expActual = serverInfo[serverInfo.length-1][3];
         nivel = serverInfo[serverInfo.length-1][4];
-        actualizarExp();
+        actualizarExp()
         //console.log(serverInfo[serverInfo.length-1]);
 	},
 
@@ -436,7 +434,7 @@ function Player(id, game, local,nombrev){
     this.ratonX = 0;
     this.ratonY = 0;
 	this.local = local;
-    if(local)this.idsCercanas = [];
+    if(local) this.idsCercanas = [];
     this.bicho = new Bicho(this.id,nombrev);
 }
 
@@ -456,8 +454,8 @@ function app(){
     =================================================================================================*/
     this.renderer = new PIXI.autoDetectRenderer(256, 256, {antialias: false, transparent: true, resolution: 1});
     this.backrenderer = new PIXI.autoDetectRenderer(400, 50,null,true,true,false,true,1,false,true,false);
-    this.expRenderer = new PIXI.autoDetectRenderer(800, 600,null,true,true,false,true,1,false,true,false);
-    this.expRenderer.backgroundColor = 0x2c3e50;
+    this.expRenderer = new PIXI.autoDetectRenderer(800, 600, {antialias: false, transparent: true, resolution: 1});
+    //this.expRenderer.backgroundColor = 0x2c3e50;
     //Añadirlos al body para que se vean
     document.body.appendChild(this.renderer.view);
     /*===============================================================================================*/
@@ -476,16 +474,14 @@ function app(){
     document.body.appendChild(this.backrenderer.view);
     document.body.appendChild(this.expRenderer.view);
 
-    this.expRenderer.resize(window.innerWidth/2, window.innerHeight/20);
+    this.expRenderer.resize(window.innerWidth/2, window.innerHeight/10);
     this.expRenderer.view.style.position = "absolute";
     this.expRenderer.view.style.display = "block";
     this.expRenderer.view.style.zIndex = 1;
     this.expRenderer.view.style.left = "25%";
-    this.expRenderer.view.style.top = "90%";
-    this.expRenderer.view.style.border = "5px solid black";
-    this.expRenderer.view.style.borderRadius = "50px";
+    this.expRenderer.view.style.top = "88%";
 
-    this.background = new PIXI.Sprite(texture2);
+    this.background = new PIXI.Sprite(backgroundFijo);
     this.background.width = window.innerWidth;
     this.background.height = window.innerHeight;
 
@@ -495,25 +491,75 @@ function app(){
     this.backrenderer.render(this.background);
 
     this.expSprite = new PIXI.Graphics();
+    this.background.position.x = 0;
+    this.background.position.y = 0;
     this.exp.addChild(this.expSprite);
-    this.expText = new PIXI.Text(Math.floor(expActual), {fontFamily:'Arial', fontSize:"50px", fill:"#1f27f2"});
-    this.expText.position.x = window.innerWidth/4;
-    this.expText.position.y = window.innerWidth/80;
-    this.expText.anchor.set(0.5);
-    this.expSprite.addChild(this.expText);
-    this.expRenderer.render(this.exp);
+
+    this.spr_uiOjo = declararSpriteDesdeTextura(uiOjo,this.exp,100,25,1);
+    this.spr_uiPincho = declararSpriteDesdeTextura(uiPincho,this.exp,155,25,1);
+    this.spr_uiZise = declararSpriteDesdeTextura(uiZise,this.exp,500,25,1);
+    this.spr_uiTentaculo =  declararSpriteDesdeTextura(uiTentaculo,this.exp,350,25,1);
+    this.spr_uiNodos =  declararSpriteDesdeTextura(uiNodos,this.exp,250,25,1);
+    this.spr_uiCoraza =  declararSpriteDesdeTextura(uiCoraza,this.exp,25,25,1);
+
+    addChildrenText("0%",this.expSprite,window.innerWidth/4,window.innerHeight/13.5,0.5,null,35,"#1400ff"); //Exp General
+    addChildrenText("Error",this.spr_uiOjo,null,10); //Exp Ojo
+    addChildrenText("Error",this.spr_uiPincho,null,10); //Exp Picho
+    addChildrenText("Error",this.spr_uiZise,null,10); //Exp Zise
+    addChildrenText("Error",this.spr_uiNodos,null,10); //Exp Nodos
+    addChildrenText("Error",this.spr_uiTentaculo,null,10); //Exp Tentaculos
+    addChildrenText("Error",this.spr_uiCoraza,null,10); //Exp Coraza
+
 }
 
 function actualizarExp() {
+    //0=size, 1=pinchos, 2=tentaculos, 3=coraza, 4=nodos, 5=ojos
+    var alturaRectangulo = 46;
+    var expTotal = expActual.nodos+expActual.ojos+expActual.tentaculos+expActual.size+expActual.pinchos+expActual.coraza;
+    console.log(expActual)
     app.expSprite.clear();
+    app.expSprite.lineStyle(5, 0x000000, 5);
+    app.expSprite.beginFill(0x2c3e50, 1);
+    app.expSprite.drawRoundedRect(0, alturaRectangulo, window.innerWidth/2, window.innerHeight/20, 15);
     app.expSprite.lineStyle(0);
+    var TempExp = (expTotal/((nivel+1)*100))*window.innerWidth/2;
+    if(!TempExp) TempExp = 2;
     app.expSprite.beginFill(0x16a085, 0.75);
-    app.expSprite.drawRoundedRect(0, 0, (expAntigua/((nivel+1)*100))*window.innerWidth/2, window.innerHeight/20, 15);
+    if(TempExp>2)app.expSprite.drawRoundedRect(0, alturaRectangulo, TempExp, window.innerHeight/20, 15);
     app.expSprite.endFill();
-    app.expText.text = expAntigua+" / "+ ((nivel+1)*100);
+
+    app.expSprite.children[0].text = Math.floor((expTotal/((nivel+1)*100))*100)+'%';
+    app.spr_uiZise.children[0].text = Math.floor((expActual.size/((nivel+1)*100))*100)+'%';
+    app.spr_uiOjo.children[0].text = Math.floor((expActual.ojos/((nivel+1)*100))*100)+'%';
+    app.spr_uiPincho.children[0].text = Math.floor((expActual.pinchos/((nivel+1)*100))*100)+'%';
+    app.spr_uiTentaculo.children[0].text = Math.floor((expActual.tentaculos/((nivel+1)*100))*100)+'%';
+    app.spr_uiNodos.children[0].text = Math.floor((expActual.nodos/((nivel+1)*100))*100)+'%';
+    app.spr_uiCoraza.children[0].text = Math.floor((expActual.coraza/((nivel+1)*100))*100)+'%';
+
     app.expRenderer.render(app.exp);
 }
+
+function declararSpriteDesdeTextura(textura,container, x = 0,y = 0,anchor = 0.5, z = 0) {
+    var spriteTemp = new PIXI.Sprite(textura);
+    spriteTemp.position.x = x;
+    spriteTemp.position.y = y;
+    spriteTemp.anchor.set(anchor);
+    spriteTemp.zOrder = z;
+    container.addChild(spriteTemp);
+    return spriteTemp;
+}
+
+function addChildrenText(texto,father, x = 0, y = 0 , anchor = 0.5, font= 'Comic Sans MS', size = '20px', color = "#ffff00", z = 0) {
+    var tempText = new PIXI.Text(texto, {fontFamily: font, fontSize:size, fill:color});
+    tempText.position.x = x;
+    tempText.position.y = y;
+    tempText.anchor.set(anchor);
+    console.log(father)
+    father.addChild(tempText);
+    console.log("papuh: "+father.firstChild+" // "+father.childNodes);
+}
+
+function porcentaje() {
+
+}
 /*=============================================================s==============*/
-
-
-
