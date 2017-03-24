@@ -1,12 +1,5 @@
 var g = new PIXI.Graphics();
-var Bicho = function(z,nombre) {
-    this.z = z;
-    this.nodos = [];
-    this.arriba = false;
-    this.izquierda = false;
-    this.derecha = false;
-    this.nombre = nombre;
-
+var BichoProto = function(){
     this.parsearNodo = function(nodoMin) {
         var pos = nodoMin[0];
         if(pos === undefined) return;
@@ -78,6 +71,16 @@ var Bicho = function(z,nombre) {
         });
     }
 }
+var Bicho = function(z,nombre) {
+    BichoProto.call(this);
+    this.z = z;
+    this.nodos = [];
+    this.arriba = false;
+    this.izquierda = false;
+    this.derecha = false;
+    this.nombre = nombre;
+}
+Bicho.prototype = Object.create(BichoProto.prototype);
 
 var Nodo = function(x, y, tipoNodo, radio, anguloActual,z){
     var graphics = new PIXI.Graphics();
@@ -117,7 +120,6 @@ var Nodo = function(x, y, tipoNodo, radio, anguloActual,z){
     this.anguloActual = anguloActual;
     this.vida = 0;
 }
-
 var TipoNodo = function(nombre, color){
     this.nombre = nombre;
     this.color = color;
@@ -131,11 +133,3 @@ TipoNodo.OJO = new TipoNodo("OJO", [255, 255, 0, 64]);
 TipoNodo.BOCA = new TipoNodo("BOCA", [255, 100, 150, 25]);
 TipoNodo.TENTACULO = new TipoNodo("TENTACULO", [0,0,0,64]);
 TipoNodo.HIJOTENTACULO = new TipoNodo("HIJOTENTACULO", [0,0,0,64]);
-
-function rgb2hex(rgb){
- rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
- return (rgb && rgb.length === 4) ? "0x" +
-  ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
-  ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
-  ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
-}
