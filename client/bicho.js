@@ -140,6 +140,29 @@ var Nodo = function(x, y, tipoNodo, radio, anguloActual,z){
     this.anguloActual = anguloActual;
     this.vida = 0;
 }
+/*var Nodo = function(x, y, tipoNodo, radio, anguloActual,z){
+    if(tipoNodo.nombre === "TENTACULO"){ //Tentaculo
+        this.tentaculines = [];
+        for (var i = 0; i < 25; i++) {
+            this.tentaculines.push(new PIXI.Point(i * lengthTentaculo, 0));
+        }
+        this.sprite = new PIXI.mesh.Rope(tentaculo, this.tentaculines);
+        this.sprite.position.x = x;
+        this.sprite.position.y = y;
+    } else if(tipoNodo.nombre ==="OJO") {
+        this.sprite = declararSpriteDesdeTextura(ojo,app.world,x,y,0.5,z);
+    } else {
+        this.sprite = generarDibujoCircular(0,0,radio,100,tipoNodo.color,null,null,true);
+    }
+    this.tipoNodo = tipoNodo;
+    this.radio = radio;
+    this.anguloActual = anguloActual;
+    this.vida = 0;
+}
+var TipoNodo = function(nombre, color){
+    this.nombre = nombre;
+    this.color = color;
+}*/
 var TipoNodo = function(nombre, color){
     this.nombre = nombre;
     this.color = color;
