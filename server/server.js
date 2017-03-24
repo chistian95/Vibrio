@@ -275,9 +275,9 @@ io.on('connection', function(client) {
                if(player.id === idPlayer){
                    console.log(player.nombre+" quiere evolucionar al nivel "+(player.bicho.nivel+1));
                    if((calcularExperienciaTotal(player.bicho.exp)/100)>=(player.bicho.nivel+1)){
-                       resetearExperiencia(player.bicho.exp);
                        player.bicho.nivel++;
-                       console.log(player.nombre + "se merece evolucionar, pero Chistulari no le deja :c");
+                       player.bicho.evo();
+                       resetearExperiencia(player.bicho.exp);
                    }
                }
             });
@@ -465,15 +465,15 @@ function ganarExperienciaBicho(bicho, nombreNodo, radioNodo){
     if(nombreNodo === "ESTATICO" || nombreNodo === "MOTOR" || nombreNodo === "FLEXIBLE"){
         bicho.exp.nodos += (radioNodo);
     }else if(nombreNodo === "PINCHO"){
-        bicho.exp.pinchos += (radioNodo);
+        bicho.exp.pinchos += (radioNodo * 2.5);
     }else if(nombreNodo === "OJO"){
-        bicho.exp.ojos += (radioNodo);
+        bicho.exp.ojos += (radioNodo * 0.25);
     }else if(nombreNodo === "CORAZA"){
         bicho.exp.coraza += (radioNodo);
     }else if(nombreNodo === "TENTACULO"){
         bicho.exp.tentaculos += (radioNodo);
     }
-    console.log(bicho.exp);
+    //console.log(bicho.exp);
 }
 
 function resetearExperiencia(exp){

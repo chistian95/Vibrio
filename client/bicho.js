@@ -16,9 +16,14 @@ var Bicho = function(z,nombre) {
             nodo.sprite.position.x = nodoMin[1];
             nodo.sprite.position.y = nodoMin[2];
             nodo.tipoNodo = nodoMin[3];
-            nodo.radio = nodoMin[4];
             nodo.anguloActual = nodoMin[5]; //Solo al player local
             nodo.vida = nodoMin[6];
+            if(nodo.radio != nodoMin[4]) {
+                //TODO Arreglar esto plox
+                nodo.radio = nodoMin[4];
+                //var nodoNuevo = new Nodo(nodo.x, nodo.y, nodo.tipoNodo, nodo.radio, nodo.anguloActual, nodo.z);
+                //this.nodos[pos] = nodoNuevo;
+            }
         } else {
             var nodo = new Nodo(nodoMin[1], nodoMin[2], nodoMin[3], nodoMin[4], nodoMin[5],this.z);
             if(pos===0) {

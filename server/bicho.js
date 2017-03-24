@@ -58,9 +58,8 @@ var BichoProto = function(){
             var cuerpo = new Nodo(TipoNodo.ESTATICO, null, 0, 50, this);
             var ojo1 = new Nodo(TipoNodo.OJO, cuerpo, 120, 15, this);
             var ojo2 = new Nodo(TipoNodo.OJO, cuerpo, 240, 15, this);
-
-            var Tentaculo2 = new Nodo(TipoNodo.TENTACULO, cuerpo, 180, 7, this);
-
+            var pincho = new Nodo(TipoNodo.PINCHO, cuerpo, 180, 7, this);
+            //var Tentaculo2 = new Nodo(TipoNodo.TENTACULO, cuerpo, 180, 7, this);
 
             this.nodoCentral = cuerpo;
         } else if(this.contFase === 1) {
@@ -176,8 +175,181 @@ var BichoProto = function(){
                 daño += 4;
             }
         });
-        console.log("DAÑO: " + daño);
         return daño;
+    }
+
+    this.evo = function() {
+        console.log("EVO");
+        console.log(this.exp);
+        var self = this;
+        var pesoTotal = 0;
+        Object.keys(this.exp).forEach(function(clave) {
+            pesoTotal += self.exp[clave];
+        });
+        for(var i = 0; i < this.nivel / 2; i++) {
+            var numRandom = Math.random() * pesoTotal;
+            var sumaPesos = 0;
+            var tipoSeleccionado;
+            Object.keys(this.exp).forEach(function(clave) {
+                sumaPesos += self.exp[clave];
+                if(numRandom <= sumaPesos && tipoSeleccionado == undefined) {
+                    tipoSeleccionado = clave;
+                }
+            });
+            console.log(tipoSeleccionado);
+            if(tipoSeleccionado == "size") { //Aumentar el radio de todos sus nodos
+                var deltaRadio = this.nodoCentral.radio * 0.25;
+                this.nodos.forEach(function(nodo) {
+                   nodo.radio += deltaRadio;
+                });
+            } else if(tipoSeleccionado == "pinchos") { //Colocar uno o mas pinchos por ahí
+                //Intentar colocar el pincho en la cabeza
+                var nodosPinchos = [];
+                this.nodoCentral.nodos.forEach(function(nodo) {
+                    if(nodo.tipoNodo === TipoNodo.PINCHO) {
+                        nodosPinchos.push(nodo.anguloInicio);
+                    }
+                });
+
+                if(nodosPinchos.length <= 0) { //Si no tiene pinchos, poner uno en la parte delantera
+                    new Nodo(TipoNodo.PINCHO, this.nodoCentral, 180, 7, this);
+                } else if(!nodosPinchos.includes(200) || !nodosPinchos.includes(160)) { //Comprobar si aún no tiene pinchos a los costados
+                    if(!nodosPinchos.includes(200)) {
+                        new Nodo(TipoNodo.PINCHO, this.nodoCentral, 200, 7, this);
+                    }
+                    if(!nodosPinchos.includes(160)) {
+                        new Nodo(TipoNodo.PINCHO, this.nodoCentral, 160, 7, this);
+                    }
+                } else { //Si no, intentar colocarlo por la parte trasera del bicho
+                    var saltar = false;
+                    for(var posNodo=this.nodos.length-1; posNodo>=0; posNodo--) {
+                        var nodo = this.nodos[posNodo];
+                        if(nodo == this.nodoCentral || saltar) { //Saltarse el nodo central
+                            continue;
+                        }
+                        if(nodo.tipoNodo === TipoNodo.ESTATICO || nodo.tipoNodo === TipoNodo.CORAZA) { //Solo poner los pinchos si el nodo es estatico o coraza
+                            var nodosPinchos = [];
+                            var angulosHijos = [];
+                            nodo.nodos.forEach(function(nodoHijo) {
+                                if(nodoHijo.tipoNodo === TipoNodo.PINCHO) {
+                                    nodosPinchos.push(nodoHijo.anguloInicio);
+                                }
+                                angulosHijos.push(nodoHijo.anguloInicio);
+                            });
+                            if(nodosPinchos.length <= 0) { //Si no tiene nada detrás intentar poner uno ahí
+                                if(angulosHijos.length <= 0 || !angulosHijos.includes(0)) {
+                                    new Nodo(TipoNodo.PINCHO, nodo, 0, 7, this);
+                                    saltar = true;
+                                }
+                            }
+                            if(!nodosPinchos.includes(270) || !nodosPinchos.includes(90)) { //Mirar si se pueden poner a los costados
+                                if(!nodosPinchos.includes(270)) {
+                                    new Nodo(TipoNodo.PINCHO, nodo, 270, 7, this);
+                                }
+                                if(!nodosPinchos.includes(90)) {
+                                    new Nodo(TipoNodo.PINCHO, nodo, 90, 7, this);
+                                }
+                                saltar = true;
+                            }
+                            //Si llega aquí significa que no ha podido poner pinchos, así que evaluará otro posible nodo
+                        }
+                    }
+                }
+            } else if(tipoSeleccionado == "tentaculos") { //Poner tentaculillos
+                var angulosHijos = [];
+                var nodosTentaculos = [];
+                this.nodoCentral.nodos.forEach(function(nodo) {
+                    angulosHijos.push(nodo.anguloInicio);
+                    if(nodo.tipoNodo === TipoNodo.TENTACULO) {
+                        nodosTentaculos.push(nodo.anguloInicio);
+                    }
+                });
+                //Mirar a ver si hay que poner los tentaculos en la cabeza o no
+                if(angulosHijos.length <= 0 || !angulosHijos.includes(0)) { //Si no tiene nodos hijos o no tiene ninguno detrás
+                    new Nodo(TipoNodo.TENTACULO, this.nodoCentral, 0, 7, this);
+                } else { //Buscar algún nodo en el que poner los tentaculos
+                    var saltar = false;
+                    for(var posNodo=this.nodos.length-1; posNodo>=0; posNodo--) {
+                        var nodo = this.nodos[posNodo];
+                        if(nodo == this.nodoCentral || saltar) { //Saltarse el nodo central
+                            continue;
+                        }
+                        if(nodo.tipoNodo === TipoNodo.ESTATICO || nodo.tipoNodo === TipoNodo.CORAZA) { //Solo poner los tentaculos si el nodo es estatico o coraza
+                            var nodosTentatuclos = [];
+                            var angulosHijos = [];
+                            nodo.nodos.forEach(function(nodoHijo) {
+                                if(nodoHijo.tipoNodo === TipoNodo.TENTACULO) {
+                                    nodosTentatuclos.push(nodoHijo.anguloInicio);
+                                }
+                                angulosHijos.push(nodoHijo.anguloInicio);
+                            });
+                            if(nodosTentatuclos.length <= 0) { //Si no tiene nada detrás intentar poner uno ahí
+                                if(angulosHijos.length <= 0 || !angulosHijos.includes(0)) {
+                                    new Nodo(TipoNodo.TENTACULO, nodo, 0, 7, this);
+                                    saltar = true;
+                                }
+                            }
+                            if(!nodosTentatuclos.includes(270) || !nodosTentatuclos.includes(90)) { //Mirar si se pueden poner a los costados
+                                if(!nodosTentatuclos.includes(270)) {
+                                    new Nodo(TipoNodo.TENTACULO, nodo, 270, 7, this);
+                                }
+                                if(!nodosTentatuclos.includes(90)) {
+                                    new Nodo(TipoNodo.TENTACULO, nodo, 90, 7, this);
+                                }
+                                saltar = true;
+                            }
+                            //Si llega aquí significa que no ha podido poner tentaculos, así que evaluará otro posible nodo
+                        }
+                    }
+                }
+            } else if(tipoSeleccionado == "coraza") { //Poner corazas
+                //Recorrerse todos los nodos y si son de tipo estático, cambiarlos a coraza
+                var saltar = false;
+                for(var posNodo = 0; posNodo < this.nodos.length; posNodo++) {
+                    if(saltar) {
+                        continue;
+                    }
+                    var nodo = this.nodos[posNodo];
+                    if(nodo.tipoNodo === TipoNodo.ESTATICO) {
+                        nodo.tipoNodo = TipoNodo.CORAZA;
+                        saltar = true;
+                    }
+                }
+            } else if(tipoSeleccionado == "nodos") { //Poner nodos
+                //TODO Esta mierda hace cosas muy raras D:
+            } else if(tipoSeleccionado == "ojos") { //Poner ojos
+                //Los ojos solo van a poder ir en la cabeza. Dando prioridad a los que más cerca están del frente.
+                var nodosOjos = [];
+                this.nodoCentral.nodos.forEach(function(nodo) {
+                    if(nodo.tipoNodo === TipoNodo.OJO) {
+                        nodosOjos.push(nodo.anguloInicio);
+                    }
+                });
+                if(!nodosOjos.includes(120) || !nodosOjos.includes(240)) {
+                    if(!nodosOjos.includes(120)) {
+                        new Nodo(TipoNodo.OJO, this.nodoCentral, 120, 15, this);
+                    }
+                    if(!nodosOjos.includes(240)) {
+                        new Nodo(TipoNodo.OJO, this.nodoCentral, 240, 15, this);
+                    }
+                } else if(!nodosOjos.includes(100) || !nodosOjos.includes(260)) {
+                    if(!nodosOjos.includes(100)) {
+                        new Nodo(TipoNodo.OJO, this.nodoCentral, 100, 15, this);
+                    }
+                    if(!nodosOjos.includes(260)) {
+                        new Nodo(TipoNodo.OJO, this.nodoCentral, 260, 15, this);
+                    }
+                } else if(!nodosOjos.includes(80) || !nodosOjos.includes(280)) {
+                    if(!nodosOjos.includes(80)) {
+                        new Nodo(TipoNodo.OJO, this.nodoCentral, 80, 15, this);
+                    }
+                    if(!nodosOjos.includes(280)) {
+                        new Nodo(TipoNodo.OJO, this.nodoCentral, 280, 15, this);
+                    }
+                }
+            }
+        }
+        console.log("FIN EVO");
     }
 }
 
@@ -200,14 +372,14 @@ var Bicho = function(x,y,w,h) {
 
     this.nivel = 0; /*La experiencia necesaria para subir de nivel es igual a (nivelASubir*100), es decir, para subir del nivel 1 al nivel 2 necesitas 200 de experiencia.*/
     this.exp = {
-        //0=size, 1=pinchos, 2=tentaculos, 3=coraza, 4=nodos, 5=ojos
-        size: 0,
-        pinchos: 0,
-        tentaculos: 0,
-        coraza: 0,
-        nodos: 0,
-        ojos: 0
-    }
+            //0=size, 1=pinchos, 2=tentaculos, 3=coraza, 4=nodos, 5=ojos
+            size: 0,
+            pinchos: 0,
+            tentaculos: 0,
+            coraza: 0,
+            nodos: 0,
+            ojos: 0
+        }
 }
 Bicho.prototype = Object.create(BichoProto.prototype);
 
