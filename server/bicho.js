@@ -198,9 +198,9 @@ var BichoProto = function(){
             });
             console.log(tipoSeleccionado);
             if(tipoSeleccionado == "size") { //Aumentar el radio de todos sus nodos
-                var deltaRadio = this.nodoCentral.radio * 0.05;
                 this.nodos.forEach(function(nodo) {
-                   nodo.radio += deltaRadio;
+                    var deltaRadio = nodo.radio * 0.1;
+                    nodo.radio += deltaRadio;
                 });
             } else if(tipoSeleccionado == "pinchos") { //Colocar uno o mas pinchos por ahí
                 //Intentar colocar el pincho en la cabeza
@@ -368,9 +368,9 @@ var BichoProto = function(){
             var tipoSeleccionado;
             tipoSeleccionado = opc;
             if(tipoSeleccionado == "zise") { //Aumentar el radio de todos sus nodos
-                var deltaRadio = this.nodoCentral.radio * 0.05;
                 this.nodos.forEach(function(nodo) {
-                   nodo.radio += deltaRadio;
+                    var deltaRadio = nodo.radio * 0.1;
+                    nodo.radio += deltaRadio;
                 });
             } else if(tipoSeleccionado == "pinchus") { //Colocar uno o mas pinchos por ahí
                 //Intentar colocar el pincho en la cabeza
