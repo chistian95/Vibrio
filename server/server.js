@@ -465,7 +465,7 @@ function ganarExperienciaBicho(bicho, nombreNodo, radioNodo){
     if(nombreNodo === "ESTATICO" || nombreNodo === "MOTOR" || nombreNodo === "FLEXIBLE"){
         bicho.exp.nodos += (radioNodo);
     }else if(nombreNodo === "PINCHO"){
-        bicho.exp.pinchos += (radioNodo * 2.5);
+        bicho.exp.pinchos += (radioNodo * 1.5);
     }else if(nombreNodo === "OJO"){
         bicho.exp.ojos += (radioNodo * 0.25);
     }else if(nombreNodo === "CORAZA"){
@@ -489,3 +489,27 @@ function calcularExperienciaTotal(exp){
     return exp.nodos+exp.ojos+exp.tentaculos+exp.size+exp.pinchos+exp.coraza;
 }
 /* GANAR EXPERIENCIA - GANAR EXPERIENCIA - GANAR EXPERIENCIA - GANAR EXPERIENCIA*/
+function matarNodos(nodo){
+    if(nodo === undefined){
+        return;
+    }
+    if(nodo.vida <= 0){
+        if(nodo.nodoPadre === null){
+            //MATAR BICHO
+        }else{
+            nodo.nodoPadre = null;
+        }
+    }else{
+        nodo.vida = 0;
+    }
+    nodo.nodos.forEach(function(nodoHijo) {
+        matarNodos(nodoHijo);
+    });
+}
+
+function dañarNodo(bicho, nodo) {
+    nodo.vida -= bicho.calcularDaño();
+    if(nodo.vida <= 0) {
+        matarNodos(nodo);
+    }
+}

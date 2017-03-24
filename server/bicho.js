@@ -387,3 +387,41 @@ module.exports = {
     Bicho: Bicho,
     TipoNodo: TipoNodo,
 };
+
+function mover(bicho, nodo) { //No sé si está bien del todo*
+    if(nodo === undefined || (nodo.nodoPadre === null && bicho.nodoCentral!==nodo)) {
+        return;
+    }
+    if(nodo.tipoNodo === TipoNodo.MOTOR) {
+        if(nodo.anguloBajar) {
+            nodo.anguloGiro = nodo.anguloGiro - (bicho.velocidadGiro / 2) <= -nodo.anguloTope ? -nodo.anguloTope : nodo.anguloGiro - (bicho.velocidadGiro / 2);
+            nodo.anguloBajar = nodo.anguloGiro > -nodo.anguloTope;
+        } else {
+            nodo.anguloGiro = nodo.anguloGiro + (bicho.velocidadGiro / 2) >= nodo.anguloTope ? nodo.anguloTope : nodo.anguloGiro + (bicho.velocidadGiro / 2);
+            nodo.anguloBajar = nodo.anguloGiro >= nodo.anguloTope;
+        }
+    } else if(nodo.tipoNodo === TipoNodo.FLEXIBLE) {
+        if(nodo.nodoPadre.anguloBajar) {
+            nodo.anguloGiro = nodo.nodoPadre.anguloGiro - (bicho.velocidadGiro / 2);
+        } else {
+            nodo.anguloGiro = nodo.nodoPadre.anguloGiro + (bicho.velocidadGiro / 2);
+        }
+    }
+
+    if(nodo.nodoPadre === null) {
+        nodo.x = bicho.x;
+        nodo.y = bicho.y;
+    } else {
+        var centroX = nodo.nodoPadre.x;
+        var centroY = nodo.nodoPadre.y;
+        nodo.anguloActual = nodo.nodoPadre.anguloActual + nodo.nodoPadre.anguloGiro + nodo.anguloInicio;
+        var angulo = nodo.anguloActual * Math.PI / 180.0;
+        var radioPadre = nodo.nodoPadre.radio;
+        nodo.x = Math.cos(angulo) * radioPadre + centroX;
+        nodo.y = Math.sin(angulo) * radioPadre + centroY;
+    }
+
+    nodo.nodos.forEach(function(nodoHijo) {
+        mover(bicho, nodoHijo);
+    });
+}
