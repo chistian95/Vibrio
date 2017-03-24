@@ -2,8 +2,8 @@
 =================================================================*/
 var express = require('express');
 var app = express();
-var width = 5000;
-var height = 5000;
+var width = 2000;
+var height = 2000;
 app.use(express.static(__dirname));
 var server = app.listen(process.env.PORT || 8082, function () {
 	var puerto = server.address().port;
@@ -241,6 +241,20 @@ io.on('connection', function(client) {
         }
     });
 
+    client.on('evole',function(info){
+        if(info!=null){
+            var id = info.id;
+            players.forEach(function(player){
+               if(player.id === id){
+                   console.log(player.nombre+" quiere evolucionar al nivel "+(player.bicho.nivel+1));
+                    player.bicho.nivel++;
+                    player.bicho.evole(info.opc);
+                    resetearExperiencia(player.bicho.exp);
+               }
+            });
+        }
+    });
+
     /*Al evolucionar (trampa)*/
     client.on('evolucionar', function(info) {
         if(info.player != undefined){
@@ -377,6 +391,8 @@ function actualizarPlayersCercanos() {
         var idsTemp = [];
         if(player.nombre != 'bot') {
             var hPlayer = player.bicho.hitbox;
+            /*PLAYERS
+            ============================================================*/
             players.forEach(function(playerTarget) {
                 if(player.id != playerTarget.id) {
                     var hTarget = playerTarget.bicho.hitbox;
@@ -387,6 +403,7 @@ function actualizarPlayersCercanos() {
                     }
                 }
             });
+            /*========================================================*/
         }
         var pTemp = [];
         idsTemp.forEach(function(idTemp){
@@ -415,7 +432,7 @@ function regenerarMapa() {
 
 /* GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS */
 function generarPlantas() {
-    for(var i=0; i<60; i++) {
+    for(var i=0; i<10; i++) {
         var tipoPlanta = Math.round(Math.random() * 4);
         var x = Math.random()*(width-200)+100;
         var y = Math.random()*(width-200)+100;
@@ -429,7 +446,7 @@ function generarPlantas() {
     }
 }
 generarPlantas();
-for(var i=0;i<50;i++) {
+for(var i=0;i<10;i++) {
     var p = new Player(i,Math.random()*width,Math.random()*height,"bot");
     var derechizqr = Math.round(Math.random()*1);
     if(derechizqr==0)p.bicho.derecha = true;

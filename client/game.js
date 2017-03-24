@@ -14,12 +14,12 @@ var expAntigua = null;
 =========================================================*/
 function Game(socket){
     app = new app();
-    this.movimientoXtentaculos = 2;
-    this.movimientoYtentaculos = 5;
+    this.mXtentaculos = 2;
+    this.mYtentaculos = 5;
     this.movimiento = true;
     this.playerToDebug = 0;
     this.NodoToDebug = 0;
-    this.velocidadTentaculos = 0.2;
+    this.vTentaculos = 0.2;
     this.playerDebug = false;
     this.debugNodosLength = 0;
 	this.socket = socket;
@@ -32,7 +32,7 @@ function Game(socket){
     window.addEventListener('touchmove', actualizarTouch, true);
 
     setInterval(function(){
-        count += this.velocidadTentaculos;
+        count += this.vTentaculos;
 		this.bucle();
         players.forEach(function(player){
             player.bicho.nodos.forEach(function(nodo){
@@ -41,8 +41,8 @@ function Game(socket){
                     if(!nodo.tentaculines || !nodo.tentaculines.length) return;
                     nodo.tentaculines[1].x = -5;
                     for (var i = 2; i <nodo.tentaculines.length; i++) {
-                        nodo.tentaculines[i].y = Math.sin((i * 0.5) + count) * this.movimientoXtentaculos;
-                        nodo.tentaculines[i].x = (i * lengthTentaculo + Math.cos((i * 0.3) + count) * this.movimientoYtentaculos)-5;
+                        nodo.tentaculines[i].y = Math.sin((i * 0.5) + count) * this.mXtentaculos;
+                        nodo.tentaculines[i].x = (i * lengthTentaculo + Math.cos((i * 0.3) + count) * this.mYtentaculos)-5;
                     }
                     player.bicho.nodos[player.bicho.nodos.indexOf(nodo)].sprite.rotation = player.bicho.nodos[player.bicho.nodos.indexOf(nodo)].anguloActual*Math.PI/180;
                 }
@@ -64,6 +64,11 @@ function Game(socket){
 /*=======================================================*/
 
 Game.prototype = {
+    evoZise: function() {this.socket.emit('evole',{id:game.localPlayer.id,opc: "zise"});},
+    evoPinchus: function() {this.socket.emit('evole',{id:game.localPlayer.id,opc: "pinchus"});},
+    evoTientaculos: function() {this.socket.emit('evole',{id:game.localPlayer.id,opc: "tientaculos"});},
+    evoEie: function() {this.socket.emit('evole',{id:game.localPlayer.id,opc: "eie"});},
+    evoCorza: function() {this.socket.emit('evole',{id:game.localPlayer.id,opc: "corza"});},
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
 	bucle: function(){
         if(game.localPlayer)posicionRaton();
@@ -72,6 +77,11 @@ Game.prototype = {
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
     reescalar: function () {
       app.renderer.resize(window.innerWidth, window.innerHeight);
+      app.expRenderer.resize(window.innerWidth/2, window.innerHeight/10);
+      app.backrenderer.resize(window.innerWidth, window.innerHeight);
+      app.background.width = window.innerWidth;
+      app.background.height = window.innerHeight;
+      app.backrenderer.render(app.background);
     },
     calcularExpTotal(exp){
         var exp = exp.nodos+exp.ojos+exp.tentaculos+exp.size+exp.pinchos+exp.coraza;
@@ -116,12 +126,17 @@ Game.prototype = {
     =====================================================================*/
     debugInit: function(){
         this.gui = new dat.GUI();
-        this.gui.add(this, 'movimientoXtentaculos',0,10);
-        this.gui.add(this, 'movimientoYtentaculos',0,10);
-        this.gui.add(this, 'velocidadTentaculos',0,2);
+        this.gui.add(this, 'mXtentaculos',0,10);
+        this.gui.add(this, 'mYtentaculos',0,10);
+        this.gui.add(this, 'vTentaculos',0,2);
         this.gui.add(this, 'movimiento');
         this.gui.add(game, 'evolucionar');
         this.gui.add(game, 'involucionar');
+        this.gui.add(game, 'evoZise');
+        this.gui.add(game, 'evoPinchus');
+        this.gui.add(game, 'evoTientaculos');
+        this.gui.add(game, 'evoEie');
+        this.gui.add(game, 'evoCorza');
     },
     resetGui: function() {
         this.gui.__controllers[1].__max = Math.round(players.length-1);

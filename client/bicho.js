@@ -12,8 +12,13 @@ var BichoProto = function(){
             nodo.anguloActual = nodoMin[5]; //Solo al player local
             nodo.vida = nodoMin[6];
             if(nodo.radio != nodoMin[4]) {
-                //TODO Arreglar esto plox
                 nodo.radio = nodoMin[4];
+                if(nodo.sprite.mask) {
+                    nodo.sprite.mask.width = nodoMin[4]*2;
+                    nodo.sprite.mask.height = nodoMin[4]*2;
+                    nodo.sprite.mask.x = nodoMin[4];
+                    nodo.sprite.mask.y = nodoMin[4];
+                }
                 //var nodoNuevo = new Nodo(nodo.x, nodo.y, nodo.tipoNodo, nodo.radio, nodo.anguloActual, nodo.z);
                 //this.nodos[pos] = nodoNuevo;
             }
@@ -90,21 +95,28 @@ Bicho.prototype = Object.create(BichoProto.prototype);
 var Nodo = function(x, y, tipoNodo, radio, anguloActual,z){
     var graphics = new PIXI.Graphics();
     graphics.beginFill(rgb2hex('rgba(' + tipoNodo.color[0] + ', ' + tipoNodo.color[1] + ', ' + tipoNodo.color[2]), 0.5);
-    graphics.drawCircle(radio, radio,radio);
+    if(tipoNodo.nombre != "PINCHO")graphics.drawCircle(radio, radio,radio);
+    else {
+        graphics.drawCircle(radio, radio,radio);
+        console.log("rad: "+radio)
+    }
     graphics.endFill();
     this.sprite = new PIXI.Sprite(graphics.generateCanvasTexture());
     if(tipoNodo.nombre != "OJO" && tipoNodo.nombre != "PINCHO" && tipoNodo.nombre != "TENTACULO") this.sprite = declararSpriteDesdeTextura(textura,app.world,x,y,0.5,z);
-    else if(tipoNodo.nombre != "TENTACULO") this.sprite = new PIXI.Sprite(graphics.generateCanvasTexture());
-    if(tipoNodo.nombre != "TENTACULO" && tipoNodo.nombre != "OJO") {
-        var mascara = new PIXI.Graphics();
-        mascara.beginFill(0xFF0000);
-        mascara.drawCircle(-radio, -radio, radio+1);
-        mascara.endFill();
-        mascara.lineStyle(30, 0x8d8dc9, 30);
-        this.sprite.mask = mascara;
-        this.sprite.mask.x += radio;
-        this.sprite.mask.y += radio;
-        this.sprite.addChild(mascara);
+    if(tipoNodo.nombre != "TENTACULO" && tipoNodo.nombre != "OJO" ) {
+        if(tipoNodo.nombre != "PINCHO") {
+            var mascara = new PIXI.Graphics();
+            mascara.beginFill(0xFF0000);
+            mascara.drawCircle(-radio, -radio, radio+1);
+            mascara.endFill();
+            mascara.lineStyle(30, 0x8d8dc9, 30);
+            this.sprite.mask = mascara;
+            this.sprite.mask.x += radio;
+            this.sprite.mask.y += radio;
+            this.sprite.addChild(mascara);
+        } else {
+            this.sprite.anchor.set(0.5);
+        }
         this.sprite.zOrder =z;
         app.world.addChild(this.sprite);
     } else if(tipoNodo.nombre != "OJO"){ //Tentaculo
@@ -133,7 +145,7 @@ var TipoNodo = function(nombre, color){
 TipoNodo.ESTATICO = new TipoNodo("ESTATICO", [0, 255, 0, 64]);
 TipoNodo.MOTOR = new TipoNodo("MOTOR", [255, 0, 0, 64]);
 TipoNodo.FLEXIBLE = new TipoNodo("FLEXIBLE", [0, 255, 255, 64]);
-TipoNodo.PINCHO = new TipoNodo("PINCHO", [0, 0, 255, 64]);
+TipoNodo.PINCHO = new TipoNodo("PINCHO", [0, 0, 255, 100]);
 TipoNodo.OJO = new TipoNodo("OJO", [255, 255, 0, 64]);
 TipoNodo.BOCA = new TipoNodo("BOCA", [255, 100, 150, 25]);
 TipoNodo.TENTACULO = new TipoNodo("TENTACULO", [0,0,0,64]);

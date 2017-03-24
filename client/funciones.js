@@ -23,7 +23,6 @@ function actualizarExp() {
 
     app.expRenderer.render(app.exp);
 }
-
 function declararSpriteDesdeTextura(textura,container, x = 0,y = 0,anchor = 0.5, z = 0) {
     var spriteTemp = new PIXI.Sprite(textura);
     spriteTemp.position.x = x;
@@ -33,7 +32,6 @@ function declararSpriteDesdeTextura(textura,container, x = 0,y = 0,anchor = 0.5,
     container.addChild(spriteTemp);
     return spriteTemp;
 }
-
 function addChildrenText(texto,father, x = 0, y = 0 , anchor = 0.5, font= 'Comic Sans MS', size = '20px', color = "#ffff00", z = 0) {
     var tempText = new PIXI.Text(texto, {fontFamily: font, fontSize:size, fill:color});
     tempText.position.x = x;
@@ -41,8 +39,6 @@ function addChildrenText(texto,father, x = 0, y = 0 , anchor = 0.5, font= 'Comic
     tempText.anchor.set(anchor);
     father.addChild(tempText);
 }
-
-
 function init(servPlantas, pHitbox,t,ancho,alto) {
     game.localPlayer = t;
     if(players.length==1) game.debugInit();
@@ -91,74 +87,6 @@ function init(servPlantas, pHitbox,t,ancho,alto) {
     app.world.addChild(app.bordeSprite);
 
     game.debugInit();
-}
-function crearBorde(ancho,alto) { //Se llama desde client.js al crear el player local.
-
-}
-/*======================================================================================*/
-/*Funciones comunes entre nodos y bicho
-========================================================================================*/
-function matarNodos(nodo){
-    if(nodo === undefined){
-        return;
-    }
-    if(nodo.vida <= 0){
-        if(nodo.nodoPadre === null){
-            //MATAR BICHO
-        }else{
-            nodo.nodoPadre = null;
-        }
-    }else{
-        nodo.vida = 0;
-    }
-    nodo.nodos.forEach(function(nodoHijo) {
-        matarNodos(nodoHijo);
-    });
-}
-
-function dañarNodo(bicho, nodo) {
-    nodo.vida -= bicho.calcularDaño();
-    if(nodo.vida <= 0) {
-        matarNodos(nodo);
-    }
-}
-
-function mover(bicho, nodo) { //No sé si está bien del todo*
-    if(nodo === undefined || (nodo.nodoPadre === null && bicho.nodoCentral!==nodo)) {
-        return;
-    }
-    if(nodo.tipoNodo === TipoNodo.MOTOR) {
-        if(nodo.anguloBajar) {
-            nodo.anguloGiro = nodo.anguloGiro - (bicho.velocidadGiro / 2) <= -nodo.anguloTope ? -nodo.anguloTope : nodo.anguloGiro - (bicho.velocidadGiro / 2);
-            nodo.anguloBajar = nodo.anguloGiro > -nodo.anguloTope;
-        } else {
-            nodo.anguloGiro = nodo.anguloGiro + (bicho.velocidadGiro / 2) >= nodo.anguloTope ? nodo.anguloTope : nodo.anguloGiro + (bicho.velocidadGiro / 2);
-            nodo.anguloBajar = nodo.anguloGiro >= nodo.anguloTope;
-        }
-    } else if(nodo.tipoNodo === TipoNodo.FLEXIBLE) {
-        if(nodo.nodoPadre.anguloBajar) {
-            nodo.anguloGiro = nodo.nodoPadre.anguloGiro - (bicho.velocidadGiro / 2);
-        } else {
-            nodo.anguloGiro = nodo.nodoPadre.anguloGiro + (bicho.velocidadGiro / 2);
-        }
-    }
-
-    if(nodo.nodoPadre === null) {
-        nodo.x = bicho.x;
-        nodo.y = bicho.y;
-    } else {
-        var centroX = nodo.nodoPadre.x;
-        var centroY = nodo.nodoPadre.y;
-        nodo.anguloActual = nodo.nodoPadre.anguloActual + nodo.nodoPadre.anguloGiro + nodo.anguloInicio;
-        var angulo = nodo.anguloActual * Math.PI / 180.0;
-        var radioPadre = nodo.nodoPadre.radio;
-        nodo.x = Math.cos(angulo) * radioPadre + centroX;
-        nodo.y = Math.sin(angulo) * radioPadre + centroY;
-    }
-
-    nodo.nodos.forEach(function(nodoHijo) {
-        mover(bicho, nodoHijo);
-    });
 }
 /*=================================================*/
 /*Inputs
