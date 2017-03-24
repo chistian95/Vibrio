@@ -146,6 +146,9 @@ io.on('connection', function(client) {
         });
 
         try {
+            if(!players[numPlayer].bicho.nodos[info.numNodoAtacante] || !plantas[numPlanta].nodos[info.numNodoAtacado]) {
+                return;
+            }
             try {
                 var player = players[numPlayer].bicho.nodos[info.numNodoAtacante];
                 planta = plantas[numPlanta].nodos[info.numNodoAtacado];
@@ -396,8 +399,8 @@ function actualizarPlayersCercanos() {
             players.forEach(function(playerTarget) {
                 if(player.id != playerTarget.id) {
                     var hTarget = playerTarget.bicho.hitbox;
-                    if(hPlayer[2] >= hTarget[0]-800 && hTarget[2]+800 >= hPlayer[0]) {
-                        if(hPlayer[3] >= hTarget[1]-600 && hTarget[3]+600 >= hPlayer[1]) {
+                    if(hPlayer[2] >= hTarget[0]-500 && hTarget[2]+500 >= hPlayer[0]) {
+                        if(hPlayer[3] >= hTarget[1]-300 && hTarget[3]+300 >= hPlayer[1]) {
                             idsTemp.push(playerTarget.id);
                         }
                     }
@@ -432,7 +435,7 @@ function regenerarMapa() {
 
 /* GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS */
 function generarPlantas() {
-    for(var i=0; i<10; i++) {
+    for(var i=0; i<20; i++) {
         var tipoPlanta = Math.round(Math.random() * 4);
         var x = Math.random()*(width-200)+100;
         var y = Math.random()*(width-200)+100;
@@ -446,7 +449,7 @@ function generarPlantas() {
     }
 }
 generarPlantas();
-for(var i=0;i<10;i++) {
+for(var i=0;i<20;i++) {
     var p = new Player(i,Math.random()*width,Math.random()*height,"bot");
     var derechizqr = Math.round(Math.random()*1);
     if(derechizqr==0)p.bicho.derecha = true;
@@ -480,11 +483,11 @@ function ganarExperienciaPlanta(bicho, tipoPlanta, radioNodo){
 function ganarExperienciaBicho(bicho, nombreNodo, radioNodo){
     //0=size, 1=pinchos, 2=tentaculos, 3=coraza, 4=nodos
     if(nombreNodo === "ESTATICO" || nombreNodo === "MOTOR" || nombreNodo === "FLEXIBLE"){
-        bicho.exp.nodos += (radioNodo);
+        bicho.exp.nodos += (radioNodo * 0.5);
     }else if(nombreNodo === "PINCHO"){
         bicho.exp.pinchos += (radioNodo * 1.5);
     }else if(nombreNodo === "OJO"){
-        bicho.exp.ojos += (radioNodo * 0.25);
+        bicho.exp.ojos += (radioNodo * 0.75);
     }else if(nombreNodo === "CORAZA"){
         bicho.exp.coraza += (radioNodo);
     }else if(nombreNodo === "TENTACULO"){

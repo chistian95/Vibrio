@@ -205,19 +205,21 @@ var BichoProto = function(){
             } else if(tipoSeleccionado == "pinchos") { //Colocar uno o mas pinchos por ahí
                 //Intentar colocar el pincho en la cabeza
                 var nodosPinchos = [];
+                var nodosAngulos = [];
                 this.nodoCentral.nodos.forEach(function(nodo) {
                     if(nodo.tipoNodo === TipoNodo.PINCHO) {
                         nodosPinchos.push(nodo.anguloInicio);
                     }
+                    nodosAngulos.push(nodo.anguloInicio);
                 });
 
                 if(nodosPinchos.length <= 0) { //Si no tiene pinchos, poner uno en la parte delantera
                     new Nodo(TipoNodo.PINCHO, this.nodoCentral, 180, 7, this);
-                } else if(!nodosPinchos.includes(200) || !nodosPinchos.includes(160)) { //Comprobar si aún no tiene pinchos a los costados
-                    if(!nodosPinchos.includes(200)) {
+                } else if(!nodosAngulos.includes(200) || !nodosPinchos.includes(160)) { //Comprobar si aún no tiene pinchos a los costados
+                    if(!nodosAngulos.includes(200)) {
                         new Nodo(TipoNodo.PINCHO, this.nodoCentral, 200, 7, this);
                     }
-                    if(!nodosPinchos.includes(160)) {
+                    if(!nodosAngulos.includes(160)) {
                         new Nodo(TipoNodo.PINCHO, this.nodoCentral, 160, 7, this);
                     }
                 } else { //Si no, intentar colocarlo por la parte trasera del bicho
@@ -242,11 +244,11 @@ var BichoProto = function(){
                                     saltar = true;
                                 }
                             }
-                            if(!nodosPinchos.includes(270) || !nodosPinchos.includes(90)) { //Mirar si se pueden poner a los costados
-                                if(!nodosPinchos.includes(270)) {
+                            if(!angulosHijos.includes(270) || !angulosHijos.includes(90)) { //Mirar si se pueden poner a los costados
+                                if(!angulosHijos.includes(270)) {
                                     new Nodo(TipoNodo.PINCHO, nodo, 270, 7, this);
                                 }
-                                if(!nodosPinchos.includes(90)) {
+                                if(!angulosHijos.includes(90)) {
                                     new Nodo(TipoNodo.PINCHO, nodo, 90, 7, this);
                                 }
                                 saltar = true;
@@ -256,6 +258,7 @@ var BichoProto = function(){
                     }
                 }
             } else if(tipoSeleccionado == "tentaculos") { //Poner tentaculillos
+                console.log("Poner tentaculo");
                 var angulosHijos = [];
                 var nodosTentaculos = [];
                 this.nodoCentral.nodos.forEach(function(nodo) {
