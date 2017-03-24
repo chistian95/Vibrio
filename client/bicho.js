@@ -1,12 +1,5 @@
 var g = new PIXI.Graphics();
-var Bicho = function(z,nombre) {
-    this.z = z;
-    this.nodos = [];
-    this.arriba = false;
-    this.izquierda = false;
-    this.derecha = false;
-    this.nombre = nombre;
-
+var BichoProto = function(){
     this.parsearNodo = function(nodoMin) {
         var pos = nodoMin[0];
         if(pos === undefined) return;
@@ -83,6 +76,16 @@ var Bicho = function(z,nombre) {
         });
     }
 }
+var Bicho = function(z,nombre) {
+    BichoProto.call(this);
+    this.z = z;
+    this.nodos = [];
+    this.arriba = false;
+    this.izquierda = false;
+    this.derecha = false;
+    this.nombre = nombre;
+}
+Bicho.prototype = Object.create(BichoProto.prototype);
 
 var Nodo = function(x, y, tipoNodo, radio, anguloActual,z){
     var graphics = new PIXI.Graphics();
@@ -90,39 +93,38 @@ var Nodo = function(x, y, tipoNodo, radio, anguloActual,z){
     graphics.drawCircle(radio, radio,radio);
     graphics.endFill();
     this.sprite = new PIXI.Sprite(graphics.generateCanvasTexture());
-    if(tipoNodo.nombre != "OJO" && tipoNodo.nombre != "PINCHO" && tipoNodo.nombre != "TENTACULO") this.sprite = new PIXI.Sprite(textura);
+    if(tipoNodo.nombre != "OJO" && tipoNodo.nombre != "PINCHO" && tipoNodo.nombre != "TENTACULO") this.sprite = declararSpriteDesdeTextura(textura,app.world,x,y,0.5,z);
     else if(tipoNodo.nombre != "TENTACULO") this.sprite = new PIXI.Sprite(graphics.generateCanvasTexture());
-    if(tipoNodo.nombre != "TENTACULO") {
+    if(tipoNodo.nombre != "TENTACULO" && tipoNodo.nombre != "OJO") {
         var mascara = new PIXI.Graphics();
         mascara.beginFill(0xFF0000);
         mascara.drawCircle(-radio, -radio, radio+1);
         mascara.endFill();
-        mascara.lineStyle(30, 0x8d8dc9, 30);;
+        mascara.lineStyle(30, 0x8d8dc9, 30);
         this.sprite.mask = mascara;
         this.sprite.mask.x += radio;
         this.sprite.mask.y += radio;
-
         this.sprite.addChild(mascara);
-    } else { //Tentaculo
+        this.sprite.zOrder =z;
+        app.world.addChild(this.sprite);
+    } else if(tipoNodo.nombre != "OJO"){ //Tentaculo
         this.tentaculines = [];
         for (var i = 0; i < 25; i++) {
-            this.tentaculines.push(new PIXI.Point(i * ropeLength, 0));
+            this.tentaculines.push(new PIXI.Point(i * lengthTentaculo, 0));
         }
-        this.sprite = new PIXI.mesh.Rope(PIXI.Texture.fromImage('assets/img/tentacle.png'), this.tentaculines);
+        this.sprite = new PIXI.mesh.Rope(tentaculo, this.tentaculines);
+        this.sprite.zOrder =-1;
+        this.sprite.position.x = x;
+        this.sprite.position.y = y;
+        app.world.addChild(this.sprite);
+    } else { //Ojo
+        this.sprite = declararSpriteDesdeTextura(ojo,app.world,x,y,0.5,z);
     }
-    this.sprite.zOrder =10;
-    if(tipoNodo.nombre === "TENTACULO") {this.sprite.zOrder =0}
-    if(tipoNodo.nombre != "TENTACULO")this.sprite.anchor.set(0.5);
-
-    app.world.addChild(this.sprite);
-    this.sprite.position.x = x;
-    this.sprite.position.y = y;
     this.tipoNodo = tipoNodo;
     this.radio = radio;
     this.anguloActual = anguloActual;
     this.vida = 0;
 }
-
 var TipoNodo = function(nombre, color){
     this.nombre = nombre;
     this.color = color;
@@ -136,11 +138,3 @@ TipoNodo.OJO = new TipoNodo("OJO", [255, 255, 0, 64]);
 TipoNodo.BOCA = new TipoNodo("BOCA", [255, 100, 150, 25]);
 TipoNodo.TENTACULO = new TipoNodo("TENTACULO", [0,0,0,64]);
 TipoNodo.HIJOTENTACULO = new TipoNodo("HIJOTENTACULO", [0,0,0,64]);
-
-function rgb2hex(rgb){
- rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
- return (rgb && rgb.length === 4) ? "0x" +
-  ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
-  ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
-  ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
-}
