@@ -198,7 +198,7 @@ var BichoProto = function(){
             });
             console.log(tipoSeleccionado);
             if(tipoSeleccionado == "size") { //Aumentar el radio de todos sus nodos
-                var deltaRadio = this.nodoCentral.radio * 0.25;
+                var deltaRadio = this.nodoCentral.radio * 0.05;
                 this.nodos.forEach(function(nodo) {
                    nodo.radio += deltaRadio;
                 });
@@ -368,7 +368,7 @@ var BichoProto = function(){
             var tipoSeleccionado;
             tipoSeleccionado = opc;
             if(tipoSeleccionado == "zise") { //Aumentar el radio de todos sus nodos
-                var deltaRadio = this.nodoCentral.radio * 0.25;
+                var deltaRadio = this.nodoCentral.radio * 0.05;
                 this.nodos.forEach(function(nodo) {
                    nodo.radio += deltaRadio;
                 });

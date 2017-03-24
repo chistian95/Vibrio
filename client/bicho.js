@@ -18,6 +18,9 @@ var BichoProto = function(){
                     nodo.sprite.mask.height = nodoMin[4]*2;
                     nodo.sprite.mask.x = nodoMin[4];
                     nodo.sprite.mask.y = nodoMin[4];
+                } else {
+                    nodo.sprite.width = nodoMin[4] * 0.75;
+                    nodo.sprite.height = nodoMin[4] * 0.75;
                 }
                 //var nodoNuevo = new Nodo(nodo.x, nodo.y, nodo.tipoNodo, nodo.radio, nodo.anguloActual, nodo.z);
                 //this.nodos[pos] = nodoNuevo;
