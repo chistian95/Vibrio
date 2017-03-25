@@ -249,10 +249,15 @@ io.on('connection', function(client) {
             var id = info.id;
             players.forEach(function(player){
                if(player.id === id){
-                   console.log(player.nombre+" quiere evolucionar al nivel "+(player.bicho.nivel+1));
-                    player.bicho.nivel++;
-                    player.bicho.evole(info.opc);
-                    resetearExperiencia(player.bicho.exp);
+                   bicho = player.bicho;
+                   resetearExperiencia(player.bicho.exp);
+                   switch(info.opc) {
+                        case "pinchus": bicho.exp.pinchos = (player.bicho.nivel+1)*100; break;
+                        case "eie": bicho.exp.ojos = (player.bicho.nivel+1)*100; break;
+                        case "corza": bicho.exp.coraza = (player.bicho.nivel+1)*100; break;
+                        case "tientaculos": bicho.exp.tentaculos = (player.bicho.nivel+1)*100; break;
+                        case "zise": bicho.exp.size = (player.bicho.nivel+1)*100; break;
+                   }
                }
             });
         }

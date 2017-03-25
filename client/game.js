@@ -64,11 +64,15 @@ function Game(socket){
 /*=======================================================*/
 
 Game.prototype = {
-    evoZise: function() {this.socket.emit('evole',{id:game.localPlayer.id,opc: "zise"});},
-    evoPinchus: function() {this.socket.emit('evole',{id:game.localPlayer.id,opc: "pinchus"});},
-    evoTientaculos: function() {this.socket.emit('evole',{id:game.localPlayer.id,opc: "tientaculos"});},
-    evoEie: function() {this.socket.emit('evole',{id:game.localPlayer.id,opc: "eie"});},
-    evoCorza: function() {this.socket.emit('evole',{id:game.localPlayer.id,opc: "corza"});},
+    evoZise: function() {this.socket.emit('evole',{id:game.localPlayer.id,opc: "zise"});this.emitirEvoTrampa();},
+    evoPinchus: function() {this.socket.emit('evole',{id:game.localPlayer.id,opc: "pinchus"});this.emitirEvoTrampa();},
+    evoTientaculos: function() {this.socket.emit('evole',{id:game.localPlayer.id,opc: "tientaculos"});this.emitirEvoTrampa();},
+    evoEie: function() {this.socket.emit('evole',{id:game.localPlayer.id,opc: "eie"});this.emitirEvoTrampa();},
+    evoCorza: function() {this.socket.emit('evole',{id:game.localPlayer.id,opc: "corza"});this.emitirEvoTrampa();},
+    emitirEvoTrampa(){
+        this.socket.emit('evo', game.localPlayer.id);
+        expAntigua = 0;
+    },
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
 	bucle: function(){
         if(game.localPlayer)posicionRaton();
@@ -176,7 +180,7 @@ Game.prototype = {
                         game.localPlayer.bicho.chocar(player.bicho,this.socket,player.id,game.localPlayer.id);
                     }
                 }
-            } catch(err) {} //*
+            } catch(err) {}
         });
 	},
     colisionPlantas: function(){

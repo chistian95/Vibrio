@@ -153,16 +153,23 @@ function rgb2hex(rgb){
   ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
   ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
 }
-/*
-function generarDibujoCircular(x,y,radio = 20,alpha = 100,color = 0xffffff,anchor = 0.5,z = 0,tiponodoColor) {
-    if(tiponodoColor) var colorTemp = rgb2hex('rgba(' + tiponodoColor[0] + ', ' + tiponodoColor[1] + ', ' + tiponodoColor[2]);
-    else var colorTemp = color;
 
+function generarDibujoCircular(radio,color,tiponodoColor,alpha,x,y,anchor,z) {
+    var colorTemp = []; "rgba(199, 64, 64, 0.93)"
+    if(tiponodoColor) {
+        colorTemp = rgb2hex('rgba(' + color[0] + ', ' + color[1] + ', ' + color[2] + ", 1)");
+    } else {
+        colorTemp = color;
+    }
     var grap = new PIXI.Graphics();
-    grap.beginFill(0xffffff, 0.5);
+    grap.beginFill(colorTemp, alpha || 1);
     grap.drawCircle(radio, radio,radio);
     grap.endFill();
-    var sprite = PIXI.Sprite(grap.generateCanvasTexture());
+    var sprite = new PIXI.Sprite(grap.generateCanvasTexture());
+    if(x)sprite.position.x = x;
+    if(y)sprite.position.y = y;
+    if(z)sprite.zOrder.set(z);
+    sprite.anchor.set(anchor || 0.5);
     app.world.addChild(sprite);
     return sprite;
-}*/
+}
