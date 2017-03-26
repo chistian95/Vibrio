@@ -119,8 +119,8 @@ function actualizarTouch(e) {
 }
 function posicionRaton() {
     if(game.movimiento) {
-        var relX = game.localPlayer.ratonX - game.localPlayer.bicho.nodos[0].sprite.position.x+app.world.pivot.x;
-        var relY = game.localPlayer.ratonY - game.localPlayer.bicho.nodos[0].sprite.position.y+app.world.pivot.y;
+        var relX = game.localPlayer.ratonX - window.innerWidth/2;
+        var relY = game.localPlayer.ratonY - window.innerHeight/2;
         var anguloBicho = game.localPlayer.bicho.nodos[0].anguloActual;
         var relAngulo = Math.atan2(relY, relX) * 180 / Math.PI + 180;
         var difAngulo = relAngulo - anguloBicho;

@@ -24,19 +24,17 @@ function app(){
     /*==================================*/
     /*Declarar renderer de imágenes
     =================================================================================================*/
-    this.renderer = new PIXI.autoDetectRenderer(256, 256, {antialias: false, transparent: true, resolution: 1});
-    this.backrenderer = new PIXI.autoDetectRenderer(400, 50,null,true,true,false,true,1,false,true,false);
-    this.expRenderer = new PIXI.autoDetectRenderer(800, 600, {antialias: false, transparent: true, resolution: 1});
+    this.renderer = new PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight, {antialias: false, transparent: true, resolution: 1});
+    this.backrenderer = new PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight,null,true,true,false,true,1,false,true,false);
+    this.expRenderer = new PIXI.autoDetectRenderer(window.innerWidth/2, window.innerHeight/10, {antialias: false, transparent: true, resolution: 1});
     //Añadirlos al body para que se vean
     document.body.appendChild(this.renderer.view);
     /*===============================================================================================*/
     /*Preparar los renderer (Estilos)
     ==============================================================================*/
-    this.backrenderer.resize(window.innerWidth, window.innerHeight);
     this.backrenderer.view.style.position = "absolute";
     this.backrenderer.view.style.display = "block";
 
-    this.renderer.resize(window.innerWidth, window.innerHeight);
     this.renderer.view.style.position = "absolute";
     this.renderer.view.style.display = "block";
 
@@ -45,7 +43,6 @@ function app(){
     document.body.appendChild(this.backrenderer.view);
     document.body.appendChild(this.expRenderer.view);
 
-    this.expRenderer.resize(window.innerWidth/2, window.innerHeight/10);
     this.expRenderer.view.style.position = "absolute";
     this.expRenderer.view.style.display = "block";
     this.expRenderer.view.style.zIndex = 1;

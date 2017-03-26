@@ -1,4 +1,5 @@
 var game;
+var zoom = 1;
 var socket = io.connect('http://127.0.0.1:8082');
 function empezarJuego(){
     //Conectarse
@@ -65,8 +66,8 @@ function empezarJuego(){
         /* Pixi - Mover la cámara y pintarlo todo
         ============================================================================*/
         if(game.localPlayer.bicho.nodos[0]) {
-            app.world.pivot.x = game.localPlayer.bicho.nodos[0].sprite.position.x - window.innerWidth/2
-            app.world.pivot.y = game.localPlayer.bicho.nodos[0].sprite.position.y - window.innerHeight/2
+            app.world.pivot.x = game.localPlayer.bicho.nodos[0].sprite.position.x - (window.innerWidth/2)/zoom
+            app.world.pivot.y = game.localPlayer.bicho.nodos[0].sprite.position.y - (window.innerHeight/2)/zoom
             app.renderer.render(app.world);
         }
         /*==========================================================================*/

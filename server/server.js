@@ -2,8 +2,8 @@
 =================================================================*/
 var express = require('express');
 var app = express();
-var width = 2000;
-var height = 2000;
+var width = 1024;
+var height = 768;
 app.use(express.static(__dirname));
 var server = app.listen(process.env.PORT || 8082, function () {
 	var puerto = server.address().port;

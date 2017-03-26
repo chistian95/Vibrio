@@ -10,6 +10,12 @@ var lengthTentaculo = 2;
 var expActual = null;
 var expAntigua = null;
 
+var minWidth = 1024;
+var minHeight = 768;
+var propWentreH = minWidth/minHeight;
+var minZoomY = 0.5;
+var minZoomX = 0.5;
+
 /*Crear juego
 =========================================================*/
 function Game(socket){
@@ -80,12 +86,20 @@ Game.prototype = {
 	},
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
     reescalar: function () {
+        var widthR = window.innerWidth, heightR = window.innerHeight;
+        var resc = Math.min(Math.min(Math.max(widthR/minWidth,minZoomX),Math.max(heightR/minHeight,minZoomY)),1);
         app.renderer.resize(window.innerWidth, window.innerHeight);
         app.expRenderer.resize(window.innerWidth/2, window.innerHeight/10);
         app.backrenderer.resize(window.innerWidth, window.innerHeight);
+        console.log("zoom: "+resc)
+        app.world.scale.set(resc);
+        app.back.scale.set(resc);
+        app.exp.scale.set(resc);
+        app.borde.scale.set(resc);
+
         app.background.width = window.innerWidth;
         app.background.height = window.innerHeight;
-
+        zoom = resc;
         app.backrenderer.render(app.background);
         actualizarUi();
         actualizarExp();
