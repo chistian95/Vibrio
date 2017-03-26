@@ -1,16 +1,18 @@
 function actualizarExp() {
     //0=size, 1=pinchos, 2=tentaculos, 3=coraza, 4=nodos, 5=ojos
-    var alturaRectangulo = 46;
+    var anchoBordeExp = app.expRenderer.height/30;
+    var widthRect = window.innerWidth/2-anchoBordeExp*2;
+    var heightRect = window.innerHeight/20-anchoBordeExp*2;
+    var alturaRectangulo = app.expRenderer.height/2.3+anchoBordeExp*2.5;
     var expTotal = expActual.nodos+expActual.ojos+expActual.tentaculos+expActual.size+expActual.pinchos+expActual.coraza;
     app.expSprite.clear();
-    app.expSprite.lineStyle(5, 0x000000, 5);
+    app.expSprite.lineStyle(anchoBordeExp);
     app.expSprite.beginFill(0x2c3e50, 1);
-    app.expSprite.drawRoundedRect(0, alturaRectangulo, window.innerWidth/2, window.innerHeight/20, 15);
+    app.expSprite.drawRect(anchoBordeExp, alturaRectangulo, widthRect, heightRect);
     app.expSprite.lineStyle(0);
     var TempExp = (expTotal/((nivel+1)*100))*window.innerWidth/2;
-    if(!TempExp) TempExp = 2;
     app.expSprite.beginFill(0x16a085, 0.75);
-    if(TempExp>2)app.expSprite.drawRect(0, alturaRectangulo, TempExp, window.innerHeight/20);
+    app.expSprite.drawRect(anchoBordeExp*1.5, alturaRectangulo+anchoBordeExp*0.5, Math.min(TempExp,widthRect-anchoBordeExp), heightRect-anchoBordeExp);
     app.expSprite.endFill();
 
     app.expSprite.children[0].text = Math.floor((expTotal/((nivel+1)*100))*100)+'%';
@@ -154,7 +156,7 @@ function rgb2hex(rgb){
   ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
 }
 
-function generarDibujoCircular(radio,color,tiponodoColor,alpha,x,y,anchor,z) {
+function generarDibujoCircular(radio,color,tiponodoColor,alpha,z,x,y,anchor) {
     var colorTemp = []; "rgba(199, 64, 64, 0.93)"
     if(tiponodoColor) {
         colorTemp = rgb2hex('rgba(' + color[0] + ', ' + color[1] + ', ' + color[2] + ", 1)");
@@ -168,8 +170,32 @@ function generarDibujoCircular(radio,color,tiponodoColor,alpha,x,y,anchor,z) {
     var sprite = new PIXI.Sprite(grap.generateCanvasTexture());
     if(x)sprite.position.x = x;
     if(y)sprite.position.y = y;
-    if(z)sprite.zOrder.set(z);
+    if(z)sprite.zOrder = z;
     sprite.anchor.set(anchor || 0.5);
     app.world.addChild(sprite);
     return sprite;
+}
+
+function actualizarUi() {
+    var x = app.expRenderer.width/7;
+    app.spr_uiOjo.position.x = x;
+    app.spr_uiPincho.position.x = x*2;
+    app.spr_uiZise.position.x = x*3;
+    app.spr_uiTentaculo.position.x = x*4;
+    app.spr_uiNodos.position.x = x*5;
+    app.spr_uiCoraza.position.x = x*6;
+
+    var y = app.expRenderer.height/3.5;
+    app.spr_uiOjo.position.y = y;
+    app.spr_uiPincho.position.y = y;
+    app.spr_uiZise.position.y = y;
+    app.spr_uiTentaculo.position.y = y;
+    app.spr_uiNodos.position.y = y;
+    app.spr_uiCoraza.position.y = y;
+
+    app.expSprite.children[0].position.x = app.expRenderer.width/2;
+    app.expSprite.children[0].position.y = app.expRenderer.height/2.3+app.expRenderer.height/12+window.innerHeight/40-app.expRenderer.height/30;
+
+    app.expSprite.mask.width = window.innerWidth/2;
+    app.expSprite.mask.height = window.innerHeight/20;
 }

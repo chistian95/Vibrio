@@ -66,13 +66,15 @@ function app(){
     this.background.position.y = 0;
     this.exp.addChild(this.expSprite);
 
-    this.spr_uiOjo = declararSpriteDesdeTextura(uiOjo,this.exp,100,25,1);
-    this.spr_uiPincho = declararSpriteDesdeTextura(uiPincho,this.exp,155,25,1);
-    this.spr_uiZise = declararSpriteDesdeTextura(uiZise,this.exp,500,25,1);
-    this.spr_uiTentaculo =  declararSpriteDesdeTextura(uiTentaculo,this.exp,350,25,1);
-    this.spr_uiNodos =  declararSpriteDesdeTextura(uiNodos,this.exp,250,25,1);
-    this.spr_uiCoraza =  declararSpriteDesdeTextura(uiCoraza,this.exp,25,25,1);
+    var x = this.expRenderer.width/7;
+    this.spr_uiOjo = declararSpriteDesdeTextura(uiOjo,this.exp,x,25,1);
+    this.spr_uiPincho = declararSpriteDesdeTextura(uiPincho,this.exp,x*2,25,1);
+    this.spr_uiZise = declararSpriteDesdeTextura(uiZise,this.exp,x*3,25,1);
+    this.spr_uiTentaculo =  declararSpriteDesdeTextura(uiTentaculo,this.exp,x*4,25,1);
+    this.spr_uiNodos =  declararSpriteDesdeTextura(uiNodos,this.exp,x*5,25,1);
+    this.spr_uiCoraza =  declararSpriteDesdeTextura(uiCoraza,this.exp,x*6,25,1);
 
+    //texto,father, x = 0, y = 0 , anchor = 0.5, font= 'Comic Sans MS', size = '20px', color = "#ffff00", z = 0
     addChildrenText("0%",this.expSprite,window.innerWidth/4,window.innerHeight/13.5,0.5,null,35,"#1400ff"); //Exp General
     addChildrenText("Error",this.spr_uiOjo,null,10); //Exp Ojo
     addChildrenText("Error",this.spr_uiPincho,null,10); //Exp Picho
@@ -81,9 +83,10 @@ function app(){
     addChildrenText("Error",this.spr_uiTentaculo,null,10); //Exp Tentaculos
     addChildrenText("Error",this.spr_uiCoraza,null,10); //Exp Coraza
 
+    var alturaRectangulo = this.expRenderer.height/2.1;
     var mascara = new PIXI.Graphics();
-    mascara.beginFill(0xFF0000);
-    mascara.drawRoundedRect(0, 46, window.innerWidth/2, window.innerHeight/20, 15);
+    mascara.beginFill(0x000000);
+    mascara.drawRect(0, alturaRectangulo, window.innerWidth/2, window.innerHeight/20);
     mascara.endFill();
     this.expSprite.mask = mascara;
     this.expSprite.mask.x = 0;

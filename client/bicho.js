@@ -73,7 +73,6 @@ var BichoProto = function(){
                     var sumaRadios = nodoTarget.radio + nodo.radio;
                     if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
                         socket.emit('chocarPlanta',{idAtacante: idLocal, numNodoAtacante: numNodoLocalPlayer, idAtacado: idTarget, numNodoAtacado: numNodoEnemigo});
-                        //console.log("PLANTA X: "+nodoTarget.x+"     PLANTA Y: "+nodoTarget.y);
                     }
                     numNodoEnemigo++;
                 });
@@ -106,9 +105,7 @@ var Nodo = function(x, y, tipoNodo, radio, anguloActual,z){
     } else if(tipoNodo.nombre ==="OJO") {
         this.sprite = declararSpriteDesdeTextura(ojo,app.world,x,y,0.5,z);
     } else {
-        //x,y,radio = 20,alpha = 100,color = 0xffffff,anchor = 0.5,z = 0,tiponodoColor
-        //radio,color,tiponodoColor,alpha,x,y,anchor,z
-        this.sprite =       generarDibujoCircular(radio,tipoNodo.color,true,0.7);
+        this.sprite = generarDibujoCircular(radio,tipoNodo.color,true,0.7,z);
     }
     this.tipoNodo = tipoNodo;
     this.radio = radio;

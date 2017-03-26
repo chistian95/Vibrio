@@ -80,12 +80,15 @@ Game.prototype = {
 	},
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
     reescalar: function () {
-      app.renderer.resize(window.innerWidth, window.innerHeight);
-      app.expRenderer.resize(window.innerWidth/2, window.innerHeight/10);
-      app.backrenderer.resize(window.innerWidth, window.innerHeight);
-      app.background.width = window.innerWidth;
-      app.background.height = window.innerHeight;
-      app.backrenderer.render(app.background);
+        app.renderer.resize(window.innerWidth, window.innerHeight);
+        app.expRenderer.resize(window.innerWidth/2, window.innerHeight/10);
+        app.backrenderer.resize(window.innerWidth, window.innerHeight);
+        app.background.width = window.innerWidth;
+        app.background.height = window.innerHeight;
+
+        app.backrenderer.render(app.background);
+        actualizarUi();
+        actualizarExp();
     },
     calcularExpTotal(exp){
         var exp = exp.nodos+exp.ojos+exp.tentaculos+exp.size+exp.pinchos+exp.coraza;
