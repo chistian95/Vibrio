@@ -10,11 +10,11 @@ var lengthTentaculo = 2;
 var expActual = null;
 var expAntigua = null;
 
-var minWidth = 1024;
-var minHeight = 768;
-var propWentreH = minWidth/minHeight;
-var minZoomY = 0.5;
-var minZoomX = 0.5;
+var zoomObj = 1;
+var w = 1920;
+var h = 1080;
+var xForY = w/h;
+var maxZoom = 0.25;
 
 /*Crear juego
 =========================================================*/
@@ -81,28 +81,48 @@ Game.prototype = {
     },
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
 	bucle: function(){
+        if(Math.abs(zoomObj-zoom) > 0.02) {
+            if(Math.floor(zoomObj*100)/100 > zoom) {
+            zoom+=0.02;
+            console.log("obj: "+Math.floor(zoomObj*100)/100+" zoom: "+zoom);
+            this.reescalarContainers();
+            }
+            else if(Math.floor(zoomObj*100)/100 < zoom) {
+                zoom-=0.02;
+                console.log("obj: "+Math.floor(zoomObj*100)/100+" zoom: "+zoom);
+                this.reescalarContainers();
+            }
+        }
+
         if(game.localPlayer)posicionRaton();
 		if(this.localPlayer != undefined) this.enviarInfo();
 	},
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
     reescalar: function () {
         var widthR = window.innerWidth, heightR = window.innerHeight;
-        var resc = Math.min(Math.min(Math.max(widthR/minWidth,minZoomX),Math.max(heightR/minHeight,minZoomY)),1);
+        /*var rescX = widthR/w;
+        var rescY = heightR/h;
+        if(rescX >=rescY) rescY= widthR*xForY;
+        else rescY= widthR*xForY;*/
+        var resc = Math.max(Math.min(Math.max(widthR/w,heightR/h),1),maxZoom);
         app.renderer.resize(window.innerWidth, window.innerHeight);
         app.expRenderer.resize(window.innerWidth/2, window.innerHeight/10);
         app.backrenderer.resize(window.innerWidth, window.innerHeight);
-        console.log("zoom: "+resc)
-        app.world.scale.set(resc);
-        app.back.scale.set(resc);
-        app.exp.scale.set(resc);
-        app.borde.scale.set(resc);
 
         app.background.width = window.innerWidth;
         app.background.height = window.innerHeight;
-        zoom = resc;
+        zoomObj = resc;
         app.backrenderer.render(app.background);
         actualizarUi();
         actualizarExp();
+    },
+    reescalarContainers: function(){
+        //console.log("zoom: "+zoom)
+        //app.renderer.render(app.world);
+        app.world.scale.set(zoom);
+        app.back.scale.set(zoom);
+        app.exp.scale.set(zoom);
+        app.borde.scale.set(zoom);
     },
     calcularExpTotal(exp){
         var exp = exp.nodos+exp.ojos+exp.tentaculos+exp.size+exp.pinchos+exp.coraza;
