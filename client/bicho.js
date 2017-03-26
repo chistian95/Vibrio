@@ -103,9 +103,9 @@ var Nodo = function(x, y, tipoNodo, radio, anguloActual,z){
         this.sprite.position.y = y;
         app.world.addChild(this.sprite);
     } else if(tipoNodo.nombre ==="OJO") {
-        this.sprite = declararSpriteDesdeTextura(ojo,app.world,x,y,0.5,z);
+        this.sprite = declararSpriteDesdeTextura(ojo,app.world,x,y,0.5,z,x,y);
     } else {
-        this.sprite = generarDibujoCircular(radio,tipoNodo.color,true,0.7,z);
+        this.sprite = generarDibujoCircular(radio,tipoNodo.color,true,0.7,z,x,y);
     }
     this.tipoNodo = tipoNodo;
     this.radio = radio;
