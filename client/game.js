@@ -81,14 +81,14 @@ Game.prototype = {
     },
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
 	bucle: function(){
-        if(Math.abs(zoomObj-zoom) > 0.02) {
+        if(Math.abs(zoomObj-zoom) > 0.01) {
             if(Math.floor(zoomObj*100)/100 > zoom) {
-            zoom+=0.02;
+            zoom+=0.01;
             console.log("obj: "+Math.floor(zoomObj*100)/100+" zoom: "+zoom);
             this.reescalarContainers();
             }
             else if(Math.floor(zoomObj*100)/100 < zoom) {
-                zoom-=0.02;
+                zoom-=0.01;
                 console.log("obj: "+Math.floor(zoomObj*100)/100+" zoom: "+zoom);
                 this.reescalarContainers();
             }
@@ -109,10 +109,11 @@ Game.prototype = {
         app.expRenderer.resize(window.innerWidth/2, Math.min(window.innerHeight/10),26);
         app.backrenderer.resize(window.innerWidth, window.innerHeight);
 
-        //app.background.width = window.innerWidth;
-        //app.background.height = window.innerHeight;
+        app.background.width = Math.max(window.innerWidth,500);
+        app.background.height = Math.max(window.innerHeight,300);
         zoomObj = resc;
         app.backrenderer.render(app.background);
+        app.renderer.render(app.world);
         actualizarUi();
         actualizarExp();
     },

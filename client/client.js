@@ -146,7 +146,6 @@ $(document).ready(function(){
 
     $(document).keydown(function(event) {
        if (event.ctrlKey==true && (keyCodes.indexOf(event.which) != -1)) {
-        alert('disabling zooming');
         event.preventDefault();
         }
     });
