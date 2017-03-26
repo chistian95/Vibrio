@@ -136,7 +136,7 @@ function posicionRaton() {
         }
         var distancia = Math.sqrt(Math.pow(relX, 2) + Math.pow(relY, 2));
         var diametro = game.localPlayer.bicho.nodos[0].radio;
-        if(distancia > diametro) {
+        if(distancia > diametro*zoom) {
             game.localPlayer.arriba = true;
         } else {
             game.localPlayer.arriba = false;
@@ -185,7 +185,7 @@ function actualizarUi() {
     app.spr_uiNodos.position.x = x*5;
     app.spr_uiCoraza.position.x = x*6;
 
-    var y = app.expRenderer.height/3.5;
+    var y = Math.min(app.expRenderer.height/3.5,26);
     app.spr_uiOjo.position.y = y;
     app.spr_uiPincho.position.y = y;
     app.spr_uiZise.position.y = y;
@@ -196,6 +196,16 @@ function actualizarUi() {
     app.expSprite.children[0].position.x = app.expRenderer.width/2;
     app.expSprite.children[0].position.y = app.expRenderer.height/2.3+app.expRenderer.height/12+window.innerHeight/40-app.expRenderer.height/30;
 
-    app.expSprite.mask.width = window.innerWidth/2;
-    app.expSprite.mask.height = window.innerHeight/20;
+    var zoomUI = Math.max(zoom,0.3)
+    app.expSprite.children[0].scale.set(zoomUI);
+    app.spr_uiOjo.scale.set(zoomUI);
+    app.spr_uiPincho.scale.set(zoomUI);
+    app.spr_uiZise.scale.set(zoomUI);
+    app.spr_uiTentaculo.scale.set(zoomUI);
+    app.spr_uiNodos.scale.set(zoomUI);
+    app.spr_uiCoraza.scale.set(zoomUI);
+    app.expSprite.children[0].scale.set(zoomUI);
+
+    app.expSprite.mask.width = app.expRenderer.width;
+    app.expSprite.mask.height = app.expRenderer.height/2;
 }

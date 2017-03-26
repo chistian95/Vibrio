@@ -106,11 +106,11 @@ Game.prototype = {
         else rescY= widthR*xForY;*/
         var resc = Math.max(Math.min(Math.max(widthR/w,heightR/h),1),maxZoom);
         app.renderer.resize(window.innerWidth, window.innerHeight);
-        app.expRenderer.resize(window.innerWidth/2, window.innerHeight/10);
+        app.expRenderer.resize(window.innerWidth/2, Math.min(window.innerHeight/10),26);
         app.backrenderer.resize(window.innerWidth, window.innerHeight);
 
-        app.background.width = window.innerWidth;
-        app.background.height = window.innerHeight;
+        //app.background.width = window.innerWidth;
+        //app.background.height = window.innerHeight;
         zoomObj = resc;
         app.backrenderer.render(app.background);
         actualizarUi();
@@ -118,11 +118,12 @@ Game.prototype = {
     },
     reescalarContainers: function(){
         //console.log("zoom: "+zoom)
-        //app.renderer.render(app.world);
+        app.back.scale.set(zoom);
         app.world.scale.set(zoom);
         app.back.scale.set(zoom);
-        app.exp.scale.set(zoom);
+        //app.exp.scale.set(Math.min(zoom,0.4));
         app.borde.scale.set(zoom);
+        actualizarUi();
     },
     calcularExpTotal(exp){
         var exp = exp.nodos+exp.ojos+exp.tentaculos+exp.size+exp.pinchos+exp.coraza;
