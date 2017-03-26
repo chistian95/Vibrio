@@ -11,9 +11,11 @@ var expActual = null;
 var expAntigua = null;
 
 var zoomObj = 1;
+var maxW = 1920;
+var maxH = 1920;
 var w = 1920;
 var h = 1080;
-var xForY = w/h;
+var modifOjos = 0;
 var maxZoom = 0.25;
 
 /*Crear juego
@@ -40,6 +42,7 @@ function Game(socket){
     setInterval(function(){
         count += this.vTentaculos;
 		this.bucle();
+        modifOjosTemp = 0.4;
         players.forEach(function(player){
             player.bicho.nodos.forEach(function(nodo){
                 if(nodo.tipoNodo.nombre === "TENTACULO") {
@@ -51,9 +54,15 @@ function Game(socket){
                         nodo.tentaculines[i].x = (i * lengthTentaculo + Math.cos((i * 0.3) + count) * this.mYtentaculos)-5;
                     }
                     player.bicho.nodos[player.bicho.nodos.indexOf(nodo)].sprite.rotation = player.bicho.nodos[player.bicho.nodos.indexOf(nodo)].anguloActual*Math.PI/180;
+                } else if(nodo.tipoNodo.nombre === "OJO" && modifOjosTemp<1 && player.id === game.localPlayer.id) {
+                    modifOjosTemp += 0.1;
                 }
             }.bind(this));
         }.bind(this));
+        if(modifOjos!=modifOjosTemp){
+            modifOjos = modifOjosTemp;
+            this.reescalar();
+        }
 	}.bind(this), 40);
     setInterval(function() {
         if(this.localPlayer) {
@@ -84,12 +93,10 @@ Game.prototype = {
         if(Math.abs(zoomObj-zoom) > 0.01) {
             if(Math.floor(zoomObj*100)/100 > zoom) {
             zoom+=0.01;
-            console.log("obj: "+Math.floor(zoomObj*100)/100+" zoom: "+zoom);
             this.reescalarContainers();
             }
             else if(Math.floor(zoomObj*100)/100 < zoom) {
                 zoom-=0.01;
-                console.log("obj: "+Math.floor(zoomObj*100)/100+" zoom: "+zoom);
                 this.reescalarContainers();
             }
         }
@@ -99,12 +106,9 @@ Game.prototype = {
 	},
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
     reescalar: function () {
-        var widthR = window.innerWidth, heightR = window.innerHeight;
-        /*var rescX = widthR/w;
-        var rescY = heightR/h;
-        if(rescX >=rescY) rescY= widthR*xForY;
-        else rescY= widthR*xForY;*/
-        var resc = Math.max(Math.min(Math.max(widthR/w,heightR/h),1),maxZoom);
+        var widthR = window.innerWidth/modifOjos, heightR = window.innerHeight/modifOjos;
+        console.log("wr: "+widthR+" hr: "+heightR+" mod: "+modifOjos)
+        var resc = Math.max(Math.min(Math.max(widthR/w,heightR/h),3),maxZoom);
         app.renderer.resize(window.innerWidth, window.innerHeight);
         app.expRenderer.resize(window.innerWidth/2, Math.min(window.innerHeight/10),26);
         app.backrenderer.resize(window.innerWidth, window.innerHeight);
@@ -118,11 +122,9 @@ Game.prototype = {
         actualizarExp();
     },
     reescalarContainers: function(){
-        //console.log("zoom: "+zoom)
         app.back.scale.set(zoom);
         app.world.scale.set(zoom);
         app.back.scale.set(zoom);
-        //app.exp.scale.set(Math.min(zoom,0.4));
         app.borde.scale.set(zoom);
         actualizarUi();
     },
