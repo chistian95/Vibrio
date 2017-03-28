@@ -84,6 +84,7 @@ Game.prototype = {
     evoTientaculos: function() {this.socket.emit('evole',{id:game.localPlayer.id,opc: "tientaculos"});this.emitirEvoTrampa();},
     evoEie: function() {this.socket.emit('evole',{id:game.localPlayer.id,opc: "eie"});this.emitirEvoTrampa();},
     evoCorza: function() {this.socket.emit('evole',{id:game.localPlayer.id,opc: "corza"});this.emitirEvoTrampa();},
+    evoNodos: function() {this.socket.emit('evole',{id:game.localPlayer.id,opc: "nodos"});this.emitirEvoTrampa();},
     emitirEvoTrampa(){
         this.socket.emit('evo', game.localPlayer.id);
         expAntigua = 0;
@@ -175,13 +176,12 @@ Game.prototype = {
         this.gui.add(this, 'mYtentaculos',0,10);
         this.gui.add(this, 'vTentaculos',0,2);
         this.gui.add(this, 'movimiento');
-        this.gui.add(game, 'evolucionar');
-        this.gui.add(game, 'involucionar');
         this.gui.add(game, 'evoZise');
         this.gui.add(game, 'evoPinchus');
         this.gui.add(game, 'evoTientaculos');
         this.gui.add(game, 'evoEie');
         this.gui.add(game, 'evoCorza');
+        this.gui.add(game, 'evoNodos');
     },
     resetGui: function() {
         this.gui.__controllers[1].__max = Math.round(players.length-1);

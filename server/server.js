@@ -2,8 +2,8 @@
 =================================================================*/
 var express = require('express');
 var app = express();
-var width = 1024;
-var height = 768;
+var width = 3000;
+var height = 3000;
 app.use(express.static(__dirname));
 var server = app.listen(process.env.PORT || 8082, function () {
 	var puerto = server.address().port;
@@ -257,6 +257,7 @@ io.on('connection', function(client) {
                         case "corza": bicho.exp.coraza = (player.bicho.nivel+1)*100; break;
                         case "tientaculos": bicho.exp.tentaculos = (player.bicho.nivel+1)*100; break;
                         case "zise": bicho.exp.size = (player.bicho.nivel+1)*100; break;
+                        case "nodos": bicho.exp.nodos = (player.bicho.nivel+1)*100; break;
                    }
                }
             });
