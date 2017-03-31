@@ -289,17 +289,17 @@ var BichoProto = function(){
                                 }
                                 angulosHijos.push(nodoHijo.anguloInicio);
                             });
-                            if(nodosTentatuclos.length <= 0) { //Si no tiene nada detrás intentar poner uno ahí
+                            if(angulosHijos.length <= 0) { //Si no tiene nada detrás intentar poner uno ahí
                                 if(angulosHijos.length <= 0 || !angulosHijos.includes(0)) {
                                     new Nodo(TipoNodo.TENTACULO, nodo, 0, tamNodo, this);
                                     saltar = true;
                                 }
                             }
-                            if(!nodosTentatuclos.includes(270) || !nodosTentatuclos.includes(90)) { //Mirar si se pueden poner a los costados
-                                if(!nodosTentatuclos.includes(270)) {
+                            if(!angulosHijos.includes(270) || !angulosHijos.includes(90)) { //Mirar si se pueden poner a los costados
+                                if(!angulosHijos.includes(270)) {
                                     new Nodo(TipoNodo.TENTACULO, nodo, 270, tamNodo, this);
                                 }
-                                if(!nodosTentatuclos.includes(90)) {
+                                if(!angulosHijos.includes(90)) {
                                     new Nodo(TipoNodo.TENTACULO, nodo, 90, tamNodo, this);
                                 }
                                 saltar = true;
@@ -329,6 +329,7 @@ var BichoProto = function(){
                         nodo.anguloActual = 0;
                         nodo.anguloGiro = 0;
                         nodo.anguloBajar = 0;
+                        saltar = true;
                     }
                 }
             } else if(tipoSeleccionado == "nodos") { //Poner nodos
