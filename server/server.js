@@ -214,7 +214,7 @@ io.on('connection', function(client) {
                 //2.- declara variables con cada nodo cocado de cada uno (del atacado y el atacante)
                 var atacante = players[numPlayerAtacante].bicho.nodos[info.numNodoAtacante];
                 atacado = players[numPlayerAtacado].bicho.nodos[info.numNodoAtacado];
-                if(atacado.vida > 0) return;
+                //if(atacado.vida > 0) return;
             } catch(err) {
                 console.log("==============================================")
                 console.log("Error al declarar el atacante y el atacado.")
@@ -236,10 +236,15 @@ io.on('connection', function(client) {
             /*4.- checkea distancia y si choca mata el nodo con la función matar nodos en bicho.js
               internamente esta función mata también todos los hijos de ese nodo.*/
             if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
-                var nodos = players[numPlayerAtacado].bicho.nodos;
-                io.sockets.emit('borrarNodo', { idPlayer: players[numPlayerAtacado].id, numNodo: nodos.indexOf(atacado)});
-                nodos.splice(nodos.indexOf(atacado),1);
-                ganarExperienciaBicho(playerAtacante.bicho, atacado.tipoNodo.nombre, atacado.radio);
+                var radioAtacante = players[numPlayerAtacante].bicho.nodoCentral.radio;
+                var radioAtacado = players[numPlayerAtacado].bicho.nodoCentral.radio;
+                if(atacado.vida <= 0 || radioAtacante / 1.75 >= radioAtacado) {
+                    atacado.vida = 0;
+                    var nodos = players[numPlayerAtacado].bicho.nodos;
+                    io.sockets.emit('borrarNodo', { idPlayer: players[numPlayerAtacado].id, numNodo: nodos.indexOf(atacado)});
+                    nodos.splice(nodos.indexOf(atacado),1);
+                    ganarExperienciaBicho(playerAtacante.bicho, atacado.tipoNodo.nombre, atacado.radio);
+                }
             }
         } catch(err) {console.log(err.message);}
     });
@@ -453,7 +458,7 @@ function regenerarMapa() {
 /* GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS */
 function generarPlantas() {
     for(var i=0; i<20; i++) {
-        var tipoPlanta = Math.round(Math.random() * 4);
+        var tipoPlanta = Math.round(Math.random() * 5);
         var x = Math.random()*(width-200)+100;
         var y = Math.random()*(width-200)+100;
         var planta = new p.Planta(x, y, tipoPlanta);
@@ -482,7 +487,7 @@ for(var i=0;i<20;i++) {
 
 /* GANAR EXPERIENCIA - GANAR EXPERIENCIA - GANAR EXPERIENCIA - GANAR EXPERIENCIA*/
 function ganarExperienciaPlanta(bicho, tipoPlanta, radioNodo){
-    //0=size, 1=pinchos, 2=tentaculos, 3=coraza, 4=nodos
+    //0=size, 1=pinchos, 2=tentaculos, 3=coraza, 4=nodos, 5=ojos
     if(tipoPlanta === 0){
         bicho.exp.size += (radioNodo/10);
     }else if(tipoPlanta === 1){
@@ -493,6 +498,8 @@ function ganarExperienciaPlanta(bicho, tipoPlanta, radioNodo){
         bicho.exp.coraza += (radioNodo/10);
     }else if(tipoPlanta === 4){
         bicho.exp.nodos += (radioNodo/10);
+    }else if(tipoPlanta === 5){
+        bicho.exp.ojos += (radioNodo/10);
     }
     //console.log(bicho.exp);
 }

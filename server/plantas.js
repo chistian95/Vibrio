@@ -8,6 +8,7 @@ TipoNodo.SPICIS = new TipoNodo(1, "0x42c8f4"); //PINCHOS
 TipoNodo.XP = new TipoNodo(2, [0, "0xcccccc"]); //XPAGUETOES (tentaculos)
 TipoNodo.CORNELISU = new TipoNodo(3, "0xb4e22b"); //CORAZA
 TipoNodo.MAGIS = new TipoNodo(4, "0xe27a2f"); //MAGIS CORPUS (MÁS NODOS)
+TipoNodo.OJETE = new TipoNodo(5, "0xdddddd"); //OJETES
 
 /*
 Las plantas van a tener un nodo central del que saldrá una cantidad aleatoria de nodos "grandes", despues, de cada nodo "grande" pueden (o no) salir
@@ -73,6 +74,8 @@ var PlantaProto = function(){
             this.nodoPadre = new Nodo(TipoNodo.XP, null, 0, 30, this, 0);
         } else if(this.tipo == 4) {//MAGIS
             this.nodoPadre = new Nodo(TipoNodo.MAGIS, null, 0, 50, this, 0);
+        } else if(this.tipo == 5) {//OJETES
+            this.nodoPadre = new Nodo(TipoNodo.OJETE, null, 0, 20, this, 0);
         }
         this.nodoCentral = this.nodoPadre;
         this.update();
@@ -201,7 +204,19 @@ var PlantaProto = function(){
                 new Nodo(TipoNodo.XP, nodo, angulo, 10, this, 2);
             }
         } else if(nodo.tipoNodo === TipoNodo.MAGIS) {
-
+            if(nodo.clase === 0) {
+                for(var i=0; i<4; i++) {
+                    var angulo = i * 90;
+                    new Nodo(TipoNodo.MAGIS, nodo, angulo, 30, this, 1);
+                }
+            } else if(nodo.clase === 1) {
+                new Nodo(TipoNodo.MAGIS, nodo, 180, 15, this, 2);
+            } else if(nodo.clae === 2) {
+                new Nodo(TipoNodo.MAGIS, nodo, 180, 7, this, 3);
+            }
+        } else if(nodo.tipoNodo === TipoNodo.OJETE) {
+            if(nodo.clase === 0) {
+            }
         }
     }
 

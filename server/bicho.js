@@ -206,10 +206,12 @@ var BichoProto = function(){
                 var nodosPinchos = [];
                 var nodosAngulos = [];
                 this.nodoCentral.nodos.forEach(function(nodo) {
-                    if(nodo.tipoNodo === TipoNodo.PINCHO) {
-                        nodosPinchos.push(nodo.anguloInicio);
+                    if(nodo.vida > 0) {
+                        if(nodo.tipoNodo === TipoNodo.PINCHO) {
+                            nodosPinchos.push(nodo.anguloInicio);
+                        }
+                        nodosAngulos.push(nodo.anguloInicio);
                     }
-                    nodosAngulos.push(nodo.anguloInicio);
                 });
                 var tamCentral = this.nodoCentral.radio * 0.14;
 
@@ -234,10 +236,12 @@ var BichoProto = function(){
                             var nodosPinchos = [];
                             var angulosHijos = [];
                             nodo.nodos.forEach(function(nodoHijo) {
-                                if(nodoHijo.tipoNodo === TipoNodo.PINCHO) {
-                                    nodosPinchos.push(nodoHijo.anguloInicio);
+                                if(nodoHijo.vida > 0) {
+                                    if(nodoHijo.tipoNodo === TipoNodo.PINCHO) {
+                                        nodosPinchos.push(nodoHijo.anguloInicio);
+                                    }
+                                    angulosHijos.push(nodoHijo.anguloInicio);
                                 }
-                                angulosHijos.push(nodoHijo.anguloInicio);
                             });
                             if(nodosPinchos.length <= 0) { //Si no tiene nada detrás intentar poner uno ahí
                                 if(angulosHijos.length <= 0 || !angulosHijos.includes(0)) {
@@ -263,9 +267,11 @@ var BichoProto = function(){
                 var angulosHijos = [];
                 var nodosTentaculos = [];
                 this.nodoCentral.nodos.forEach(function(nodo) {
-                    angulosHijos.push(nodo.anguloInicio);
-                    if(nodo.tipoNodo === TipoNodo.TENTACULO) {
-                        nodosTentaculos.push(nodo.anguloInicio);
+                    if(nodo.vida > 0) {
+                        angulosHijos.push(nodo.anguloInicio);
+                        if(nodo.tipoNodo === TipoNodo.TENTACULO) {
+                            nodosTentaculos.push(nodo.anguloInicio);
+                        }
                     }
                 });
                 var tamCentral = this.nodoCentral.radio * 0.14;
@@ -284,10 +290,12 @@ var BichoProto = function(){
                             var nodosTentatuclos = [];
                             var angulosHijos = [];
                             nodo.nodos.forEach(function(nodoHijo) {
-                                if(nodoHijo.tipoNodo === TipoNodo.TENTACULO) {
-                                    nodosTentatuclos.push(nodoHijo.anguloInicio);
+                                if(nodoHijo.vida > 0) {
+                                    if(nodoHijo.tipoNodo === TipoNodo.TENTACULO) {
+                                        nodosTentatuclos.push(nodoHijo.anguloInicio);
+                                    }
+                                    angulosHijos.push(nodoHijo.anguloInicio);
                                 }
-                                angulosHijos.push(nodoHijo.anguloInicio);
                             });
                             if(angulosHijos.length <= 0) { //Si no tiene nada detrás intentar poner uno ahí
                                 if(angulosHijos.length <= 0 || !angulosHijos.includes(0)) {
@@ -335,7 +343,9 @@ var BichoProto = function(){
             } else if(tipoSeleccionado == "nodos") { //Poner nodos
                 var angulos = [];
                 this.nodoCentral.nodos.forEach(function(nodo) {
-                    angulos.push(nodo.anguloInicio);
+                    if(nodo.vida > 0) {
+                        angulos.push(nodo.anguloInicio);
+                    }
                 });
                 var tamCentral = this.nodoCentral.radio * 0.7;
                 var posicion = angulos.lastIndexOf(0);
@@ -357,7 +367,7 @@ var BichoProto = function(){
                 //Los ojos solo van a poder ir en la cabeza. Dando prioridad a los que más cerca están del frente.
                 var nodosOjos = [];
                 this.nodoCentral.nodos.forEach(function(nodo) {
-                    if(nodo.tipoNodo === TipoNodo.OJO) {
+                    if(nodo.tipoNodo === TipoNodo.OJO && nodo.vida > 0) {
                         nodosOjos.push(nodo.anguloInicio);
                     }
                 });
