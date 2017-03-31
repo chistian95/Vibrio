@@ -447,7 +447,7 @@ function regenerarMapa() {
 /* GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS */
 function generarPlantas() {
     for(var i=0; i<20; i++) {
-        var tipoPlanta = Math.round(Math.random() * 4);
+        var tipoPlanta = Math.round(Math.random() * 5);
         var x = Math.random()*(width-200)+100;
         var y = Math.random()*(width-200)+100;
         var planta = new p.Planta(x, y, tipoPlanta);
@@ -476,7 +476,7 @@ for(var i=0;i<20;i++) {
 
 /* GANAR EXPERIENCIA - GANAR EXPERIENCIA - GANAR EXPERIENCIA - GANAR EXPERIENCIA*/
 function ganarExperienciaPlanta(bicho, tipoPlanta, radioNodo){
-    //0=size, 1=pinchos, 2=tentaculos, 3=coraza, 4=nodos
+    //0=size, 1=pinchos, 2=tentaculos, 3=coraza, 4=nodos, 5=ojos
     if(tipoPlanta === 0){
         bicho.exp.size += (radioNodo/10);
     }else if(tipoPlanta === 1){
@@ -487,6 +487,8 @@ function ganarExperienciaPlanta(bicho, tipoPlanta, radioNodo){
         bicho.exp.coraza += (radioNodo/10);
     }else if(tipoPlanta === 4){
         bicho.exp.nodos += (radioNodo/10);
+    }else if(tipoPlanta === 5){
+        bicho.exp.ojos += (radioNodo/10);
     }
     //console.log(bicho.exp);
 }
