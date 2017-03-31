@@ -22,15 +22,15 @@ var BichoProto = function(){
             var anguloRad = this.nodoCentral.anguloActual * Math.PI / 180.0;
             var tempx = this.x;
             var tempy = this.y;
+            this.calcularVelocidadMovimiento()
             if(this.arriba) {
-                tempx -= Math.cos(anguloRad) * 4;
-                tempy -= Math.sin(anguloRad) * 4;
+                tempx -= Math.cos(anguloRad) * this.velocidadMovimiento;
+                tempy -= Math.sin(anguloRad) * this.velocidadMovimiento;
             }
             if(this.abajo) {
-                tempx += Math.cos(anguloRad) * 4;
-                tempy += Math.sin(anguloRad) * 4;
+                tempx += Math.cos(anguloRad) * this.velocidadMovimiento;
+                tempy += Math.sin(anguloRad) * this.velocidadMovimiento;
             }
-
             if(tempx<0) tempx=0;
             else if(tempx>width) tempx=width;
             this.x = tempx;
@@ -391,6 +391,16 @@ var BichoProto = function(){
         });
         console.log("FIN EVO");
     }
+    this.calcularVelocidadMovimiento = function() {
+        this.velocidadMovimiento = 4.0;
+        var self = this;
+        this.nodos.forEach(function(nodo) {
+            if(nodo.tipoNodo === TipoNodo.TENTACULO) {
+                self.velocidadMovimiento += 0.2;
+            }
+        });
+        this.velocidadGiro = this.velocidadMovimiento / 2.0;
+    }
 }
 
 var Bicho = function(x,y,w,h) {
@@ -401,6 +411,7 @@ var Bicho = function(x,y,w,h) {
     this.y = y;
     this.velocidadGiro = 2.0;
     this.velocidadMotor = 1.0;
+    this.velocidadMovimiento = 1.0;
     this.contFase = 0;
     this.nodos = [];
     this.nodoCentral = null;
