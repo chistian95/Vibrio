@@ -68,6 +68,17 @@ io.on('connection', function(client) {
 		}
 	});
 
+    client.on('meMato', function(info){
+        /*Actualizar la dirección según lo que ha enviado el cliente*/
+        players.forEach( function(player){
+            if(player.id == info.id){
+                player.socket.emit('borrarNodo', {idPlayer: player.id, numNodo: 0});
+                player.socket.disconnect();
+                players.splice(players.indexOf(player));
+            }
+        });
+    })
+
     /*==================================================================================*/
     /*Chocar (entre players):
     /************************************************************************************
@@ -539,3 +550,4 @@ function dañarNodo(bicho, nodo) {
         matarNodos(nodo);
     }
 }
+

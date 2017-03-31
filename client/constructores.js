@@ -13,7 +13,7 @@ function Player(id, game, local,nombrev){
 /*====================================================================================*/
 /*Render - Pixi
 ======================================================================================*/
-function app(){
+function renderPixi(){
     /*Declarar contenedores de imágenes
     =====================================*/
     this.world = new PIXI.Container();
