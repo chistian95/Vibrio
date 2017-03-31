@@ -203,7 +203,7 @@ io.on('connection', function(client) {
                 //2.- declara variables con cada nodo cocado de cada uno (del atacado y el atacante)
                 var atacante = players[numPlayerAtacante].bicho.nodos[info.numNodoAtacante];
                 atacado = players[numPlayerAtacado].bicho.nodos[info.numNodoAtacado];
-                if(atacado.vida > 0) return;
+                //if(atacado.vida > 0) return;
             } catch(err) {
                 console.log("==============================================")
                 console.log("Error al declarar el atacante y el atacado.")
@@ -225,10 +225,15 @@ io.on('connection', function(client) {
             /*4.- checkea distancia y si choca mata el nodo con la función matar nodos en bicho.js
               internamente esta función mata también todos los hijos de ese nodo.*/
             if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
-                var nodos = players[numPlayerAtacado].bicho.nodos;
-                io.sockets.emit('borrarNodo', { idPlayer: players[numPlayerAtacado].id, numNodo: nodos.indexOf(atacado)});
-                nodos.splice(nodos.indexOf(atacado),1);
-                ganarExperienciaBicho(playerAtacante.bicho, atacado.tipoNodo.nombre, atacado.radio);
+                var radioAtacante = players[numPlayerAtacante].bicho.nodoCentral.radio;
+                var radioAtacado = players[numPlayerAtacado].bicho.nodoCentral.radio;
+                if(atacado.vida <= 0 || radioAtacante / 1.75 >= radioAtacado) {
+                    atacado.vida = 0;
+                    var nodos = players[numPlayerAtacado].bicho.nodos;
+                    io.sockets.emit('borrarNodo', { idPlayer: players[numPlayerAtacado].id, numNodo: nodos.indexOf(atacado)});
+                    nodos.splice(nodos.indexOf(atacado),1);
+                    ganarExperienciaBicho(playerAtacante.bicho, atacado.tipoNodo.nombre, atacado.radio);
+                }
             }
         } catch(err) {console.log(err.message);}
     });

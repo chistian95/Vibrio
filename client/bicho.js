@@ -49,9 +49,7 @@ var BichoProto = function(){
                         if(nodo.tipoNodo.nombre === TipoNodo.PINCHO.nombre) {
                             socket.emit('chocar',{idAtacante: idLocal, numNodoAtacante: numNodoLocalPlayer, idAtacado: idTarget, numNodoAtacado: numNodoEnemigo});
                         } else {
-                            if(nodoTarget.vida <= 0) {
-                                socket.emit('comerBicho',{idAtacante: idLocal, numNodoAtacante: numNodoLocalPlayer, idAtacado: idTarget, numNodoAtacado: numNodoEnemigo});
-                            }
+                            socket.emit('comerBicho',{idAtacante: idLocal, numNodoAtacante: numNodoLocalPlayer, idAtacado: idTarget, numNodoAtacado: numNodoEnemigo});
                         }
                     }
                     numNodoEnemigo++;
