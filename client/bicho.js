@@ -95,7 +95,7 @@ var Bicho = function(z,nombre) {
 }
 Bicho.prototype = Object.create(BichoProto.prototype);
 
-var Nodo = function(x, y, tipoNodo, radio, anguloActual,z){
+var Nodo = function(x, y, tipoNodo, radio, anguloActual,z,anguloInicio){
     if(tipoNodo.nombre === "TENTACULO"){ //Tentaculo
         this.tentaculines = [];
         for (var i = 0; i < 25; i++) {
