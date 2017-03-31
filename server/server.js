@@ -187,12 +187,12 @@ io.on('connection', function(client) {
         var playerAtacante = null;
         var atacado = null;
         //1.- Busca el player que tiene la id que envia el cliente en info
-        players.forEach(function(playeros) {
-            if(info.idAtacante == playeros.id) {
-                playerAtacante = playeros;
+        players.forEach(function(player) {
+            if(info.idAtacante == player.id) {
+                playerAtacante = player;
                 numPlayerAtacante = num;
-            } else if(info.idAtacado == playeros.id) {
-                atacado = playeros.nombre;
+            } else if(info.idAtacado == player.id) {
+                atacado = player.nombre;
                 numPlayerAtacado = num;
             }
             num++;
