@@ -13,14 +13,19 @@ var BichoProto = function(){
             nodo.vida = nodoMin[6];
             if(nodo.radio != nodoMin[4]) {
                 nodo.radio = nodoMin[4];
-                if(nodo.sprite.mask) {
-                    nodo.sprite.mask.width = nodoMin[4]*2;
-                    nodo.sprite.mask.height = nodoMin[4]*2;
-                    nodo.sprite.mask.x = nodoMin[4];
-                    nodo.sprite.mask.y = nodoMin[4];
+                if(nodo.tipoNodo.nombre === "TENTACULO") {
+                    nodo.sprite.sprite.width = nodoMin[4]*2;
+                    nodo.sprite.sprite.height = nodoMin[4]*6;
                 } else {
-                    nodo.sprite.width = nodoMin[4] * 2;
-                    nodo.sprite.height = nodoMin[4] * 2;
+                    if(nodo.sprite.mask) {
+                        nodo.sprite.mask.width = nodoMin[4]*2;
+                        nodo.sprite.mask.height = nodoMin[4]*2;
+                        nodo.sprite.mask.x = nodoMin[4];
+                        nodo.sprite.mask.y = nodoMin[4];
+                    } else {
+                        nodo.sprite.width = nodoMin[4] * 2;
+                        nodo.sprite.height = nodoMin[4] * 2;
+                    }
                 }
             }
         } else {
@@ -102,6 +107,8 @@ var Nodo = function(x, y, tipoNodo, radio, anguloActual,z){
         app.world.addChild(this.sprite);
     } else if(tipoNodo.nombre ==="OJO") {
         this.sprite = declararSpriteDesdeTextura(ojo,app.world,x,y,0.5,z,x,y);
+        this.sprite.width = radio*2;
+        this.sprite.height = radio*2;
     } else {
         this.sprite = generarDibujoCircular(radio,tipoNodo.color,true,0.7,z,x,y);
     }
