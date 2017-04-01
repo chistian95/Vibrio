@@ -405,7 +405,7 @@ setInterval(function() {
 
 setInterval(function() {
     regenerarMapa()
-}, 5000);
+}, 15000);
 
 setInterval(function() {
     actualizarPlayersCercanos();
@@ -450,7 +450,9 @@ function actualizarPlayersCercanos() {
 
 function regenerarMapa() {
     plantas.forEach(function(planta){
-        planta.regenerar(io,plantas.indexOf(planta));
+        var x = Math.random()*(width-200)+100;
+        var y = Math.random()*(width-200)+100;
+        planta.regenerar(io,plantas.indexOf(planta), x, y);
     });
 }
 
@@ -471,7 +473,7 @@ function generarPlantas() {
     }
 }
 generarPlantas();
-for(var i=0;i<20;i++) {
+for(var i=0;i<0;i++) {
     var p = new Player(i,Math.random()*width,Math.random()*height,"bot");
     var derechizqr = Math.round(Math.random()*1);
     if(derechizqr==0)p.bicho.derecha = true;

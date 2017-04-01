@@ -53,9 +53,11 @@ var PlantaProto = function(){
         }
     }
 
-    this.regenerar = function(io,id){
+    this.regenerar = function(io,id,x,y){
         var temp = false;
         if(this.nodos.length === 0 || !this.nodoPadre || !this.nodoCentral) {
+            this.x = x;
+            this.y = y;
             this.generar();
             this.calcularHitbox();
             io.sockets.emit('actualizarPlanta', {id: id, nodos: this.crearNodosMin(), hitbox: this.hitbox});
