@@ -75,7 +75,7 @@ var PlantaProto = function(){
         } else if(this.tipo == 4) {//MAGIS
             this.nodoPadre = new Nodo(TipoNodo.MAGIS, null, 0, 50, this, 0);
         } else if(this.tipo == 5) {//OJETES
-            this.nodoPadre = new Nodo(TipoNodo.OJETE, null, 0, 20, this, 0);
+            this.nodoPadre = new Nodo(TipoNodo.OJETE, null, 0, 30, this, 0);
         }
         this.nodoCentral = this.nodoPadre;
         this.update();
@@ -216,6 +216,29 @@ var PlantaProto = function(){
             }
         } else if(nodo.tipoNodo === TipoNodo.OJETE) {
             if(nodo.clase === 0) {
+                for(var i=0; i<4; i++) {
+                    var angulo = i * 90 + (Math.random() * 40 - 20);
+                    new Nodo(TipoNodo.OJETE, nodo, angulo, 10, this, 1);
+                }
+            } else if(nodo.clase === 1) {
+                if(Math.random() * 100 < 65) {
+                    var angulo = Math.random() * 40 - 20;
+                    new Nodo(TipoNodo.OJETE, nodo, angulo, 10, this, 1);
+                } else if(Math.random() * 100 < 75) {
+                    new Nodo(TipoNodo.OJETE, nodo, 0, 25, this, 2);
+                }
+            } else if(nodo.clase === 2) {
+                for(var i=0; i<3; i++) {
+                    if(Math.random() * 100 < 50) {
+                        var angulo = Math.random() * 140 - 90 + 20 * i;
+                        new Nodo(TipoNodo.OJETE, nodo, angulo, 10, this, 3);
+                    }
+                }
+            } else if(nodo.clase === 3) {
+                if(Math.random() * 100 < 65) {
+                    var angulo = Math.random() * 40 - 20;
+                    new Nodo(TipoNodo.OJETE, nodo, angulo, 10, this, 3);
+                }
             }
         }
     }
