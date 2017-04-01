@@ -397,7 +397,7 @@ var BichoProto = function(){
             }
         }
         this.nodos.forEach(function(nodo) {
-            var deltaRadio = nodo.radio * 0.02;
+            var deltaRadio = nodo.radio * 0.03;
             nodo.radio += deltaRadio;
         });
         console.log("FIN EVO");
@@ -407,7 +407,7 @@ var BichoProto = function(){
         var self = this;
         this.nodos.forEach(function(nodo) {
             if(nodo.tipoNodo === TipoNodo.TENTACULO) {
-                self.velocidadMovimiento += 0.2;
+                self.velocidadMovimiento += 0.25;
             }
         });
         this.velocidadGiro = this.velocidadMovimiento / 2.0;
