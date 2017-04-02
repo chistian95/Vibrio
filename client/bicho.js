@@ -10,6 +10,8 @@ var BichoProto = function(){
             nodo.sprite.position.y = nodoMin[2];
             nodo.tipoNodo = nodoMin[3];
             nodo.anguloActual = nodoMin[5]; //Solo al player local
+            console.log(nodoMin[5])
+            nodo.sprite.rotation = nodoMin[5]*0.0174533; //Solo al player local
             nodo.vida = nodoMin[6];
             if(nodo.radio != nodoMin[4]) {
                 nodo.radio = nodoMin[4];
@@ -104,6 +106,8 @@ var Nodo = function(x, y, tipoNodo, radio, anguloActual,z){
         app.world.addChild(this.sprite);
     } else if(tipoNodo.nombre ==="OJO") {
         this.sprite = declararSpriteDesdeTextura(ojo,app.world,x,y,0.5,z,x,y);
+    } else if(tipoNodo.nombre ==="PINCHO"){
+        this.sprite = declararSpriteDesdeTextura(pincho,app.world,x,y,0.5,z,x,y);
     } else {
         this.sprite = generarDibujoCircular(radio,tipoNodo.color,true,0.7,z,x,y);
     }

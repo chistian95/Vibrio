@@ -3,19 +3,12 @@ function actualizarExp() {
     var anchoBordeExp = app.expRenderer.height/30;
     var widthRect = window.innerWidth/2-anchoBordeExp*2;
     var heightRect = window.innerHeight/20-anchoBordeExp*2;
-    var alturaRectangulo = app.expRenderer.height/2.3+anchoBordeExp*2.5;
     var expTotal = expActual.nodos+expActual.ojos+expActual.tentaculos+expActual.size+expActual.pinchos+expActual.coraza;
-    app.expSprite.clear();
-    app.expSprite.lineStyle(anchoBordeExp);
-    app.expSprite.beginFill(0x2c3e50, 1);
-    app.expSprite.drawRect(anchoBordeExp, alturaRectangulo, widthRect, heightRect);
-    app.expSprite.lineStyle(0);
     var TempExp = (expTotal/((nivel+1)*100))*window.innerWidth/2;
-    app.expSprite.beginFill(0x16a085, 0.75);
-    app.expSprite.drawRect(anchoBordeExp*1.5, alturaRectangulo+anchoBordeExp*0.5, Math.min(TempExp,widthRect-anchoBordeExp), heightRect-anchoBordeExp);
-    app.expSprite.endFill();
-
-    app.expSprite.children[0].text = Math.floor((expTotal/((nivel+1)*100))*100)+'%';
+    app.expSpr.mask.width = Math.min(TempExp,widthRect-anchoBordeExp);
+    app.expSpr.mask.height = heightRect-anchoBordeExp;
+    console.log(app.expSpr.mask.width)
+    app.expSpr.children[0].text = Math.floor((expTotal/((nivel+1)*100))*100)+'%';
     app.spr_uiZise.children[0].text = Math.floor((expActual.size/((nivel+1)*100))*100)+'%';
     app.spr_uiOjo.children[0].text = Math.floor((expActual.ojos/((nivel+1)*100))*100)+'%';
     app.spr_uiPincho.children[0].text = Math.floor((expActual.pinchos/((nivel+1)*100))*100)+'%';
@@ -178,34 +171,34 @@ function generarDibujoCircular(radio,color,tiponodoColor,alpha,z,x,y,anchor) {
 
 function actualizarUi() {
     var x = app.expRenderer.width/7;
-    app.spr_uiOjo.position.x = x;
-    app.spr_uiPincho.position.x = x*2;
-    app.spr_uiZise.position.x = x*3;
-    app.spr_uiTentaculo.position.x = x*4;
-    app.spr_uiNodos.position.x = x*5;
-    app.spr_uiCoraza.position.x = x*6;
+    app.spr_uiOjo.position.x = x*2;
+    app.spr_uiPincho.position.x = x*3;
+    app.spr_uiZise.position.x = x*4;
+    app.spr_uiTentaculo.position.x = x*5;
+    app.spr_uiNodos.position.x = x*6;
+    app.spr_uiCoraza.position.x = x*7;
 
     var y = Math.min(app.expRenderer.height/3.5,26);
-    app.spr_uiOjo.position.y = y;
+    /*app.spr_uiOjo.position.y = y;
     app.spr_uiPincho.position.y = y;
     app.spr_uiZise.position.y = y;
     app.spr_uiTentaculo.position.y = y;
     app.spr_uiNodos.position.y = y;
-    app.spr_uiCoraza.position.y = y;
+    app.spr_uiCoraza.position.y = y;*/
 
-    app.expSprite.children[0].position.x = app.expRenderer.width/2;
-    app.expSprite.children[0].position.y = app.expRenderer.height/2.3+app.expRenderer.height/12+window.innerHeight/40-app.expRenderer.height/30;
+    app.expSpr.children[0].position.x = app.expRenderer.width/2;
+    app.expSpr.children[0].position.y = app.expRenderer.height/2.3+app.expRenderer.height/12+window.innerHeight/40-app.expRenderer.height/30;
 
-    var zoomUI = Math.max(zoom,0.3)
-    app.expSprite.children[0].scale.set(zoomUI);
+    var zoomUI = Math.max(zoom,0.3)* 0.15;
+    //app.expSprite.children[0].scale.set(zoomUI);
     app.spr_uiOjo.scale.set(zoomUI);
     app.spr_uiPincho.scale.set(zoomUI);
     app.spr_uiZise.scale.set(zoomUI);
     app.spr_uiTentaculo.scale.set(zoomUI);
     app.spr_uiNodos.scale.set(zoomUI);
     app.spr_uiCoraza.scale.set(zoomUI);
-    app.expSprite.children[0].scale.set(zoomUI);
+    //app.expSprite.children[0].scale.set(zoomUI);
 
-    app.expSprite.mask.width = app.expRenderer.width;
-    app.expSprite.mask.height = app.expRenderer.height/2;
+    app.barraExp.width =app.expRenderer.width;
+    app.barraExp.height =app.expRenderer.height;
 }

@@ -58,21 +58,27 @@ function app(){
     this.back.addChild(this.back);
     this.backrenderer.render(this.background);
 
-    this.expSprite = new PIXI.Graphics();
-    this.background.position.x = 0;
-    this.background.position.y = 0;
-    this.exp.addChild(this.expSprite);
+    this.barraExp = new PIXI.Sprite(barraExp);
+    this.barraExp.position.x = 0;
+    this.barraExp.position.y = 0;
+    this.exp.addChild(this.barraExp);
+    this.expSpr = new PIXI.Sprite(exp);
+    this.expSpr.position.x = 90;
+    this.expSpr.position.y = 62;
+    this.exp.addChild(this.expSpr);
 
-    var x = this.expRenderer.width/7;
-    this.spr_uiOjo = declararSpriteDesdeTextura(uiOjo,this.exp,x,25,1);
-    this.spr_uiPincho = declararSpriteDesdeTextura(uiPincho,this.exp,x*2,25,1);
-    this.spr_uiZise = declararSpriteDesdeTextura(uiZise,this.exp,x*3,25,1);
-    this.spr_uiTentaculo =  declararSpriteDesdeTextura(uiTentaculo,this.exp,x*4,25,1);
-    this.spr_uiNodos =  declararSpriteDesdeTextura(uiNodos,this.exp,x*5,25,1);
-    this.spr_uiCoraza =  declararSpriteDesdeTextura(uiCoraza,this.exp,x*6,25,1);
+    var x = this.expRenderer.width/6;
+    var y = 60;
+
+    this.spr_uiOjo = declararSpriteDesdeTextura(uiOjo,this.exp,x,y,1);
+    this.spr_uiPincho = declararSpriteDesdeTextura(uiPincho,this.exp,x*2,y,1);
+    this.spr_uiZise = declararSpriteDesdeTextura(uiZise,this.exp,x*3,y,1);
+    this.spr_uiTentaculo =  declararSpriteDesdeTextura(uiTentaculo,this.exp,x*4,y,1);
+    this.spr_uiNodos =  declararSpriteDesdeTextura(uiNodos,this.exp,x*5,y,1);
+    this.spr_uiCoraza =  declararSpriteDesdeTextura(uiCoraza,this.exp,x*6,y,1);
 
     //texto,father, x = 0, y = 0 , anchor = 0.5, font= 'Comic Sans MS', size = '20px', color = "#ffff00", z = 0
-    addChildrenText("0%",this.expSprite,window.innerWidth/4,window.innerHeight/13.5,0.5,null,35,"#1400ff"); //Exp General
+    addChildrenText("0%",this.expSpr,window.innerWidth/4,window.innerHeight/13.5,0.5,null,35,"#1400ff"); //Exp General
     addChildrenText("Error",this.spr_uiOjo,null,10); //Exp Ojo
     addChildrenText("Error",this.spr_uiPincho,null,10); //Exp Picho
     addChildrenText("Error",this.spr_uiZise,null,10); //Exp Zise
@@ -83,12 +89,16 @@ function app(){
     var alturaRectangulo = this.expRenderer.height/2.1;
     var mascara = new PIXI.Graphics();
     mascara.beginFill(0x000000);
-    mascara.drawRect(0, alturaRectangulo, window.innerWidth/2, window.innerHeight/20);
+    mascara.drawRect(0, 0, 1000, 1000);
     mascara.endFill();
-    this.expSprite.mask = mascara;
-    this.expSprite.mask.x = 0;
-    this.expSprite.mask.y = 0;
-    this.expSprite.addChild(mascara);
-    this.expSprite.zOrder =10;
+    this.expSpr.mask = mascara;
+    this.expSpr.mask.x =  0;
+    this.expSpr.mask.y =  0;
+    this.expSpr.addChild(mascara);
+    this.expSpr.zOrder =10;
+
+    this.expSpr.width =this.expRenderer.width-90;
+    this.barraExp.width =this.expRenderer.width;
+    this.barraExp.height =this.expRenderer.height;
 
 }
