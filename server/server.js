@@ -52,7 +52,7 @@ io.on('connection', function(client) {
         client.emit('crearPlayerCliente', { id: this.playerid, local: true,nombre: nombre,width:width,height:height, plantas: plantasMin, plantasHitbox: plantasHitbox});
         /*Enviar a todos los clientes "broadcast" la información del nuevo juegador*/
         client.broadcast.emit('crearPlayerCliente', {id: this.playerid, local: false,nombre: nombre})
-        new Player(this.playerid,initX,initY,nombre,client);
+        new Player(this.playerid,initX,initY,nombre,client,player.nodoInicial);
     });
     /*Función para recibir información del cliente, en este caso la dirección si ha cambiado*/
     client.on('sync', function(info){
@@ -67,6 +67,17 @@ io.on('connection', function(client) {
             });
 		}
 	});
+
+    client.on('meMato', function(info){
+        /*Actualizar la dirección según lo que ha enviado el cliente*/
+        players.forEach( function(player){
+            if(player.id == info.id){
+                player.socket.emit('borrarNodo', {idPlayer: player.id, numNodo: 0});
+                player.socket.disconnect();
+                players.splice(players.indexOf(player));
+            }
+        });
+    })
 
     /*==================================================================================*/
     /*Chocar (entre players):
@@ -170,9 +181,11 @@ io.on('connection', function(client) {
                 console.log("Error en sumaRadios");
             }
             if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
-                matarNodosPlanta(plantas[numPlanta], planta);
-                io.sockets.emit('borrarPlantas', { numPlanta: numPlanta, numNodo: info.numNodoAtacado});
-                ganarExperienciaPlanta(playerAtacante.bicho, planta.tipoNodo.tipo, planta.radio);
+                if(player.radio > planta.radio) {
+                    matarNodosPlanta(plantas[numPlanta], planta);
+                    io.sockets.emit('borrarPlantas', { numPlanta: numPlanta, numNodo: info.numNodoAtacado});
+                    ganarExperienciaPlanta(playerAtacante.bicho, planta.tipoNodo.tipo, planta.radio);
+                }
             }
         } catch(err) {console.log(err.message);}
     });
@@ -187,12 +200,12 @@ io.on('connection', function(client) {
         var playerAtacante = null;
         var atacado = null;
         //1.- Busca el player que tiene la id que envia el cliente en info
-        players.forEach(function(playeros) {
-            if(info.idAtacante == playeros.id) {
-                playerAtacante = playeros;
+        players.forEach(function(player) {
+            if(info.idAtacante == player.id) {
+                playerAtacante = player;
                 numPlayerAtacante = num;
-            } else if(info.idAtacado == playeros.id) {
-                atacado = playeros.nombre;
+            } else if(info.idAtacado == player.id) {
+                atacado = player.nombre;
                 numPlayerAtacado = num;
             }
             num++;
@@ -203,7 +216,7 @@ io.on('connection', function(client) {
                 //2.- declara variables con cada nodo cocado de cada uno (del atacado y el atacante)
                 var atacante = players[numPlayerAtacante].bicho.nodos[info.numNodoAtacante];
                 atacado = players[numPlayerAtacado].bicho.nodos[info.numNodoAtacado];
-                if(atacado.vida > 0) return;
+                //if(atacado.vida > 0) return;
             } catch(err) {
                 console.log("==============================================")
                 console.log("Error al declarar el atacante y el atacado.")
@@ -225,10 +238,15 @@ io.on('connection', function(client) {
             /*4.- checkea distancia y si choca mata el nodo con la función matar nodos en bicho.js
               internamente esta función mata también todos los hijos de ese nodo.*/
             if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
-                var nodos = players[numPlayerAtacado].bicho.nodos;
-                io.sockets.emit('borrarNodo', { idPlayer: players[numPlayerAtacado].id, numNodo: nodos.indexOf(atacado)});
-                nodos.splice(nodos.indexOf(atacado),1);
-                ganarExperienciaBicho(playerAtacante.bicho, atacado.tipoNodo.nombre, atacado.radio);
+                var radioAtacante = players[numPlayerAtacante].bicho.nodoCentral.radio;
+                var radioAtacado = players[numPlayerAtacado].bicho.nodoCentral.radio;
+                if(atacado.vida <= 0 || radioAtacante / 1.75 >= radioAtacado) {
+                    atacado.vida = 0;
+                    var nodos = players[numPlayerAtacado].bicho.nodos;
+                    io.sockets.emit('borrarNodo', { idPlayer: players[numPlayerAtacado].id, numNodo: nodos.indexOf(atacado)});
+                    nodos.splice(nodos.indexOf(atacado),1);
+                    ganarExperienciaBicho(playerAtacante.bicho, atacado.tipoNodo.nombre, atacado.radio);
+                }
             }
         } catch(err) {console.log(err.message);}
     });
@@ -331,11 +349,12 @@ function getInfo(){
 /*Constructor de los player
 ==================================================*/
 
-function Player(id, x, y,nombre,socket){
+function Player(id, x, y,nombre,socket, nodoInicial){
+    console.log("MEGA NODO INICIAL: "+nodoInicial);
     this.nombre = nombre;
 	this.id = id;
     this.socket = socket;
-    this.bicho = new Bicho(x,y,width,height);
+    this.bicho = new Bicho(x,y,width,height, nodoInicial);
     players.push(this);
     //===========================================
     var hPlayer = this.bicho.hitbox;
@@ -389,7 +408,7 @@ setInterval(function() {
 
 setInterval(function() {
     regenerarMapa()
-}, 5000);
+}, 15000);
 
 setInterval(function() {
     actualizarPlayersCercanos();
@@ -434,7 +453,9 @@ function actualizarPlayersCercanos() {
 
 function regenerarMapa() {
     plantas.forEach(function(planta){
-        planta.regenerar(io,plantas.indexOf(planta));
+        var x = Math.random()*(width-200)+100;
+        var y = Math.random()*(width-200)+100;
+        planta.regenerar(io,plantas.indexOf(planta), x, y);
     });
 }
 
@@ -442,7 +463,7 @@ function regenerarMapa() {
 /* GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS */
 function generarPlantas() {
     for(var i=0; i<20; i++) {
-        var tipoPlanta = Math.round(Math.random() * 4);
+        var tipoPlanta = Math.round(Math.random() * 5);
         var x = Math.random()*(width-200)+100;
         var y = Math.random()*(width-200)+100;
         var planta = new p.Planta(x, y, tipoPlanta);
@@ -455,7 +476,7 @@ function generarPlantas() {
     }
 }
 generarPlantas();
-for(var i=0;i<20;i++) {
+for(var i=0;i<0;i++) {
     var p = new Player(i,Math.random()*width,Math.random()*height,"bot");
     var derechizqr = Math.round(Math.random()*1);
     if(derechizqr==0)p.bicho.derecha = true;
@@ -471,7 +492,7 @@ for(var i=0;i<20;i++) {
 
 /* GANAR EXPERIENCIA - GANAR EXPERIENCIA - GANAR EXPERIENCIA - GANAR EXPERIENCIA*/
 function ganarExperienciaPlanta(bicho, tipoPlanta, radioNodo){
-    //0=size, 1=pinchos, 2=tentaculos, 3=coraza, 4=nodos
+    //0=size, 1=pinchos, 2=tentaculos, 3=coraza, 4=nodos, 5=ojos
     if(tipoPlanta === 0){
         bicho.exp.size += (radioNodo/10);
     }else if(tipoPlanta === 1){
@@ -482,6 +503,8 @@ function ganarExperienciaPlanta(bicho, tipoPlanta, radioNodo){
         bicho.exp.coraza += (radioNodo/10);
     }else if(tipoPlanta === 4){
         bicho.exp.nodos += (radioNodo/10);
+    }else if(tipoPlanta === 5){
+        bicho.exp.ojos += (radioNodo/10);
     }
     //console.log(bicho.exp);
 }
@@ -489,7 +512,7 @@ function ganarExperienciaPlanta(bicho, tipoPlanta, radioNodo){
 function ganarExperienciaBicho(bicho, nombreNodo, radioNodo){
     //0=size, 1=pinchos, 2=tentaculos, 3=coraza, 4=nodos
     if(nombreNodo === "ESTATICO" || nombreNodo === "MOTOR" || nombreNodo === "FLEXIBLE"){
-        bicho.exp.nodos += (radioNodo * 0.5);
+        bicho.exp.nodos += (radioNodo * 0.6);
     }else if(nombreNodo === "PINCHO"){
         bicho.exp.pinchos += (radioNodo * 1.5);
     }else if(nombreNodo === "OJO"){
@@ -539,3 +562,4 @@ function dañarNodo(bicho, nodo) {
         matarNodos(nodo);
     }
 }
+

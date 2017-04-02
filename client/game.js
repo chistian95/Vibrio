@@ -1,27 +1,8 @@
-var app;
-var players = [];
-var playerReady = false;
-var plantas = [];
-var plantasSprites = [];
-var plantasHitbox = [];
-var numPlantas = 0;
-var nivel = 0;
-var lengthTentaculo = 2;
-var expActual = null;
-var expAntigua = null;
-
-var zoomObj = 1;
-var maxW = 1920;
-var maxH = 1920;
-var w = 1920;
-var h = 1080;
-var modifOjos = 0;
-var maxZoom = 0.25;
-
 /*Crear juego
 =========================================================*/
 function Game(socket){
-    app = new app();
+    reiniciarVariables();
+    app = new renderPixi();
     this.mXtentaculos = 2;
     this.mYtentaculos = 5;
     this.movimiento = true;
@@ -33,39 +14,43 @@ function Game(socket){
 	this.socket = socket;
     var count = 0;
 
-    window.addEventListener("keydown", teclitas, true);
-    window.addEventListener("keyup", teclitasUp, true);
-    window.addEventListener('mousemove', actualizarRaton, true);
-    window.addEventListener('touchstart', actualizarTouch, true);
-    window.addEventListener('touchmove', actualizarTouch, true);
+    if(!respawn) {
+        window.addEventListener("keydown", teclitas, true);
+        window.addEventListener("keyup", teclitasUp, true);
+        window.addEventListener('mousemove', actualizarRaton, true);
+        window.addEventListener('touchstart', actualizarTouch, true);
+        window.addEventListener('touchmove', actualizarTouch, true);
+    }
 
-    setInterval(function(){
-        count += this.vTentaculos;
-		this.bucle();
-        modifOjosTemp = 0.4;
-        players.forEach(function(player){
-            player.bicho.nodos.forEach(function(nodo){
-                if(nodo.tipoNodo.nombre === "TENTACULO") {
-                    nodo.sprite.zOrder = -10;
-                    if(!nodo.tentaculines || !nodo.tentaculines.length) return;
-                    nodo.tentaculines[1].x = -5;
-                    for (var i = 2; i <nodo.tentaculines.length; i++) {
-                        nodo.tentaculines[i].y = Math.sin((i * 0.5) + count) * this.mXtentaculos;
-                        nodo.tentaculines[i].x = (i * lengthTentaculo + Math.cos((i * 0.3) + count) * this.mYtentaculos)-5;
+    this.bucle1 = setInterval(function(){
+        if(game.localPlayer) {
+            count += this.vTentaculos;
+            this.bucle();
+            modifOjosTemp = 0.4;
+            players.forEach(function(player){
+                player.bicho.nodos.forEach(function(nodo){
+                    if(nodo.tipoNodo.nombre === "TENTACULO") {
+                        nodo.sprite.zOrder = -10;
+                        if(!nodo.tentaculines || !nodo.tentaculines.length) return;
+                        nodo.tentaculines[1].x = -5;
+                        for (var i = 2; i <nodo.tentaculines.length; i++) {
+                            nodo.tentaculines[i].y = Math.sin((i * 0.5) + count) * this.mXtentaculos;
+                            nodo.tentaculines[i].x = (i * lengthTentaculo + Math.cos((i * 0.3) + count) * this.mYtentaculos)-5;
+                        }
+                        player.bicho.nodos[player.bicho.nodos.indexOf(nodo)].sprite.rotation = player.bicho.nodos[player.bicho.nodos.indexOf(nodo)].anguloActual*Math.PI/180;
+                    } else if(nodo.tipoNodo.nombre === "OJO" && modifOjosTemp<1 && player.id === game.localPlayer.id) {
+                        modifOjosTemp += 0.1;
                     }
-                    player.bicho.nodos[player.bicho.nodos.indexOf(nodo)].sprite.rotation = player.bicho.nodos[player.bicho.nodos.indexOf(nodo)].anguloActual*Math.PI/180;
-                } else if(nodo.tipoNodo.nombre === "OJO" && modifOjosTemp<1 && player.id === game.localPlayer.id) {
-                    modifOjosTemp += 0.1;
-                }
+                }.bind(this));
             }.bind(this));
-        }.bind(this));
-        if(modifOjos!=modifOjosTemp){
-            modifOjos = modifOjosTemp;
-            this.reescalar();
+            if(modifOjos!=modifOjosTemp){
+                modifOjos = modifOjosTemp;
+                this.reescalar();
+            }
         }
 	}.bind(this), 40);
-    setInterval(function() {
-        if(this.localPlayer) {
+    this.bucle2 = setInterval(function() {
+        if(game.localPlayer) {
             this.cerca();
             this.colisionPlantas();
             var exp = this.calcularExpTotal(expActual);
@@ -85,6 +70,7 @@ Game.prototype = {
     evoEie: function() {this.socket.emit('evole',{id:game.localPlayer.id,opc: "eie"});this.emitirEvoTrampa();},
     evoCorza: function() {this.socket.emit('evole',{id:game.localPlayer.id,opc: "corza"});this.emitirEvoTrampa();},
     evoNodos: function() {this.socket.emit('evole',{id:game.localPlayer.id,opc: "nodos"});this.emitirEvoTrampa();},
+    meMato: function() {this.socket.emit('meMato',{id:game.localPlayer.id});},
     emitirEvoTrampa(){
         this.socket.emit('evo', game.localPlayer.id);
         expAntigua = 0;
@@ -182,6 +168,7 @@ Game.prototype = {
         this.gui.add(game, 'evoEie');
         this.gui.add(game, 'evoCorza');
         this.gui.add(game, 'evoNodos');
+        this.gui.add(this, 'meMato');
     },
     resetGui: function() {
         this.gui.__controllers[1].__max = Math.round(players.length-1);

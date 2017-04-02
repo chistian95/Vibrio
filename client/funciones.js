@@ -36,7 +36,6 @@ function addChildrenText(texto,father, x = 0, y = 0 , anchor = 0.5, font= 'Comic
 }
 function init(servPlantas, pHitbox,t,ancho,alto) {
     game.localPlayer = t;
-    if(players.length==1) game.debugInit();
     var nodosSprites = [];
     servPlantas.forEach(function(p) {
         nodosSprites = [];
@@ -81,7 +80,7 @@ function init(servPlantas, pHitbox,t,ancho,alto) {
     app.bordeSprite.y = 0;
     app.world.addChild(app.bordeSprite);
 
-    game.debugInit();
+    //if(!respawn)game.debugInit();
 }
 /*=================================================*/
 /*Inputs

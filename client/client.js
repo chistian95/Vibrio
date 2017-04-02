@@ -1,29 +1,63 @@
+var respawn = false;
 var game;
-var zoom = 1;
-var socket = io.connect('http://127.0.0.1:8082');
+var zoom;
+var socket;
+var app;
+var players;
+var playerReady;
+var plantas;
+var plantasSprites;
+var plantasHitbox;
+var numPlantas;
+var nivel;
+var lengthTentaculo;
+var expActual ;
+var expAntigua;
+var zoomObj;
+var modifOjos;
+/*====================*/
+/*Constantes
+======================*/
+var maxW = 1920;
+var maxH = 1920;
+var w = 1920;
+var h = 1080;
+var maxZoom = 0.25;
+/*===================*/
+
 function empezarJuego(){
+    console.log("asdasd")
+    socket = null;
+    socket = io.connect('http://127.0.0.1:8082');
+
     //Conectarse
     //Inicializar el juego
     game = new Game(socket);
+    function crearJugadorServer(socket){
+        console.log("Creando player: "+nombre);
+        console.log("NODO INICAL DESEADO: "+nodoInicial);
+        socket.emit('crearJugadorServer', {nombre: nombre, nodoInicial: nodoInicial});
+    }
     /*Eventos para enviarle al servidor
     ==========================================================================*/
     crearJugadorServer(socket);
-    function crearJugadorServer(socket){
-        socket.emit('crearJugadorServer', {nombre: nombre});
-    }
     /*========================================================================*/
     /*Eventos para recibir del servidor
     ==========================================================================*/
     socket.on('crearPlayerCliente', function(player){
         var repetido = false;
         players.forEach(function(p){
-            if(p.id === playerServer.id) repetido = true;
+            if(p.id === player.id) repetido = true;
         });
 
         if(!repetido) {
             var t = new Player(player.id, this, player.local,player.nombre);
-            if(player.local) init(player.plantas,player.plantasHitbox,t,player.width,player.height);
-            players.push(t);
+            if(player.local) {
+                console.log("Creando player local: "+player.nombre);
+                init(player.plantas,player.plantasHitbox,t,player.width,player.height);
+                players.push(t);
+                if(!respawn) game.meMato();
+            }
         }
     });
     socket.on('crearPlayersCliente', function(player){
@@ -40,40 +74,42 @@ function empezarJuego(){
         });
     });
     socket.on('sync', function(serverInfo){//serverInfo[id "NUM", nodos "Array nodos min", Hitbox, exp]
-        //Borramos players desconectados
-        if(serverInfo[0].playersDesc != undefined){
-            for(var i = 0; i < serverInfo[0].playersDesc.length; i++)
-                for(var j=0;j < players.length;j++)
-                    if(players[j].id === serverInfo[0].playersDesc[i].id) players.splice(j, 1);
-        }
-        //Por cada player recibido del servidor
-        var numserver = 0;
-        if(players.length>=1) {
-            game.localPlayer.idsCercanas = [];
-            serverInfo.forEach(function(serverPlayer){ //Cada player del server info[]
-                game.localPlayer.idsCercanas.push(serverPlayer[0]);
-                players.forEach(function(player){
-                    if(player.id === serverPlayer[0]) {
-                        player.bicho.hitbox = serverPlayer[2];
-                        serverPlayer[1].forEach(function(nodo){
-                            player.bicho.parsearNodo(nodo);
-                        });
-                    }
+        if(game.localPlayer) {
+            //Borramos players desconectados
+            if(serverInfo[0].playersDesc != undefined){
+                for(var i = 0; i < serverInfo[0].playersDesc.length; i++)
+                    for(var j=0;j < players.length;j++)
+                        if(players[j].id === serverInfo[0].playersDesc[i].id) players.splice(j, 1);
+            }
+            //Por cada player recibido del servidor
+            var numserver = 0;
+            if(players.length>=1) {
+                game.localPlayer.idsCercanas = [];
+                serverInfo.forEach(function(serverPlayer){ //Cada player del server info[]
+                    game.localPlayer.idsCercanas.push(serverPlayer[0]);
+                    players.forEach(function(player){
+                        if(player.id === serverPlayer[0]) {
+                            player.bicho.hitbox = serverPlayer[2];
+                            serverPlayer[1].forEach(function(nodo){
+                                player.bicho.parsearNodo(nodo);
+                            });
+                        }
+                    });
                 });
-            });
+            }
+            /*==========================================================================*/
+            /* Pixi - Mover la cámara y pintarlo todo
+            ============================================================================*/
+            if(game.localPlayer.bicho.nodos[0]) {
+                app.world.pivot.x = game.localPlayer.bicho.nodos[0].sprite.position.x - (window.innerWidth/2)/zoom
+                app.world.pivot.y = game.localPlayer.bicho.nodos[0].sprite.position.y - (window.innerHeight/2)/zoom
+                app.renderer.render(app.world);
+            }
+            /*==========================================================================*/
+            expActual = serverInfo[serverInfo.length-1][3];
+            nivel = serverInfo[serverInfo.length-1][4];
+            actualizarExp();
         }
-        /*==========================================================================*/
-        /* Pixi - Mover la cámara y pintarlo todo
-        ============================================================================*/
-        if(game.localPlayer.bicho.nodos[0]) {
-            app.world.pivot.x = game.localPlayer.bicho.nodos[0].sprite.position.x - (window.innerWidth/2)/zoom
-            app.world.pivot.y = game.localPlayer.bicho.nodos[0].sprite.position.y - (window.innerHeight/2)/zoom
-            app.renderer.render(app.world);
-        }
-        /*==========================================================================*/
-        expActual = serverInfo[serverInfo.length-1][3];
-        nivel = serverInfo[serverInfo.length-1][4];
-        actualizarExp();
     });
     socket.on('playerDesconectadoCliente', function(info){
         var num = 0;
@@ -136,9 +172,43 @@ function empezarJuego(){
         });
         var spriteBorrar = pl.bicho.nodos[info.numNodo].sprite;
         app.world.removeChild(spriteBorrar);
+        if(info.numNodo === 0 && pl === game.localPlayer){
+            gameOver();
+        }
         pl.bicho.nodos.splice(info.numNodo,1);
     });
     /*========================================================================*/
+
+}
+
+function gameOver(){
+    respawn = true;
+    document.body.removeChild(app.backrenderer.view);
+    document.body.removeChild(app.expRenderer.view);
+    document.body.removeChild(app.renderer.view);
+    menu.style.display = "block";
+}
+
+function reiniciarVariables(){
+    if(game) {
+        if(game.localPlayer)game.localPlayer = null;
+        clearInterval(game.bucle1);
+        clearInterval(game.bucle2);
+    }
+    app = null;
+    players = [];
+    playerReady = false;
+    plantas = [];
+    plantasSprites = [];
+    plantasHitbox = [];
+    numPlantas = 0;
+    nivel = 0;
+    lengthTentaculo = 2;
+    expActual = null;
+    expAntigua = null;
+    zoomObj = 1;
+    zoom = 1;
+    modifOjos = 0
 }
 
 $(document).ready(function(){

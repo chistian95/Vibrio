@@ -15,14 +15,19 @@ var BichoProto = function(){
             nodo.vida = nodoMin[6];
             if(nodo.radio != nodoMin[4]) {
                 nodo.radio = nodoMin[4];
-                if(nodo.sprite.mask) {
-                    nodo.sprite.mask.width = nodoMin[4]*2;
-                    nodo.sprite.mask.height = nodoMin[4]*2;
-                    nodo.sprite.mask.x = nodoMin[4];
-                    nodo.sprite.mask.y = nodoMin[4];
+                if(nodo.tipoNodo.nombre === "TENTACULO") {
+                    nodo.sprite.sprite.width = nodoMin[4]*2;
+                    nodo.sprite.sprite.height = nodoMin[4]*6;
                 } else {
-                    nodo.sprite.width = nodoMin[4] * 2;
-                    nodo.sprite.height = nodoMin[4] * 2;
+                    if(nodo.sprite.mask) {
+                        nodo.sprite.mask.width = nodoMin[4]*2;
+                        nodo.sprite.mask.height = nodoMin[4]*2;
+                        nodo.sprite.mask.x = nodoMin[4];
+                        nodo.sprite.mask.y = nodoMin[4];
+                    } else {
+                        nodo.sprite.width = nodoMin[4] * 2;
+                        nodo.sprite.height = nodoMin[4] * 2;
+                    }
                 }
             }
         } else {
@@ -51,9 +56,7 @@ var BichoProto = function(){
                         if(nodo.tipoNodo.nombre === TipoNodo.PINCHO.nombre) {
                             socket.emit('chocar',{idAtacante: idLocal, numNodoAtacante: numNodoLocalPlayer, idAtacado: idTarget, numNodoAtacado: numNodoEnemigo});
                         } else {
-                            if(nodoTarget.vida <= 0) {
-                                socket.emit('comerBicho',{idAtacante: idLocal, numNodoAtacante: numNodoLocalPlayer, idAtacado: idTarget, numNodoAtacado: numNodoEnemigo});
-                            }
+                            socket.emit('comerBicho',{idAtacante: idLocal, numNodoAtacante: numNodoLocalPlayer, idAtacado: idTarget, numNodoAtacado: numNodoEnemigo});
                         }
                     }
                     numNodoEnemigo++;
@@ -94,7 +97,7 @@ var Bicho = function(z,nombre) {
 }
 Bicho.prototype = Object.create(BichoProto.prototype);
 
-var Nodo = function(x, y, tipoNodo, radio, anguloActual,z){
+var Nodo = function(x, y, tipoNodo, radio, anguloActual,z,anguloInicio){
     if(tipoNodo.nombre === "TENTACULO"){ //Tentaculo
         this.tentaculines = [];
         for (var i = 0; i < 25; i++) {
@@ -108,6 +111,8 @@ var Nodo = function(x, y, tipoNodo, radio, anguloActual,z){
         this.sprite = declararSpriteDesdeTextura(ojo,app.world,x,y,0.5,z,x,y);
     } else if(tipoNodo.nombre ==="PINCHO"){
         this.sprite = declararSpriteDesdeTextura(pincho,app.world,x,y,0.5,z,x,y);
+        this.sprite.width = radio*2;
+        this.sprite.height = radio*2;
     } else {
         this.sprite = generarDibujoCircular(radio,tipoNodo.color,true,0.7,z,x,y);
     }

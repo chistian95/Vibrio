@@ -8,6 +8,7 @@ TipoNodo.SPICIS = new TipoNodo(1, "0x42c8f4"); //PINCHOS
 TipoNodo.XP = new TipoNodo(2, [0, "0xcccccc"]); //XPAGUETOES (tentaculos)
 TipoNodo.CORNELISU = new TipoNodo(3, "0xb4e22b"); //CORAZA
 TipoNodo.MAGIS = new TipoNodo(4, "0xe27a2f"); //MAGIS CORPUS (MÁS NODOS)
+TipoNodo.OJETE = new TipoNodo(5, "0xdddddd"); //OJETES
 
 /*
 Las plantas van a tener un nodo central del que saldrá una cantidad aleatoria de nodos "grandes", despues, de cada nodo "grande" pueden (o no) salir
@@ -52,9 +53,11 @@ var PlantaProto = function(){
         }
     }
 
-    this.regenerar = function(io,id){
+    this.regenerar = function(io,id,x,y){
         var temp = false;
         if(this.nodos.length === 0 || !this.nodoPadre || !this.nodoCentral) {
+            this.x = x;
+            this.y = y;
             this.generar();
             this.calcularHitbox();
             io.sockets.emit('actualizarPlanta', {id: id, nodos: this.crearNodosMin(), hitbox: this.hitbox});
@@ -62,17 +65,20 @@ var PlantaProto = function(){
     }
 
     this.generar = function(){ //Función que genera la planta
+        this.escala = Math.random() * 1.5 + 0.5;
         this.nodoPadre = null;
         if(this.tipo == 0) { //MAGNA
-            this.nodoPadre = new Nodo(TipoNodo.MAGNA, null, 0, 50, this, 0);
+            this.nodoPadre = new Nodo(TipoNodo.MAGNA, null, 0, 50 * this.escala, this, 0);
         } else if(this.tipo == 1) {//SPICIS
-            this.nodoPadre = new Nodo(TipoNodo.SPICIS, null, 0, 30, this, 0);
+            this.nodoPadre = new Nodo(TipoNodo.SPICIS, null, 0, 30 * this.escala, this, 0);
         } else if(this.tipo == 2) {//CORNELISU
-            this.nodoPadre = new Nodo(TipoNodo.CORNELISU, null, 0, 50, this, 0);
+            this.nodoPadre = new Nodo(TipoNodo.CORNELISU, null, 0, 50 * this.escala, this, 0);
         } else if(this.tipo == 3) {//XPAGUETOES
-            this.nodoPadre = new Nodo(TipoNodo.XP, null, 0, 30, this, 0);
+            this.nodoPadre = new Nodo(TipoNodo.XP, null, 0, 30 * this.escala, this, 0);
         } else if(this.tipo == 4) {//MAGIS
-            this.nodoPadre = new Nodo(TipoNodo.MAGIS, null, 0, 50, this, 0);
+            this.nodoPadre = new Nodo(TipoNodo.MAGIS, null, 0, 50 * this.escala, this, 0);
+        } else if(this.tipo == 5) {//OJETES
+            this.nodoPadre = new Nodo(TipoNodo.OJETE, null, 0, 30 * this.escala, this, 0);
         }
         this.nodoCentral = this.nodoPadre;
         this.update();
@@ -85,123 +91,158 @@ var PlantaProto = function(){
                     if(Math.random() * 100 < 90) {
                         var angulo = i*90;
                         var radio = Math.random() * 4 + 28;
-                        new Nodo(TipoNodo.MAGNA, nodo, angulo, radio, this, 2);
+                        new Nodo(TipoNodo.MAGNA, nodo, angulo, radio * this.escala, this, 2);
                     }
                 }
                 for(var i=0; i<4; i++) {
                     if(Math.random() * 100 < 90) {
                         var angulo = i*90 + 45;
                         var radio = Math.random() * 4 + 28;
-                        new Nodo(TipoNodo.MAGNA, nodo, angulo, radio, this, 1);
+                        new Nodo(TipoNodo.MAGNA, nodo, angulo, radio * this.escala, this, 1);
                     }
                 }
             } else if(nodo.clase === 1) {
                 if(Math.random() * 100 < 75) {
                     var radio = Math.random() * 4 + 28;
-                    new Nodo(TipoNodo.MAGNA, nodo, 0, radio, this, 3);
+                    new Nodo(TipoNodo.MAGNA, nodo, 0, radio * this.escala, this, 3);
                 }
             } else if(nodo.clase === 2) {
                 if(Math.random() * 100 < 75) {
                     var radio = Math.random() * 4 + 8;
-                    new Nodo(TipoNodo.MAGNA, nodo, 0, radio, this, 4);
+                    new Nodo(TipoNodo.MAGNA, nodo, 0, radio * this.escala, this, 4);
                 }
             } else if(nodo.clase === 3) {
                 if(Math.random() * 100 < 75) {
                     var radio = Math.random() * 4 + 8;
-                    new Nodo(TipoNodo.MAGNA, nodo, 0, radio, this, 4);
+                    new Nodo(TipoNodo.MAGNA, nodo, 0, radio * this.escala, this, 4);
                 }
                 if(Math.random() * 100 < 75) {
                     var radio = Math.random() * 4 + 8;
-                    new Nodo(TipoNodo.MAGNA, nodo, 90, radio, this, 4);
+                    new Nodo(TipoNodo.MAGNA, nodo, 90, radio * this.escala, this, 4);
                 }
                 if(Math.random() * 100 < 75) {
                     var radio = Math.random() * 4 + 8;
-                    new Nodo(TipoNodo.MAGNA, nodo, 270, radio, this, 4);
+                    new Nodo(TipoNodo.MAGNA, nodo, 270, radio * this.escala, this, 4);
                 }
             }
         } else if(nodo.tipoNodo === TipoNodo.SPICIS) {
             if(nodo.clase === 0) {
                 for(var i=0; i<4; i++) {
                     var angulo = i*90;
-                    new Nodo(TipoNodo.SPICIS, nodo, angulo, 30, this, 1);
+                    new Nodo(TipoNodo.SPICIS, nodo, angulo, 30 * this.escala, this, 1);
                 }
             } else if(nodo.clase === 1) {
                 if(Math.random() * 100 < 50) {
-                    new Nodo(TipoNodo.SPICIS, nodo, 0, 30, this, 1);
+                    new Nodo(TipoNodo.SPICIS, nodo, 0, 30 * this.escala, this, 1);
                 } else {
-                    new Nodo(TipoNodo.SPICIS, nodo, 0, 10, this, 2);
+                    new Nodo(TipoNodo.SPICIS, nodo, 0, 10 * this.escala, this, 2);
                 }
-                new Nodo(TipoNodo.SPICIS, nodo, 90, 10, this, 2);
-                new Nodo(TipoNodo.SPICIS, nodo, 270, 10, this, 2);
+                new Nodo(TipoNodo.SPICIS, nodo, 90, 10 * this.escala, this, 2);
+                new Nodo(TipoNodo.SPICIS, nodo, 270, 10 * this.escala, this, 2);
             }
         } else if(nodo.tipoNodo === TipoNodo.CORNELISU) {
             if(nodo.clase === 0) {
                 for(var i=0; i<4; i++) {
                     var angulo = i*90;
                     var suma = angulo + (Math.random() * 40 - 20);
-                    new Nodo(TipoNodo.CORNELISU, nodo, suma, 30, this, 1);
+                    new Nodo(TipoNodo.CORNELISU, nodo, suma, 30 * this.escala, this, 1);
                 }
             } else if(nodo.clase === 1) {
                 if(Math.random() * 100 < 50) {
                     var angulo = 90 + (Math.random() * 40 - 20);
-                    new Nodo(TipoNodo.CORNELISU, nodo, angulo, 10, this, 2);
+                    new Nodo(TipoNodo.CORNELISU, nodo, angulo, 10 * this.escala, this, 2);
                 }
                 if(Math.random() * 100 < 50) {
                     var angulo = 270 + (Math.random() * 40 - 20);
-                    new Nodo(TipoNodo.CORNELISU, nodo, angulo, 10, this, 2);
+                    new Nodo(TipoNodo.CORNELISU, nodo, angulo, 10 * this.escala, this, 2);
                 }
                 var angulo = Math.random() * 40 - 20;
                 if(Math.random() * 100 < 50) {
-                    new Nodo(TipoNodo.CORNELISU, nodo, angulo, 10, this, 2);
+                    new Nodo(TipoNodo.CORNELISU, nodo, angulo, 10 * this.escala, this, 2);
                 } else {
-                    new Nodo(TipoNodo.CORNELISU, nodo, angulo, 30, this, 1);
+                    new Nodo(TipoNodo.CORNELISU, nodo, angulo, 30 * this.escala, this, 1);
                 }
             } else if(nodo.clase === 2) {
                 if(Math.random() * 100 < 50) {
                     var angulo = Math.random() * 40 - 20;
-                    new Nodo(TipoNodo.CORNELISU, nodo, angulo, 10, this, 2);
+                    new Nodo(TipoNodo.CORNELISU, nodo, angulo, 10 * this.escala, this, 2);
                 }
             }
         } else if(nodo.tipoNodo === TipoNodo.XP) {
             if(nodo.clase === 0) {
                 var angulo = Math.random() * 180;
-                new Nodo(TipoNodo.XP, nodo, angulo, 30, this, 1);
+                new Nodo(TipoNodo.XP, nodo, angulo, 30 * this.escala, this, 1);
                 angulo += 180;
-                new Nodo(TipoNodo.XP, nodo, angulo, 30, this, 1);
+                new Nodo(TipoNodo.XP, nodo, angulo, 30 * this.escala, this, 1);
             } else if(nodo.clase === 1) {
                 if(Math.random() * 100 < 50) {
-                    new Nodo(TipoNodo.XP, nodo, 0, 30, this, 1);
+                    new Nodo(TipoNodo.XP, nodo, 0, 30 * this.escala, this, 1);
                 } else {
                     var angulo = 0;
-                    new Nodo(TipoNodo.XP, nodo, angulo, 10, this, 2);
+                    new Nodo(TipoNodo.XP, nodo, angulo, 10 * this.escala, this, 2);
                     angulo = 0 + Math.random() * 30;
-                    new Nodo(TipoNodo.XP, nodo, angulo, 10, this, 2);
+                    new Nodo(TipoNodo.XP, nodo, angulo, 10 * this.escala, this, 2);
                     angulo = 0 - Math.random() * 30;
-                    new Nodo(TipoNodo.XP, nodo, angulo, 10, this, 2);
+                    new Nodo(TipoNodo.XP, nodo, angulo, 10 * this.escala, this, 2);
                 }
             } else if(nodo.clase === 2) {
                 if(Math.random() * 100 < 50) {
                     var angulo = Math.random() * 20 - 10;
-                    new Nodo(TipoNodo.XP, nodo, angulo, 10, this, 2);
+                    new Nodo(TipoNodo.XP, nodo, angulo, 10 * this.escala, this, 2);
                 }
             }
             if(nodo.clase === 0 || nodo.clase === 1) {
                 var angulo = 90;
-                new Nodo(TipoNodo.XP, nodo, angulo, 10, this, 2);
+                new Nodo(TipoNodo.XP, nodo, angulo, 10 * this.escala, this, 2);
                 angulo = 90 + Math.random() * 30;
-                new Nodo(TipoNodo.XP, nodo, angulo, 10, this, 2);
+                new Nodo(TipoNodo.XP, nodo, angulo, 10 * this.escala, this, 2);
                 angulo = 90 - Math.random() * 30;
-                new Nodo(TipoNodo.XP, nodo, angulo, 10, this, 2);
+                new Nodo(TipoNodo.XP, nodo, angulo, 10 * this.escala, this, 2);
 
                 angulo = 270;
-                new Nodo(TipoNodo.XP, nodo, angulo, 10, this, 2);
+                new Nodo(TipoNodo.XP, nodo, angulo, 10 * this.escala, this, 2);
                 angulo = 270 + Math.random() * 30;
-                new Nodo(TipoNodo.XP, nodo, angulo, 10, this, 2);
+                new Nodo(TipoNodo.XP, nodo, angulo, 10 * this.escala, this, 2);
                 angulo = 270 - Math.random() * 30;
-                new Nodo(TipoNodo.XP, nodo, angulo, 10, this, 2);
+                new Nodo(TipoNodo.XP, nodo, angulo, 10 * this.escala, this, 2);
             }
         } else if(nodo.tipoNodo === TipoNodo.MAGIS) {
-
+            if(nodo.clase === 0) {
+                for(var i=0; i<4; i++) {
+                    var angulo = i * 90;
+                    new Nodo(TipoNodo.MAGIS, nodo, angulo, 30 * this.escala, this, 1);
+                }
+            } else if(nodo.clase === 1) {
+                new Nodo(TipoNodo.MAGIS, nodo, 180, 15 * this.escala, this, 2);
+            } else if(nodo.clae === 2) {
+                new Nodo(TipoNodo.MAGIS, nodo, 180, 7 * this.escala, this, 3);
+            }
+        } else if(nodo.tipoNodo === TipoNodo.OJETE) {
+            if(nodo.clase === 0) {
+                for(var i=0; i<4; i++) {
+                    var angulo = i * 90 + (Math.random() * 40 - 20);
+                    new Nodo(TipoNodo.OJETE, nodo, angulo, 10 * this.escala, this, 1);
+                }
+            } else if(nodo.clase === 1) {
+                if(Math.random() * 100 < 65) {
+                    var angulo = Math.random() * 40 - 20;
+                    new Nodo(TipoNodo.OJETE, nodo, angulo, 10 * this.escala, this, 1);
+                } else if(Math.random() * 100 < 75) {
+                    new Nodo(TipoNodo.OJETE, nodo, 0, 25 * this.escala, this, 2);
+                }
+            } else if(nodo.clase === 2) {
+                for(var i=0; i<3; i++) {
+                    if(Math.random() * 100 < 50) {
+                        var angulo = Math.random() * 140 - 90 + 20 * i;
+                        new Nodo(TipoNodo.OJETE, nodo, angulo, 10 * this.escala, this, 3);
+                    }
+                }
+            } else if(nodo.clase === 3) {
+                if(Math.random() * 100 < 65) {
+                    var angulo = Math.random() * 40 - 20;
+                    new Nodo(TipoNodo.OJETE, nodo, angulo, 10 * this.escala, this, 3);
+                }
+            }
         }
     }
 
@@ -275,6 +316,7 @@ var Planta = function(x,y,tipo) {
     this.nodoCentral = null;
     this.generar();
     this.hitbox = [];
+    this.escala = 0;
     this.calcularHitbox();
 }
 Planta.prototype = Object.create(PlantaProto.prototype);
