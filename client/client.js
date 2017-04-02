@@ -35,7 +35,8 @@ function empezarJuego(){
     game = new Game(socket);
     function crearJugadorServer(socket){
         console.log("Creando player: "+nombre);
-        socket.emit('crearJugadorServer', {nombre: nombre});
+        console.log("NODO INICAL DESEADO: "+nodoInicial);
+        socket.emit('crearJugadorServer', {nombre: nombre, nodoInicial: nodoInicial});
     }
     /*Eventos para enviarle al servidor
     ==========================================================================*/

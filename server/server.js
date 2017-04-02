@@ -52,7 +52,7 @@ io.on('connection', function(client) {
         client.emit('crearPlayerCliente', { id: this.playerid, local: true,nombre: nombre,width:width,height:height, plantas: plantasMin, plantasHitbox: plantasHitbox});
         /*Enviar a todos los clientes "broadcast" la información del nuevo juegador*/
         client.broadcast.emit('crearPlayerCliente', {id: this.playerid, local: false,nombre: nombre})
-        new Player(this.playerid,initX,initY,nombre,client);
+        new Player(this.playerid,initX,initY,nombre,client,player.nodoInicial);
     });
     /*Función para recibir información del cliente, en este caso la dirección si ha cambiado*/
     client.on('sync', function(info){
@@ -349,11 +349,12 @@ function getInfo(){
 /*Constructor de los player
 ==================================================*/
 
-function Player(id, x, y,nombre,socket){
+function Player(id, x, y,nombre,socket, nodoInicial){
+    console.log("MEGA NODO INICIAL: "+nodoInicial);
     this.nombre = nombre;
 	this.id = id;
     this.socket = socket;
-    this.bicho = new Bicho(x,y,width,height);
+    this.bicho = new Bicho(x,y,width,height, nodoInicial);
     players.push(this);
     //===========================================
     var hPlayer = this.bicho.hitbox;
