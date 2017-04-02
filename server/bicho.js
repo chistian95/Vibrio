@@ -54,7 +54,12 @@ var BichoProto = function(){
     }
 
     this.bichoInicial = function(nodo){
-        var cuerpo = new Nodo(TipoNodo.ESTATICO, null, 0, 50, this);
+        var cuerpo = null;
+        if(nodo === 3){ //3=coraza
+            cuerpo = new Nodo(TipoNodo.CORAZA, null, 0, 50, this);
+        } else {
+            cuerpo = new Nodo(TipoNodo.ESTATICO, null, 0, 50, this);
+        }
         var ojo1 = new Nodo(TipoNodo.OJO, cuerpo, 120, 15, this);
         var ojo2 = new Nodo(TipoNodo.OJO, cuerpo, 240, 15, this);
         //var pincho = new Nodo(TipoNodo.PINCHO, cuerpo, 180, 7, this);
@@ -64,10 +69,8 @@ var BichoProto = function(){
             new Nodo(TipoNodo.PINCHO, cuerpo, 180, 7, this);
         }else if(nodo === 2){ //2=tentaculo
             new Nodo(TipoNodo.TENTACULO, cuerpo, 360, 15, this);
-        }else if(nodo === 3){ //3=coraza
-            new Nodo(TipoNodo.CORAZA, cuerpo, 240, 15, this);
         }else if(nodo === 4){ //4=cuerpo
-            new Nodo(TipoNodo.FLEXIBLE, this.nodoCentral, 0, 35, this);
+            new Nodo(TipoNodo.MOTOR, cuerpo, 0, 35, this);
         }
         this.nodoCentral = cuerpo;
     }
@@ -188,7 +191,7 @@ var BichoProto = function(){
                 });
                 var tamCentral = this.nodoCentral.radio * 0.14;
 
-                if(nodosPinchos.length <= 0) { //Si no tiene pinchos, poner uno en la parte delantera
+                if(!nodosAngulos.includes(0)) { //Si no tiene pinchos, poner uno en la parte delantera
                     new Nodo(TipoNodo.PINCHO, this.nodoCentral, 180, tamCentral, this);
                 } else if(!nodosAngulos.includes(200) || !nodosPinchos.includes(160)) { //Comprobar si aún no tiene pinchos a los costados
                     if(!nodosAngulos.includes(200)) {

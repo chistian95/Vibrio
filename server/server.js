@@ -512,7 +512,7 @@ function ganarExperienciaPlanta(bicho, tipoPlanta, radioNodo){
 function ganarExperienciaBicho(bicho, nombreNodo, radioNodo){
     //0=size, 1=pinchos, 2=tentaculos, 3=coraza, 4=nodos
     if(nombreNodo === "ESTATICO" || nombreNodo === "MOTOR" || nombreNodo === "FLEXIBLE"){
-        bicho.exp.nodos += (radioNodo * 0.5);
+        bicho.exp.nodos += (radioNodo * 0.6);
     }else if(nombreNodo === "PINCHO"){
         bicho.exp.pinchos += (radioNodo * 1.5);
     }else if(nombreNodo === "OJO"){
