@@ -11,7 +11,7 @@ TipoNodo.MAGIS = new TipoNodo(4, "0xe27a2f"); //MAGIS CORPUS (MÁS NODOS)
 TipoNodo.OJETE = new TipoNodo(5, "0xdddddd"); //OJETES
 
 /*
-Las plantas van a tener un nodo central del que saldrá una cantidad aleatoria de nodos "grandes", despues, de cada nodo "grande" pueden (o no) salir
+Las plantas van a tener un nodo central del que saldrán una cantidad aleatoria de nodos "grandes", despues, de cada nodo "grande" pueden (o no) salir
 otra cantidad aleatoria de nodos "pequeños.
 
 Los bichos pequeños solo podrán comer los nodos "pequeños" de las plantas, y los bichos grandes los nodos "grandes".
