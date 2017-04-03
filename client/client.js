@@ -1,4 +1,5 @@
 var respawn = false;
+var respawn2 = false;
 var game;
 var zoom;
 var socket;
@@ -15,6 +16,7 @@ var expActual ;
 var expAntigua;
 var zoomObj;
 var modifOjos;
+var debug;
 /*====================*/
 /*Constantes
 ======================*/
@@ -26,6 +28,7 @@ var maxZoom = 0.25;
 /*===================*/
 
 function empezarJuego(){
+    //if(debug && debug.gui) debug.gui.destroy()
     console.log("asdasd")
     socket = null;
     socket = io.connect('http://127.0.0.1:8082');
@@ -56,7 +59,10 @@ function empezarJuego(){
                 console.log("Creando player local: "+player.nombre);
                 init(player.plantas,player.plantasHitbox,t,player.width,player.height);
                 players.push(t);
-                if(!respawn) game.meMato();
+                if(!respawn) {
+                    respawn = true;
+                } else return;
+                debug = new debugo();
             }
         }
     });
@@ -68,7 +74,6 @@ function empezarJuego(){
             });
             if(!repetido) {
                 var t = new Player(playerServer.id, this, false,playerServer.nombre);
-                //if(local) init(servPlantas,pHitbox,t);
                 players.push(t);
             }
         });

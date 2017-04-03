@@ -23,7 +23,7 @@ function Game(socket){
     }
 
     this.bucle1 = setInterval(function(){
-        if(game.localPlayer) {
+        if(game.localPlayer && game.localPlayer.bicho.nodos[0]) {
             count += this.vTentaculos;
             this.bucle();
             modifOjosTemp = 0.4;
@@ -50,7 +50,7 @@ function Game(socket){
         }
 	}.bind(this), 40);
     this.bucle2 = setInterval(function() {
-        if(game.localPlayer) {
+        if(game.localPlayer && game.localPlayer.bicho.hitbox) {
             this.cerca();
             this.colisionPlantas();
             var exp = this.calcularExpTotal(expActual);
@@ -91,6 +91,18 @@ Game.prototype = {
         if(game.localPlayer)posicionRaton();
 		if(this.localPlayer != undefined) this.enviarInfo();
 	},
+
+    resetGui: function() {
+        debug.gui.__controllers[1].__max = Math.round(players.length-1);
+        debug.gui.__controllers[2].__max = players[Math.round(this.playerToDebug)].bicho.nodos.length-1;
+        debug.playerToDebug = Math.min(this.playerToDebug,this.gui.__controllers[1].__max);
+        debug.NodoToDebug = Math.min(this.NodoToDebug,this.gui.__controllers[2].__max);
+        debug.playerToDebug = Math.round(this.playerToDebug);
+        debug.NodoToDebug = Math.round(this.NodoToDebug);
+        debug.gui.__controllers[2].updateDisplay();
+        debug.gui.__controllers[1].updateDisplay();
+    },
+
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
     reescalar: function () {
         var widthR = window.innerWidth/modifOjos, heightR = window.innerHeight/modifOjos;
@@ -153,34 +165,6 @@ Game.prototype = {
 		info.player = t;
 		this.socket.emit('involucionar', info);
 	},
-    /*===================================================================*/
-    /*Debug
-    =====================================================================*/
-    debugInit: function(){
-        this.gui = new dat.GUI();
-        this.gui.add(this, 'mXtentaculos',0,10);
-        this.gui.add(this, 'mYtentaculos',0,10);
-        this.gui.add(this, 'vTentaculos',0,2);
-        this.gui.add(this, 'movimiento');
-        this.gui.add(game, 'evoZise');
-        this.gui.add(game, 'evoPinchus');
-        this.gui.add(game, 'evoTientaculos');
-        this.gui.add(game, 'evoEie');
-        this.gui.add(game, 'evoCorza');
-        this.gui.add(game, 'evoNodos');
-        this.gui.add(this, 'meMato');
-    },
-    resetGui: function() {
-        this.gui.__controllers[1].__max = Math.round(players.length-1);
-        this.gui.__controllers[2].__max = players[Math.round(this.playerToDebug)].bicho.nodos.length-1;
-        this.playerToDebug = Math.min(this.playerToDebug,this.gui.__controllers[1].__max);
-        this.NodoToDebug = Math.min(this.NodoToDebug,this.gui.__controllers[2].__max);
-        this.playerToDebug = Math.round(this.playerToDebug);
-        this.NodoToDebug = Math.round(this.NodoToDebug);
-        this.gui.__controllers[2].updateDisplay();
-        this.gui.__controllers[1].updateDisplay();
-    },
-    /*====================================*/
     /*Colisión
     ====================================================*/
     cerca: function(){
@@ -212,15 +196,36 @@ Game.prototype = {
         });
 	},
     colisionPlantas: function(){
+        var plantascerca = false;
 		plantas.forEach(function(planta) {
             var hPlayer = game.localPlayer.bicho.hitbox;
             var hTarget = plantas[plantas.indexOf(planta)].hitbox;
             if(hPlayer[2] >= hTarget[0] && hTarget[2] >= hPlayer[0]) {
                 if(hPlayer[3] >= hTarget[1] && hTarget[3] >= hPlayer[1]) {
-                    game.localPlayer.bicho.chocarPlanta(planta, this.socket, plantas.indexOf(planta),game.localPlayer.id);
+                    if(game.localPlayer.bicho.chocarPlanta(planta, this.socket, plantas.indexOf(planta),game.localPlayer.id))plantascerca= true;
                 }
             }
         });
+        if(!plantascerca) console.log("Ninguna planta cerca.");
 	},
     /*===================================================*/
+    buscarPlantaMasCercana: function() {
+        var acumMin = 99999;
+        game.localPlayer.bicho.nodos.forEach(function(nodo) { //LocalPlayer
+            var numNodoEnemigo = 0;
+            plantas.forEach(function(planta){
+                planta.forEach(function(nodoTarget) {
+                    var distanciaX = nodo.sprite.position.x - nodoTarget.x;
+                    var distanciaY = nodo.sprite.position.y - nodoTarget.y;
+                    var sumaRadios = nodoTarget.radio + nodo.radio;
+                    var dist = distanciaX * distanciaX + distanciaY * distanciaY;
+                    if(dist<acumMin) acumMin = dist;
+                });
+            });
+        });
+        console.log("Planta mas cercana: "+Math.floor(acumMin)+" radio del pj: "+game.localPlayer.bicho.nodos[0].radio);
+    },
+
+
+
 }

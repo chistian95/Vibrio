@@ -102,3 +102,25 @@ function renderPixi(){
     this.barraExp.height =this.expRenderer.height;
 
 }
+
+/*===================================================================*/
+/*Debug
+=====================================================================*/
+function debugo(){
+    this.gui = new dat.GUI();
+    this.gui.add(game, 'mXtentaculos',0,10);
+    this.gui.add(game, 'mYtentaculos',0,10);
+    this.gui.add(game, 'vTentaculos',0,2);
+    this.gui.add(game, 'movimiento');
+    this.gui.add(game, 'evoZise');
+    this.gui.add(game, 'evoPinchus');
+    this.gui.add(game, 'evoTientaculos');
+    this.gui.add(game, 'evoEie');
+    this.gui.add(game, 'evoCorza');
+    this.gui.add(game, 'evoNodos');
+    this.gui.add(game, 'meMato');
+    this.gui.add(game, 'buscarPlantaMasCercana');
+    //this.gui.view.style.zIndex = 600;
+    return this;
+}
+/*====================================*/

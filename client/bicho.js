@@ -10,14 +10,13 @@ var BichoProto = function(){
             nodo.sprite.position.y = nodoMin[2];
             nodo.tipoNodo = nodoMin[3];
             nodo.anguloActual = nodoMin[5]; //Solo al player local
-            console.log(nodoMin[5])
             nodo.sprite.rotation = nodoMin[5]*0.0174533; //Solo al player local
             nodo.vida = nodoMin[6];
             if(nodo.radio != nodoMin[4]) {
                 nodo.radio = nodoMin[4];
                 if(nodo.tipoNodo.nombre === "TENTACULO") {
-                    nodo.sprite.sprite.width = nodoMin[4]*2;
-                    nodo.sprite.sprite.height = nodoMin[4]*6;
+                    nodo.sprite.width = nodoMin[4]*2;
+                    nodo.sprite.height = nodoMin[4]*6;
                 } else {
                     if(nodo.sprite.mask) {
                         nodo.sprite.mask.width = nodoMin[4]*2;
@@ -52,12 +51,15 @@ var BichoProto = function(){
                     var distanciaX = nodo.sprite.position.x - nodoTarget.sprite.position.x;
                     var distanciaY = nodo.sprite.position.y - nodoTarget.sprite.position.y;
                     var sumaRadios = nodoTarget.radio + nodo.radio;
+                    var dist = distanciaX * distanciaX + distanciaY * distanciaY;
                     if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
                         if(nodo.tipoNodo.nombre === TipoNodo.PINCHO.nombre) {
                             socket.emit('chocar',{idAtacante: idLocal, numNodoAtacante: numNodoLocalPlayer, idAtacado: idTarget, numNodoAtacado: numNodoEnemigo});
                         } else {
                             socket.emit('comerBicho',{idAtacante: idLocal, numNodoAtacante: numNodoLocalPlayer, idAtacado: idTarget, numNodoAtacado: numNodoEnemigo});
                         }
+                    } else {
+                        console.log("Planta no choca dist: "+dist)
                     }
                     numNodoEnemigo++;
                 });
@@ -77,7 +79,9 @@ var BichoProto = function(){
                     var distanciaY = nodo.sprite.position.y - nodoTarget.y;
                     var sumaRadios = nodoTarget.radio + nodo.radio;
                     if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
+                        console.log("chocar planta: "+numNodoEnemigo)
                         socket.emit('chocarPlanta',{idAtacante: idLocal, numNodoAtacante: numNodoLocalPlayer, idAtacado: idTarget, numNodoAtacado: numNodoEnemigo});
+                        return true;
                     }
                     numNodoEnemigo++;
                 });

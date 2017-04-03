@@ -7,7 +7,6 @@ function actualizarExp() {
     var TempExp = (expTotal/((nivel+1)*100))*window.innerWidth/2;
     app.expSpr.mask.width = Math.min(TempExp,widthRect-anchoBordeExp);
     app.expSpr.mask.height = heightRect-anchoBordeExp;
-    console.log(app.expSpr.mask.width)
     app.expSpr.children[0].text = Math.floor((expTotal/((nivel+1)*100))*100)+'%';
     app.spr_uiZise.children[0].text = Math.floor((expActual.size/((nivel+1)*100))*100)+'%';
     app.spr_uiOjo.children[0].text = Math.floor((expActual.ojos/((nivel+1)*100))*100)+'%';
@@ -15,7 +14,6 @@ function actualizarExp() {
     app.spr_uiTentaculo.children[0].text = Math.floor((expActual.tentaculos/((nivel+1)*100))*100)+'%';
     app.spr_uiNodos.children[0].text = Math.floor((expActual.nodos/((nivel+1)*100))*100)+'%';
     app.spr_uiCoraza.children[0].text = Math.floor((expActual.coraza/((nivel+1)*100))*100)+'%';
-
     app.expRenderer.render(app.exp);
 }
 function declararSpriteDesdeTextura(textura,container, x = 0,y = 0,anchor = 0.5, z = 0) {
@@ -35,6 +33,9 @@ function addChildrenText(texto,father, x = 0, y = 0 , anchor = 0.5, font= 'Comic
     father.addChild(tempText);
 }
 function init(servPlantas, pHitbox,t,ancho,alto) {
+    plantas = [];
+    plantasHitbox = [];
+    plantasSprites = [];
     game.localPlayer = t;
     var nodosSprites = [];
     servPlantas.forEach(function(p) {
@@ -65,7 +66,11 @@ function init(servPlantas, pHitbox,t,ancho,alto) {
             nodosSprites.push(datos);
         });
         plantas.push(nodosSprites);
-        plantas[plantas.length-1].tipo = p[0][3].tipo;
+        if(p[0]) plantas[plantas.length-1].tipo = p[0][3].tipo;
+        else {
+            console.log("p[0] no existe.");
+            console.log(p);
+        }
         plantas[plantas.length-1].hitbox = pHitbox[plantas.length-1];
         plantasSprites.push(ndSprites);
     });
@@ -79,13 +84,13 @@ function init(servPlantas, pHitbox,t,ancho,alto) {
     app.bordeSprite.x = 0;
     app.bordeSprite.y = 0;
     app.world.addChild(app.bordeSprite);
-
-    //if(!respawn)game.debugInit();
 }
 /*=================================================*/
 /*Inputs
 ==================================================*/
 function teclitas(e) {
+    if(e.keyCode === 27) game.meMato();
+    if(e.keyCode === 13) game.evoZise();
     if(e.keyCode === 87) game.localPlayer.arriba = true;
     if(e.keyCode === 83) game.localPlayer.abajo = true;
     if(e.keyCode === 65) game.localPlayer.izquierda = true;
