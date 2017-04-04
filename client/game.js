@@ -206,7 +206,7 @@ Game.prototype = {
                 }
             }
         });
-        if(!plantascerca) console.log("Ninguna planta cerca.");
+        //if(!plantascerca) console.log("Ninguna planta cerca.");
 	},
     /*===================================================*/
     buscarPlantaMasCercana: function() {

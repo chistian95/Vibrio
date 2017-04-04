@@ -1,4 +1,4 @@
-var g = new PIXI.Graphics();
+var numCuerpo = 0;
 var BichoProto = function(){
     this.parsearNodo = function(nodoMin) {
         var pos = nodoMin[0];
@@ -11,7 +11,7 @@ var BichoProto = function(){
             nodo.tipoNodo = nodoMin[3];
             nodo.anguloActual = nodoMin[5]; //Solo al player local
             nodo.sprite.rotation = nodoMin[5]*0.0174533; //Solo al player local
-            nodo.vida = nodoMin[6];
+            //nodo.vida = nodoMin[6];
             if(nodo.radio != nodoMin[4]) {
                 nodo.radio = nodoMin[4];
                 if(nodo.tipoNodo.nombre === "TENTACULO") {
@@ -31,6 +31,10 @@ var BichoProto = function(){
             }
         } else {
             var nodo = new Nodo(nodoMin[1], nodoMin[2], nodoMin[3], nodoMin[4], nodoMin[5],this.z);
+            if(nodo.tipoNodo.nombre === "MOTOR" || nodo.tipoNodo.nombre === "ESTATICO" || nodo.tipoNodo.nombre === "FLEXIBLE") {
+                numCuerpo++;
+                console.log("numCuerpo: "+numCuerpo)
+            }
             if(pos===0) {
                 var texto = new PIXI.Text(this.nombre, {fontFamily:'Arial', fontSize:"20px", fill:"#1f27f2"});
                 texto.anchor.set(0.5);
@@ -38,6 +42,39 @@ var BichoProto = function(){
             }
             this.nodos.push(nodo);
         }
+    }
+
+    this.calcularSprite = function(){
+        g.clear();
+        var cuerpo = [];
+        this.nodos.forEach(function(nodo){
+            if(nodo.tipoNodo.nombre === "MOTOR" || nodo.tipoNodo.nombre === "ESTATICO" || nodo.tipoNodo.nombre === "FLEXIBLE") {
+                cuerpo.push(nodo);
+            }
+        });
+        var padre = true;
+        for(i=1;i<cuerpo.length;i++){
+            //Mover g a traves de un lado
+        }
+        for(i=cuerpo.length;i>0;i--){
+            //Mover g a traves del otro lado
+        }
+    }
+
+    this.buscarNodoCercano = function(nodo){
+        var acumMin = 99999;
+        var nodoCerca = null;
+        this.nodos.forEach(function(nodoCercano) { //LocalPlayer
+            if(!nodo === nodoCercano && (nodoCercano.tipoNodo.nombre === "MOTOR" || nodoCercano.tipoNodo.nombre === "ESTATICO" || nodoCercano.tipoNodo.nombre === "FLEXIBLE")) {
+                var dist = Math.pow(nodoCercano.sprite.position.x - nodo.sprite.position.x,2) + Math.pow(nodoCercano.sprite.position.y - nodo.sprite.position.y,2) - (nodoCercano.radio + nodo.radio);
+                if(dist<acumMin) {
+                    acumMin = dist;
+                    nodoCerca = nodoCercano;
+                }
+            }
+
+        });
+        return nodoCerca;
     }
 
     this.chocar = function(target,socket,idTarget,idLocal) {
@@ -59,7 +96,7 @@ var BichoProto = function(){
                             socket.emit('comerBicho',{idAtacante: idLocal, numNodoAtacante: numNodoLocalPlayer, idAtacado: idTarget, numNodoAtacado: numNodoEnemigo});
                         }
                     } else {
-                        console.log("Planta no choca dist: "+dist)
+                        //console.log("Planta no choca dist: "+dist)
                     }
                     numNodoEnemigo++;
                 });
@@ -79,7 +116,7 @@ var BichoProto = function(){
                     var distanciaY = nodo.sprite.position.y - nodoTarget.y;
                     var sumaRadios = nodoTarget.radio + nodo.radio;
                     if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
-                        console.log("chocar planta: "+numNodoEnemigo)
+                        //console.log("chocar planta: "+numNodoEnemigo)
                         socket.emit('chocarPlanta',{idAtacante: idLocal, numNodoAtacante: numNodoLocalPlayer, idAtacado: idTarget, numNodoAtacado: numNodoEnemigo});
                         return true;
                     }

@@ -206,3 +206,10 @@ function actualizarUi() {
     app.barraExp.width =app.expRenderer.width;
     app.barraExp.height =app.expRenderer.height;
 }
+
+function calcularPuntoEnCirculo(x,y,r,a){
+    var coord = [];
+    coord.push(x + r * cos(a));
+    coord.push(y + r * sin(a));
+    return coord;
+}

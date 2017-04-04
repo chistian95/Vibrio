@@ -5,6 +5,7 @@ var zoom;
 var socket;
 var app;
 var players;
+var g;
 var playerReady;
 var plantas;
 var plantasSprites;
@@ -35,6 +36,7 @@ function empezarJuego(){
 
     //Conectarse
     //Inicializar el juego
+    g = new PIXI.Graphics();
     game = new Game(socket);
     function crearJugadorServer(socket){
         console.log("Creando player: "+nombre);
@@ -98,6 +100,7 @@ function empezarJuego(){
                             serverPlayer[1].forEach(function(nodo){
                                 player.bicho.parsearNodo(nodo);
                             });
+                            //player.bicho.calcularSprite();
                         }
                     });
                 });
