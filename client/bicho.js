@@ -15,8 +15,8 @@ var BichoProto = function(){
             if(nodo.radio != nodoMin[4]) {
                 nodo.radio = nodoMin[4];
                 if(nodo.tipoNodo.nombre === "TENTACULO") {
-                    nodo.sprite.width = nodoMin[4]*2;
-                    nodo.sprite.height = nodoMin[4]*6;
+                    //nodo.sprite.width = nodoMin[4]*2;
+                    //nodo.sprite.height = nodoMin[4]*6;
                 } else {
                     if(nodo.sprite.mask) {
                         nodo.sprite.mask.width = nodoMin[4]*2;
@@ -118,7 +118,7 @@ var BichoProto = function(){
                     if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
                         //console.log("chocar planta: "+numNodoEnemigo)
                         socket.emit('chocarPlanta',{idAtacante: idLocal, numNodoAtacante: numNodoLocalPlayer, idAtacado: idTarget, numNodoAtacado: numNodoEnemigo});
-                        return true;
+                        //return true;
                     }
                     numNodoEnemigo++;
                 });
@@ -150,8 +150,11 @@ var Nodo = function(x, y, tipoNodo, radio, anguloActual,z,anguloInicio){
         app.world.addChild(this.sprite);
     } else if(tipoNodo.nombre ==="OJO") {
         this.sprite = declararSpriteDesdeTextura(ojo,app.world,x,y,0.5,z,x,y);
+        this.sprite.width = radio*2;
+        this.sprite.height = radio*2;
     } else if(tipoNodo.nombre ==="PINCHO"){
-        this.sprite = declararSpriteDesdeTextura(pincho,app.world,x,y,0.5,z,x,y);
+        //VITOR NECESITO QUE AQUI HAGAS QUE LOS PINCHOS SE VEAN UN POCO DESPLAZADOS A LA IZQUIERDA PARA QUE QUEDEN BIEN!!
+        this.sprite = declararSpriteDesdeTextura(pincho,app.world,x,y,0.0,z,x,y);
         this.sprite.width = radio*2;
         this.sprite.height = radio*2;
     } else {
