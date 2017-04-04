@@ -81,7 +81,7 @@ var BichoProto = function(){
                     if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
                         console.log("chocar planta: "+numNodoEnemigo)
                         socket.emit('chocarPlanta',{idAtacante: idLocal, numNodoAtacante: numNodoLocalPlayer, idAtacado: idTarget, numNodoAtacado: numNodoEnemigo});
-                        return true;
+                        //return true;
                     }
                     numNodoEnemigo++;
                 });

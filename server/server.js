@@ -2,8 +2,8 @@
 =================================================================*/
 var express = require('express');
 var app = express();
-var width = 1000;
-var height = 1000;
+var width = 3000;
+var height = 3000;
 app.use(express.static(__dirname));
 var server = app.listen(process.env.PORT || 8082, function () {
 	var puerto = server.address().port;
@@ -157,10 +157,8 @@ io.on('connection', function(client) {
             }
             num++;
         });
-        console.log(playerAtacante.id+" atacante.")
         try {
             if(!players[numPlayer].bicho.nodos[info.numNodoAtacante] || !plantas[numPlanta].nodos[info.numNodoAtacado]) {
-                console.log("return");
                 return;
             }
             try {
@@ -188,11 +186,7 @@ io.on('connection', function(client) {
                     matarNodosPlanta(plantas[numPlanta], planta);
                     io.sockets.emit('borrarPlantas', { numPlanta: numPlanta, numNodo: info.numNodoAtacado});
                     ganarExperienciaPlanta(playerAtacante.bicho, planta.tipoNodo.tipo, planta.radio);
-                    console.log("borrarPlanta");
                 }//else console.log("else1");
-            } else {
-                console.log(distanciaX * distanciaX + distanciaY * distanciaY+"  radio: "+sumaRadios * sumaRadios);
-                console.log("")
             }
         } catch(err) {console.log(err.message);}
     });
@@ -469,7 +463,7 @@ function regenerarMapa() {
 
 /* GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS */
 function generarPlantas() {
-    for(var i=0; i<0; i++) {
+    for(var i=0; i<20; i++) {
         var tipoPlanta = Math.round(Math.random() * 5);
         var x = Math.random()*(width-200)+100;
         var y = Math.random()*(width-200)+100;
