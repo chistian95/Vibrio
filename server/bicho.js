@@ -191,7 +191,7 @@ var BichoProto = function(){
                 });
                 var tamCentral = this.nodoCentral.radio * 0.14;
 
-                if(!nodosAngulos.includes(0)) { //Si no tiene pinchos, poner uno en la parte delantera
+                if(!nodosAngulos.includes(180)) { //Si no tiene pinchos, poner uno en la parte delantera
                     new Nodo(TipoNodo.PINCHO, this.nodoCentral, 180, tamCentral, this);
                 } else if(!nodosAngulos.includes(200) || !nodosPinchos.includes(160)) { //Comprobar si aún no tiene pinchos a los costados
                     if(!nodosAngulos.includes(200)) {
