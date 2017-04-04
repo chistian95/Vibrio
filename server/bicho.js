@@ -318,16 +318,21 @@ var BichoProto = function(){
                 }
             } else if(tipoSeleccionado == "nodos") { //Poner nodos
                 var angulos = [];
+                var posicionesReales = [];
+                var posicionReal = 0;
                 this.nodoCentral.nodos.forEach(function(nodo) {
                     if(nodo.vida > 0) {
                         angulos.push(nodo.anguloInicio);
+                        posicionesReales.push(posicionReal);
                     }
+                    posicionReal++;
                 });
                 var tamCentral = this.nodoCentral.radio * 0.7;
                 var posicion = angulos.lastIndexOf(0);
                 if(posicion != -1) {
-                    var nodoMover = this.nodoCentral.nodos[posicion];
-                    this.nodoCentral.nodos[posicion].tipoNodo = TipoNodo.FLEXIBLE;
+                    posicionReal = posicionesReales[posicion];
+                    var nodoMover = this.nodoCentral.nodos[posicionReal];
+                    this.nodoCentral.nodos[posicionReal].tipoNodo = TipoNodo.FLEXIBLE;
                     new Nodo(TipoNodo.MOTOR, this.nodoCentral, 0, tamCentral, this);
                     var nodoNuevo = this.nodoCentral.nodos[this.nodoCentral.nodos.length - 1];
                     nodoNuevo.nodos.push(nodoMover);

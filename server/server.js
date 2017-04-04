@@ -143,8 +143,8 @@ io.on('connection', function(client) {
     /*ChocarPlantas
     =================================*/
     client.on('chocarPlanta', function(info){
-        console.log("======================================================")
-        console.log("planta: "+info.idAtacado+" nodo: "+info.numNodoAtacado);
+        //console.log("======================================================")
+        //console.log("planta: "+info.idAtacado+" nodo: "+info.numNodoAtacado);
         var numPlayer = 0;
         var numPlanta = info.idAtacado;
         var num = 0;
@@ -189,7 +189,7 @@ io.on('connection', function(client) {
                     io.sockets.emit('borrarPlantas', { numPlanta: numPlanta, numNodo: info.numNodoAtacado});
                     ganarExperienciaPlanta(playerAtacante.bicho, planta.tipoNodo.tipo, planta.radio);
                     console.log("borrarPlanta");
-                }else console.log("else1");
+                }//else console.log("else1");
             } else {
                 console.log(distanciaX * distanciaX + distanciaY * distanciaY+"  radio: "+sumaRadios * sumaRadios);
                 console.log("")
@@ -469,7 +469,7 @@ function regenerarMapa() {
 
 /* GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS */
 function generarPlantas() {
-    for(var i=0; i<20; i++) {
+    for(var i=0; i<0; i++) {
         var tipoPlanta = Math.round(Math.random() * 5);
         var x = Math.random()*(width-200)+100;
         var y = Math.random()*(width-200)+100;
