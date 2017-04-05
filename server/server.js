@@ -405,6 +405,7 @@ setInterval(function() {
     players.forEach(function(player) {
         player.bicho.calcularHitbox();
     });
+    decaerPlantas();
 }, 500);
 
 setInterval(function() {
@@ -458,6 +459,16 @@ function regenerarMapa() {
         var y = Math.random()*(width-200)+100;
         planta.regenerar(io,plantas.indexOf(planta), x, y);
     });
+}
+
+function decaerPlantas() {
+    plantas.forEach(function(planta){
+        if(Math.random() * 100 < 12) {
+            var numNodo = Math.floor(Math.random() * planta.nodos.length);
+            matarNodosPlanta(planta, planta.nodos[numNodo]);
+            io.sockets.emit('borrarPlantas', { numPlanta: plantas.indexOf(planta), numNodo: numNodo});
+        }
+    })
 }
 
 
