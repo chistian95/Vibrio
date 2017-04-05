@@ -14,7 +14,9 @@
             padding: 0;
         }
 
-        #menu{margin-top: 5%;}
+        #menu{
+            margin-top: 3%;
+        }
         /*#inputNombre{margin-right: 5px;}*/
         h1{font-size: 8em;}
 
@@ -76,8 +78,27 @@
             cursor:pointer;
             border:2px solid transparent;
         }
-        #nodoInicial label > input:checked + img{ /* (RADIO CHECKED) ESTILOS DE LAS IMAGENES */
-            border:2px solid #f00;
+
+        /*CAMBIAR IMAGEN DEL NODO ELEGIDO*/
+        #l-ojo > input:checked + img{ /* (RADIO CHECKED) ESTILOS DE LA IMAGEN [OJO] */
+            content: url('assets/img/ico-pincho.png');
+        }
+        #l-pincho > input:checked + img{ /* (RADIO CHECKED) ESTILOS DE LA IMAGEN [PINCHO] */
+            content: url('assets/img/ico-ojo.png');
+        }
+        #l-tentaculo > input:checked + img{ /* (RADIO CHECKED) ESTILOS DE LA IMAGEN [TENTACULO] */
+            content: url('assets/img/ico-ojo.png');
+        }
+        #l-coraza > input:checked + img{ /* (RADIO CHECKED) ESTILOS DE LA IMAGEN [CORAZA] */
+            content: url('assets/img/ico-ojo.png');
+        }
+        #l-cuerpo > input:checked + img{ /* (RADIO CHECKED) ESTILOS DE LA IMAGEN [CUERPO] */
+            content: url('assets/img/ico-ojo.png');
+        }
+
+        #nodoInicial img{
+            max-width: 150px;
+            width: 100%;
         }
 
         @media screen and (max-width:768px) {
@@ -98,25 +119,25 @@
 		<center>
 			<h1>Vibr.io</h1>
             <div id="nodoInicial">
-                <label>
+                <label id="l-ojo">
                     <input id="rbOjo" type="radio" name="nodo" value="ojo" />
-                    <img src="assets/img/1.png">
+                    <img src="assets/img/ico-ojo.png">
                 </label>
-                <label>
+                <label id="l-pincho">
                     <input id="rbPincho" type="radio" name="nodo" value="pincho" />
-                    <img src="assets/img/2.png">
+                    <img src="assets/img/ico-pincho.png">
                 </label>
-                <label>
+                <label id="l-tentaculo">
                     <input id="rbTentaculo" type="radio" name="nodo" value="tentaculo" />
-                    <img src="assets/img/3.png">
+                    <img src="assets/img/ico-tentaculo.png">
                 </label>
-                <label>
+                <label id="l-coraza">
                     <input id="rbCoraza" type="radio" name="nodo" value="coraza" />
-                    <img src="assets/img/4.png">
+                    <img src="assets/img/ico-coraza.png">
                 </label>
-                <label>
+                <label id="l-cuerpo">
                     <input id="rbCuerpo" type="radio" name="nodo" value="cuerpo" />
-                    <img src="assets/img/5.png">
+                    <img src="assets/img/ico-nodo.png">
                 </label>
             </div>
 			<form class="form-inline" autocomplete="off" onSubmit="return false;">
