@@ -1,20 +1,22 @@
 function actualizarExp() {
-    //0=size, 1=pinchos, 2=tentaculos, 3=coraza, 4=nodos, 5=ojos
-    var anchoBordeExp = app.expRenderer.height/30;
-    var widthRect = window.innerWidth/2-anchoBordeExp*2;
-    var heightRect = window.innerHeight/20-anchoBordeExp*2;
-    var expTotal = expActual.nodos+expActual.ojos+expActual.tentaculos+expActual.size+expActual.pinchos+expActual.coraza;
-    var TempExp = (expTotal/((nivel+1)*100))*window.innerWidth/2;
-    app.expSpr.mask.width = Math.min(TempExp,widthRect-anchoBordeExp);
-    app.expSpr.mask.height = heightRect-anchoBordeExp;
-    app.expSpr.children[0].text = Math.floor((expTotal/((nivel+1)*100))*100)+'%';
-    app.spr_uiZise.children[0].text = Math.floor((expActual.size/((nivel+1)*100))*100)+'%';
-    app.spr_uiOjo.children[0].text = Math.floor((expActual.ojos/((nivel+1)*100))*100)+'%';
-    app.spr_uiPincho.children[0].text = Math.floor((expActual.pinchos/((nivel+1)*100))*100)+'%';
-    app.spr_uiTentaculo.children[0].text = Math.floor((expActual.tentaculos/((nivel+1)*100))*100)+'%';
-    app.spr_uiNodos.children[0].text = Math.floor((expActual.nodos/((nivel+1)*100))*100)+'%';
-    app.spr_uiCoraza.children[0].text = Math.floor((expActual.coraza/((nivel+1)*100))*100)+'%';
-    app.expRenderer.render(app.exp);
+    if(expActual) {
+        //0=size, 1=pinchos, 2=tentaculos, 3=coraza, 4=nodos, 5=ojos
+        var anchoBordeExp = app.expRenderer.height/30;
+        var widthRect = window.innerWidth/2-anchoBordeExp*2;
+        var heightRect = window.innerHeight/20-anchoBordeExp*2;
+        var expTotal = expActual.nodos+expActual.ojos+expActual.tentaculos+expActual.size+expActual.pinchos+expActual.coraza;
+        var TempExp = (expTotal/((nivel+1)*100))*window.innerWidth/2;
+        app.expSpr.mask.width = Math.min(TempExp,widthRect-anchoBordeExp);
+        app.expSpr.mask.height = heightRect-anchoBordeExp;
+        app.expSpr.children[0].text = Math.floor((expTotal/((nivel+1)*100))*100)+'%';
+        app.spr_uiZise.children[0].text = Math.floor((expActual.size/((nivel+1)*100))*100)+'%';
+        app.spr_uiOjo.children[0].text = Math.floor((expActual.ojos/((nivel+1)*100))*100)+'%';
+        app.spr_uiPincho.children[0].text = Math.floor((expActual.pinchos/((nivel+1)*100))*100)+'%';
+        app.spr_uiTentaculo.children[0].text = Math.floor((expActual.tentaculos/((nivel+1)*100))*100)+'%';
+        app.spr_uiNodos.children[0].text = Math.floor((expActual.nodos/((nivel+1)*100))*100)+'%';
+        app.spr_uiCoraza.children[0].text = Math.floor((expActual.coraza/((nivel+1)*100))*100)+'%';
+        app.expRenderer.render(app.exp);
+    }
 }
 function declararSpriteDesdeTextura(textura,container, x = 0,y = 0,anchor = 0.5, z = 0) {
     var spriteTemp = new PIXI.Sprite(textura);
@@ -26,7 +28,7 @@ function declararSpriteDesdeTextura(textura,container, x = 0,y = 0,anchor = 0.5,
     return spriteTemp;
 }
 function addChildrenText(texto,father, x = 0, y = 0 , anchor = 0.5, font= 'Comic Sans MS', size = '20px', color = "#ffff00", z = 0) {
-    var tempText = new PIXI.Text(texto, {fontFamily: font, fontSize:size, fill:color});
+    var tempText = new PIXI.Text(texto, {font : '24px Arial', fontSize:size, fill:color});
     tempText.position.x = x;
     tempText.position.y = y;
     tempText.anchor.set(anchor);
@@ -154,14 +156,14 @@ function rgb2hex(rgb){
 }
 
 function generarDibujoCircular(radio,color,tiponodoColor,alpha,z,x,y,anchor) {
-    var colorTemp = []; "rgba(199, 64, 64, 0.93)"
+    var colorTemp = []; //"rgba(199, 64, 64, 0.93)"
     if(tiponodoColor) {
-        colorTemp = rgb2hex('rgba(' + color[0] + ', ' + color[1] + ', ' + color[2] + ", 1)");
+        colorTemp = rgb2hex(color);
     } else {
         colorTemp = color;
     }
     var grap = new PIXI.Graphics();
-    grap.beginFill(colorTemp, alpha || 1);
+    grap.beginFill(colorTemp);
     grap.drawCircle(radio, radio,radio);
     grap.endFill();
     var sprite = new PIXI.Sprite(grap.generateCanvasTexture());
@@ -207,9 +209,16 @@ function actualizarUi() {
     app.barraExp.height =app.expRenderer.height;
 }
 
-function calcularPuntoEnCirculo(x,y,r,a){
+function calcularPuntoEnCirculo(x = 0,y = 0,r,a){
+    if(!r && r != 0|| !a && a != 0) {
+        console.log("Faltan atributos obligatorios: ")
+        if(!a)console.log("Ángulo: "+a);
+        if(!r)console.log("Radio: "+r);
+        return;
+    }
     var coord = [];
-    coord.push(x + r * cos(a));
-    coord.push(y + r * sin(a));
+    //console.log("Ángulo: "+a+" grados: "+(a*180/Math.PI));
+    coord.push(x + r * Math.cos(a));
+    coord.push(y + r * Math.sin(a));
     return coord;
 }

@@ -100,8 +100,8 @@ function empezarJuego(){
                             serverPlayer[1].forEach(function(nodo){
                                 player.bicho.parsearNodo(nodo);
                             });
-                            //player.bicho.calcularSprite();
                         }
+                        //player.bicho.calcularSprite();
                     });
                 });
             }
@@ -183,7 +183,13 @@ function empezarJuego(){
         if(info.numNodo === 0 && pl === game.localPlayer){
             gameOver();
         }
+        var nodo = pl.bicho.nodos[info.numNodo];
+        if(nodo.tipoNodo.nombre === "MOTOR" || nodo.tipoNodo.nombre === "ESTATICO" || nodo.tipoNodo.nombre === "FLEXIBLE" || nodo.tipoNodo.nombre === "CORAZA") {
+            pl.bicho.cuerpo.splice(pl.bicho.cuerpo.indexOf(nodo),1);
+            pl.bicho.calcularSprite(); //*
+        }
         pl.bicho.nodos.splice(info.numNodo,1);
+
     });
     /*========================================================================*/
 

@@ -21,7 +21,9 @@ function Game(socket){
         window.addEventListener('touchstart', actualizarTouch, true);
         window.addEventListener('touchmove', actualizarTouch, true);
     }
-
+    setInterval(function(){
+        game.actuColas();
+    },20);
     this.bucle1 = setInterval(function(){
         if(game.localPlayer && game.localPlayer.bicho.nodos[0]) {
             count += this.vTentaculos;
@@ -37,6 +39,8 @@ function Game(socket){
                             nodo.tentaculines[i].y = Math.sin((i * 0.5) + count) * this.mXtentaculos;
                             nodo.tentaculines[i].x = (i * lengthTentaculo + Math.cos((i * 0.3) + count) * this.mYtentaculos)-5;
                         }
+                        console.log("Tentaculo")
+                        console.log(nodo.tentaculines);
                         player.bicho.nodos[player.bicho.nodos.indexOf(nodo)].sprite.rotation = player.bicho.nodos[player.bicho.nodos.indexOf(nodo)].anguloActual*Math.PI/180;
                     } else if(nodo.tipoNodo.nombre === "OJO" && modifOjosTemp<1 && player.id === game.localPlayer.id) {
                         modifOjosTemp += 0.1;
@@ -92,6 +96,24 @@ Game.prototype = {
 		if(this.localPlayer != undefined) this.enviarInfo();
 	},
 
+    actuColas: function(){
+        players.forEach(function(player){
+            if(player.bicho.sprite) {
+                player.bicho.actualizarSprite();
+                //player.bicho.sprite.refresh();
+            }
+        });
+    },
+
+    pinchoColas: function(){
+        players.forEach(function(player){
+            if(player.bicho.sprite) {
+                player.bicho.sprite.texture = pincho;
+                player.bicho.sprite.refresh();
+            }
+        });
+    },
+
     resetGui: function() {
         debug.gui.__controllers[1].__max = Math.round(players.length-1);
         debug.gui.__controllers[2].__max = players[Math.round(this.playerToDebug)].bicho.nodos.length-1;
@@ -128,12 +150,14 @@ Game.prototype = {
         actualizarUi();
     },
     calcularExpTotal(exp){
-        var exp = exp.nodos+exp.ojos+exp.tentaculos+exp.size+exp.pinchos+exp.coraza;
-        if(exp>((nivel+1)*100)){
-            this.socket.emit('evo', game.localPlayer.id);
-            expAntigua = 0;
+        if(exp){
+            var exp = exp.nodos+exp.ojos+exp.tentaculos+exp.size+exp.pinchos+exp.coraza;
+            if(exp>((nivel+1)*100)){
+                this.socket.emit('evo', game.localPlayer.id);
+                expAntigua = 0;
+            }
         }
-        return exp;
+        return exp || -1;
     },
     /*===================================================*/
     /*Eventos para enviar al server

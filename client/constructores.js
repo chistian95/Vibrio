@@ -17,14 +17,15 @@ function renderPixi(){
     /*Declarar contenedores de imágenes
     =====================================*/
     this.world = new PIXI.Container();
+    this.bichos = new PIXI.Container();
     this.back = new PIXI.Container();
     this.exp = new PIXI.Container();
     this.borde = new PIXI.Container();
-    this.world.addChild(g);
+    this.world.addChild(this.bichos);
     /*==================================*/
     /*Declarar renderer de imágenes
     =================================================================================================*/
-    this.renderer = new PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight, {antialias: false, transparent: true, resolution: 1});
+    this.renderer = new PIXI.CanvasRenderer(window.innerWidth, window.innerHeight, {antialias: false, transparent: true, resolution: 1});
     this.backrenderer = new PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight,null,true,true,false,true,1,false,true,false);
     this.expRenderer = new PIXI.autoDetectRenderer(window.innerWidth/2, window.innerHeight/10, {antialias: false, transparent: true, resolution: 1});
     //Añadirlos al body para que se vean
@@ -120,6 +121,8 @@ function debugo(){
     this.gui.add(game, 'evoNodos');
     this.gui.add(game, 'meMato');
     this.gui.add(game, 'buscarPlantaMasCercana');
+    this.gui.add(game, 'actuColas');
+    this.gui.add(game, 'pinchoColas');
     //this.gui.view.style.zIndex = 600;
     return this;
 }

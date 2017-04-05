@@ -1,4 +1,4 @@
-var numCuerpo = 0;
+var xP = 0;
 var BichoProto = function(){
     this.parsearNodo = function(nodoMin) {
         var pos = nodoMin[0];
@@ -18,63 +18,121 @@ var BichoProto = function(){
                     //nodo.sprite.width = nodoMin[4]*2;
                     //nodo.sprite.height = nodoMin[4]*6;
                 } else {
-                    if(nodo.sprite.mask) {
-                        nodo.sprite.mask.width = nodoMin[4]*2;
-                        nodo.sprite.mask.height = nodoMin[4]*2;
-                        nodo.sprite.mask.x = nodoMin[4];
-                        nodo.sprite.mask.y = nodoMin[4];
-                    } else {
-                        nodo.sprite.width = nodoMin[4] * 2;
-                        nodo.sprite.height = nodoMin[4] * 2;
-                    }
+                    nodo.sprite.width = nodoMin[4] * 2;
+                    nodo.sprite.height = nodoMin[4] * 2;
                 }
             }
         } else {
-            var nodo = new Nodo(nodoMin[1], nodoMin[2], nodoMin[3], nodoMin[4], nodoMin[5],this.z);
-            if(nodo.tipoNodo.nombre === "MOTOR" || nodo.tipoNodo.nombre === "ESTATICO" || nodo.tipoNodo.nombre === "FLEXIBLE") {
-                numCuerpo++;
-                console.log("numCuerpo: "+numCuerpo)
-            }
             if(pos===0) {
+                var nodo = new Nodo(nodoMin[1], nodoMin[2], nodoMin[3], nodoMin[4], nodoMin[5],this.z,null,true);
                 var texto = new PIXI.Text(this.nombre, {fontFamily:'Arial', fontSize:"20px", fill:"#1f27f2"});
                 texto.anchor.set(0.5);
-                nodo.sprite.addChild(texto);
+                //nodo.sprite.addChild(texto);
+            } else {
+                var nodo = new Nodo(nodoMin[1], nodoMin[2], nodoMin[3], nodoMin[4], nodoMin[5],this.z);
             }
             this.nodos.push(nodo);
+            if(nodo.tipoNodo.nombre === "MOTOR" || nodo.tipoNodo.nombre === "ESTATICO" || nodo.tipoNodo.nombre === "FLEXIBLE" || nodo.tipoNodo.nombre === "CORAZA") {
+                this.cuerpo.push(nodo);
+                xP+= nodo.radio;
+                if(this)this.calcularSprite();
+            }
         }
     }
 
     this.calcularSprite = function(){
-        g.clear();
-        var cuerpo = [];
-        this.nodos.forEach(function(nodo){
-            if(nodo.tipoNodo.nombre === "MOTOR" || nodo.tipoNodo.nombre === "ESTATICO" || nodo.tipoNodo.nombre === "FLEXIBLE") {
-                cuerpo.push(nodo);
-            }
-        });
-        var padre = true;
-        for(i=1;i<cuerpo.length;i++){
-            //Mover g a traves de un lado
+        if(this.cuerpo.lenght <= 1) {
+            this.sprite.destroy(true,true,true);
+            app.world.removeChild(this.sprite);
+            this.spriteReady = false;
+            return;
         }
-        for(i=cuerpo.length;i>0;i--){
-            //Mover g a traves del otro lado
+        var gSpriteBichos = new PIXI.Graphics();
+        var nodo = this.cuerpo[0];
+        var ultimoNodo = null;
+        var acumDif = 0;
+        acumDif+= this.cuerpo[0].radio;
+        if(this.cuerpo.length === 1) ultimoNodo = this.cuerpo[0];
+        else ultimoNodo = this.cuerpo[1];
+        if(this.cuerpo && this.cuerpo[0] && this.cuerpo[0].sprite) {
+            var y = this.cuerpo[0].radio//this.cuerpo[0].sprite.position.y;
+            var x = xP//this.cuerpo[0].sprite.position.x;
+            gSpriteBichos.beginFill(0x24c191);
+            gSpriteBichos.lineStyle(0);
+            /*INICIO - CABEZA
+            ===================================================================*/
+            var coord = calcularPuntoEnCirculo(x,y,ultimoNodo.radio,0);
+            var init = coord;
+            if(coord)gSpriteBichos.moveTo(coord[0],coord[1]);
+            else {
+                console.log(this.cuerpo[0].anguloActual);
+                return;
+            }
+            coord = calcularPuntoEnCirculo(x,y,ultimoNodo.radio,-Math.PI/2);
+            gSpriteBichos.arcTo(init[0],init[1]-ultimoNodo.radio,coord[0],coord[1],ultimoNodo.radio); //Arco inicial
+            /*===============================================================*/
+            /*CUERPO LADO
+            ================================================================*/
+            for(i=1;i<this.cuerpo.length-1;i++){acumDif+= this.cuerpo[i].radio;}
+            /*=============================================================*/
+            /*FINAL - CUERPO: ÚLTIMO NODO
+            ====================================================================*/
+            coord = calcularPuntoEnCirculo(x-acumDif,y,this.cuerpo[0].radio,-Math.PI/2);
+            gSpriteBichos.lineTo(coord[0],coord[1]);
+            var inicioArco1 = coord;
+            coord = calcularPuntoEnCirculo(x-acumDif,y,this.cuerpo[0].radio,(Math.PI+Math.PI/2));
+            gSpriteBichos.lineTo(coord[0],coord[1]); //Arco
+            var inicioArco2 = coord;
+            coord = calcularPuntoEnCirculo(x-acumDif,y,this.cuerpo[0].radio,(Math.PI*1.5+Math.PI));
+            gSpriteBichos.lineTo(coord[0],coord[1]); //Ultimo arco culo
+            /*========================================================================*/
+            //FIN - CABEZA
+            //===========================================================================
+            coord = calcularPuntoEnCirculo(x,y,this.cuerpo[0].radio,-Math.PI/2+Math.PI);
+            gSpriteBichos.lineTo(coord[0],coord[1]); //Última recta
+            gSpriteBichos.arcTo(coord[0]+ultimoNodo.radio,coord[1],init[0],init[1],ultimoNodo.radio); //Arco inicial
+            gSpriteBichos.endFill();
+            var tempTentaculines = [];
+            for (var i = 1; i <= this.cuerpo.length; i++) {
+                tempTentaculines.push(new PIXI.Point(i*ultimoNodo.radio, 0));
+            }
+            this.cosas = tempTentaculines;
+            this.texture = gSpriteBichos.generateCanvasTexture();
+            //if(this.sprite) app.world.removeChild(this.sprite);
+            if(!this.spriteReady) {
+                this.sprite = new PIXI.mesh.Rope(this.texture,this.cosas);
+                app.world.addChild(this.sprite);
+                this.spriteReady = true;
+            } else {
+                this.sprite.points = this.cosas;
+                this.sprite.texture = this.texture;
+            }
+        } else {
+            console.log("no hay sprite inicial.");
+            console.log(this.cuerpo[0]);
         }
     }
 
-    this.buscarNodoCercano = function(nodo){
-        var acumMin = 99999;
-        var nodoCerca = null;
-        this.nodos.forEach(function(nodoCercano) { //LocalPlayer
-            if(!nodo === nodoCercano && (nodoCercano.tipoNodo.nombre === "MOTOR" || nodoCercano.tipoNodo.nombre === "ESTATICO" || nodoCercano.tipoNodo.nombre === "FLEXIBLE")) {
-                var dist = Math.pow(nodoCercano.sprite.position.x - nodo.sprite.position.x,2) + Math.pow(nodoCercano.sprite.position.y - nodo.sprite.position.y,2) - (nodoCercano.radio + nodo.radio);
-                if(dist<acumMin) {
-                    acumMin = dist;
-                    nodoCerca = nodoCercano;
-                }
+    this.actualizarSprite = function(){
+        if(this.cuerpo.length <=1) return;
+        console.log("paodpo")
+        if(this.cuerpo && this.cuerpo[0] && this.cosas && this.cosas[0]){
+            this.cuerpoOrdenado = [];
+            this.cuerpoOrdenado[0] = this.cuerpo[0];
+            var cont2 = this.cuerpo.length-1;
+            for(var cont = 1;cont<=this.cuerpo.length-1;cont++){
+                this.cuerpoOrdenado[cont] = this.cuerpo[cont2];
+                cont2--;
             }
-
-        });
-        return nodoCerca;
+            var cosasTemp = this.cosas;
+            for(var cont = 0;cont<=cosasTemp.length-2;cont++){
+                cosasTemp[cont].x = this.cuerpoOrdenado[cont].sprite.position.x;
+                cosasTemp[cont].y = this.cuerpoOrdenado[cont].sprite.position.y;
+            };
+            var coord = calcularPuntoEnCirculo(this.cuerpoOrdenado[this.cuerpoOrdenado.length-1].sprite.position.x,this.cuerpoOrdenado[this.cuerpoOrdenado.length-1].sprite.position.y,this.cuerpoOrdenado[this.cuerpoOrdenado.length-1].radio,this.cuerpoOrdenado[this.cuerpoOrdenado.length-1].anguloActual*0.0174533);
+            cosasTemp[cosasTemp.length-1].x = coord[0];
+            cosasTemp[cosasTemp.length-1].y = coord[1];
+        }
     }
 
     this.chocar = function(target,socket,idTarget,idLocal) {
@@ -129,7 +187,10 @@ var BichoProto = function(){
 }
 var Bicho = function(z,nombre) {
     BichoProto.call(this);
+    this.cuerpo = [];
+    this.sprite = null;
     this.z = z;
+    this.spriteReady = false;
     this.nodos = [];
     this.arriba = false;
     this.izquierda = false;
@@ -138,7 +199,7 @@ var Bicho = function(z,nombre) {
 }
 Bicho.prototype = Object.create(BichoProto.prototype);
 
-var Nodo = function(x, y, tipoNodo, radio, anguloActual,z,anguloInicio){
+var Nodo = function(x, y, tipoNodo, radio, anguloActual,z,anguloInicio,master){
     if(tipoNodo.nombre === "TENTACULO"){ //Tentaculo
         this.tentaculines = [];
         for (var i = 0; i < 25; i++) {
@@ -154,11 +215,17 @@ var Nodo = function(x, y, tipoNodo, radio, anguloActual,z,anguloInicio){
         this.sprite.height = radio*2;
     } else if(tipoNodo.nombre ==="PINCHO"){
         //VITOR NECESITO QUE AQUI HAGAS QUE LOS PINCHOS SE VEAN UN POCO DESPLAZADOS A LA IZQUIERDA PARA QUE QUEDEN BIEN!!
+        //Ok, ahora lo hago.
         this.sprite = declararSpriteDesdeTextura(pincho,app.world,x,y,0.0,z,x,y);
         this.sprite.width = radio*2;
         this.sprite.height = radio*2;
     } else {
-        this.sprite = generarDibujoCircular(radio,tipoNodo.color,true,0.7,z,x,y);
+        //this.sprite = generarDibujoCircular(radio,tipoNodo.color,true,0.7,z,x,y);
+        if(master) {
+            this.sprite = generarDibujoCircular(radio,'rgba(36, 193, 145,1)',true,0.7,z+5,x,y);
+            console.log("papuh")
+        }
+        else this.sprite = new sprite(x,y);
     }
     this.tipoNodo = tipoNodo;
     this.radio = radio;
@@ -172,6 +239,10 @@ var TipoNodo = function(nombre, color){
 var TipoNodo = function(nombre, color){
     this.nombre = nombre;
     this.color = color;
+}
+
+var sprite = function(x,y){
+    this.position = {x: x, y: y};
 }
 
 TipoNodo.ESTATICO = new TipoNodo("ESTATICO", [0, 255, 0, 64]);
