@@ -13,22 +13,47 @@ function Player(id, game, local,nombrev){
 /*====================================================================================*/
 /*Render - Pixi
 ======================================================================================*/
+/*var app = new PIXI.Application(2800, 2600, {backgroundColor: 0x1099bb});
+    ***document.body.appendChild(app.view);
+    ***app.stage.displayList = new PIXI.DisplayList();
+    ***var blueLayer = new PIXI.DisplayGroup(1, function (sprite) {
+        sprite.zOrder = +sprite.y;
+    });
+    ***var texture_blue = PIXI.Texture.fromImage('assets/img/ojo.png');
+    ***var bunniesBlue = new PIXI.Container();*
+    ***app.stage.addChild(bunniesBlue);*
+    ****for (var i = 9; i >= 0; i--) {
+        var bunny = new PIXI.Sprite(texture_blue);
+        bunny.width = 50;
+        bunny.height = 50;
+        bunny.position.set(400 + 20 * i, 400 - 20 * i);
+        bunny.anchor.set(0.5);
+        bunny.displayGroup = blueLayer;
+        bunniesBlue.addChild(bunny);
+    }*/
 function renderPixi(){
     /*Declarar contenedores de imágenes
     =====================================*/
+    //this.cosaMaster = new PIXI.Application(2800, 2600, {backgroundColor: 0x1099bb});
     this.world = new PIXI.Container();
-    this.bichos = new PIXI.Container();
+    this.world.displayList = new PIXI.DisplayList();
+    this.general = new PIXI.DisplayGroup(1, function (sprite) {
+        sprite.zOrder = -sprite.z;
+    });
     this.back = new PIXI.Container();
     this.exp = new PIXI.Container();
     this.borde = new PIXI.Container();
-    this.world.addChild(this.bichos);
+    //this.cosaMaster.stage.addChild(this.world);
+    for (var i = 9; i >= 0; i--) {
+        var bunny = new PIXI.Sprite(ojo);
+        bunny.width = 50;
+        bunny.height = 50;
+        bunny.position.set(400 + 20 * i, 400 - 20 * i);
+        bunny.anchor.set(0.5);
+        bunny.displayGroup = this.general;
+        this.world.addChild(bunny);
+    }
     /*==================================*/
-    //this.world.displayList = new PIXI.DisplayList();
-    this.general = new PIXI.DisplayGroup(0, true);
-    this.general.on('add', function (sprite) {
-        //console.log(sprite.z)
-        sprite.zOrder = -sprite.z;
-    });
     /*Declarar renderer de imágenes
     =================================================================================================*/
     this.renderer = new PIXI.CanvasRenderer(window.innerWidth, window.innerHeight, {antialias: false, transparent: true, resolution: 1});

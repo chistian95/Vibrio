@@ -55,7 +55,7 @@ var BichoProto = function(){
             this.sprite.destroy(true,true,true);
             app.world.removeChild(this.sprite);
             this.spriteReady = false;
-            return;
+            //return;
         }
         if(this.cuerpo && this.cuerpo[0] && this.cuerpo[0].sprite) {
             var gSpriteBichos = new PIXI.Graphics();
@@ -79,7 +79,7 @@ var BichoProto = function(){
             else {
                 return;
             }
-            coord = calcularPuntoEnCirculo(x,y,this.cuerpo[0].radio-2,-Math.PI/2);
+            coord = calcularPuntoEnCirculo(x,y,ultimoNodo.radio,-Math.PI/2);
             gSpriteBichos.lineTo(coord[0],coord[1]); //Arco inicial
             /*===============================================================*/
             /*CUERPO LADO
@@ -99,14 +99,14 @@ var BichoProto = function(){
             /*========================================================================*/
             //FIN - CABEZA
             //===========================================================================
-            coord = calcularPuntoEnCirculo(x,y,this.cuerpo[0].radio,-Math.PI/2+Math.PI);
+            coord = calcularPuntoEnCirculo(x,y,ultimoNodo.radio,-Math.PI/2+Math.PI);
             gSpriteBichos.lineTo(coord[0],coord[1]); //Última recta
             gSpriteBichos.lineTo(init[0],init[1]); //Arco inicial
             gSpriteBichos.endFill();
-            coord = calcularPuntoEnCirculo(init[0],init[1],this.cuerpo[0].radio,-Math.PI);
+            coord = calcularPuntoEnCirculo(init[0],init[1],ultimoNodo.radio,-Math.PI);
             gSpriteBichos.beginFill(0x24c191);
             gSpriteBichos.lineStyle(0);
-            gSpriteBichos.drawCircle(coord[0],coord[1],this.cuerpo[0].radio*1.005)
+            gSpriteBichos.drawCircle(coord[0],coord[1],ultimoNodo.radio)
             gSpriteBichos.endFill();
             var tempTentaculines = [];
             for (var i = 1; i <= this.cuerpo.length; i++) {
@@ -117,6 +117,7 @@ var BichoProto = function(){
             //if(this.sprite) app.world.removeChild(this.sprite);
             if(!this.spriteReady) {
                 this.sprite = new PIXI.mesh.Rope(this.texture,this.cosas);
+                this.sprite.canvasPadding = 1;
                 this.sprite.z = this.nodos[0].sprite.z;
                 app.world.addChild(this.sprite);
                 this.spriteReady = true;
@@ -234,7 +235,6 @@ var Nodo = function(x, y, tipoNodo, radio, anguloActual,z,anguloInicio,master){
         this.sprite.z = z-2;
         this.sprite.width = radio*8;
         this.sprite.height = radio*2;
-        this.sprite.displayGroup = app.general;
         app.world.addChild(this.sprite);
     } else if(tipoNodo.nombre ==="OJO") {
         this.sprite = declararSpriteDesdeTextura(ojo,app.world,x,y,0.5,z+1+this.contOjos,x,y);
@@ -247,12 +247,13 @@ var Nodo = function(x, y, tipoNodo, radio, anguloActual,z,anguloInicio,master){
         this.sprite.width = radio*8;
         this.sprite.height = radio*2;
     } else {
-        this.sprite = generarDibujoCircular(radio,'rgba(36, 193, 145,1)',true,0.7,z,x,y);
+        this.sprite = generarDibujoCircular(radio*.6,'rgba(36, 193, 145,1)',true,0.7,z,x,y);
     }
     this.tipoNodo = tipoNodo;
     this.radio = radio;
     this.anguloActual = anguloActual;
     this.vida = 0;
+    this.sprite.displayGroup = app.general;
     //actualizarZ();
 }
 var TipoNodo = function(nombre, color){

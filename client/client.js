@@ -27,6 +27,7 @@ function empezarJuego(){
     //Inicializar el juego
     g = new PIXI.Graphics();
     game = new Game(socket);
+
     function crearJugadorServer(socket){
         console.log("Creando player: "+nombre);
         console.log("NODO INICAL DESEADO: "+nodoInicial);
@@ -92,7 +93,7 @@ function empezarJuego(){
                                 player.bicho.parsearNodo(nodo);
                             });
                         }
-                        //player.bicho.calcularSprite();
+                        player.bicho.actualizarSprite();
                     });
                 });
                 console.log("IDS =======================")
@@ -237,3 +238,5 @@ function reiniciarVariables(){
     zoom = 1;
     modifOjos = 0
 }
+
+

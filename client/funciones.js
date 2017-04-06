@@ -18,13 +18,12 @@ function actualizarExp() {
         app.expRenderer.render(app.exp);
     }
 }
-function declararSpriteDesdeTextura(textura,container, x,y,anchor, z,displaygroup) {
+function declararSpriteDesdeTextura(textura,container, x,y,anchor, z) {
     var spriteTemp = new PIXI.Sprite(textura);
     spriteTemp.position.x = x || 0;
     spriteTemp.position.y = y || 0;
     spriteTemp.anchor.set(anchor || 0.5);
     spriteTemp.z = z;
-    if(app)this.sprite.displayGroup = app.general || null;
     container.addChild(spriteTemp);
     return spriteTemp;
 }
@@ -158,7 +157,7 @@ function rgb2hex(rgb){
   ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
 }
 
-function generarDibujoCircular(radio,color,tiponodoColor,alpha,z,x,y,anchor,displaygroup) {
+function generarDibujoCircular(radio,color,tiponodoColor,alpha,z,x,y,anchor) {
     var colorTemp = []; //"rgba(199, 64, 64, 0.93)"
     if(tiponodoColor) {
         colorTemp = rgb2hex(color);
@@ -173,7 +172,6 @@ function generarDibujoCircular(radio,color,tiponodoColor,alpha,z,x,y,anchor,disp
     if(x)sprite.position.x = x;
     if(y)sprite.position.y = y;
     if(z)sprite.z = z;
-    this.sprite.displayGroup = app.general;
     sprite.anchor.set(anchor || 0.5);
     app.world.addChild(sprite);
     return sprite;
