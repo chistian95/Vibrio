@@ -146,6 +146,7 @@ function empezarJuego(){
         });
         var nodosSprites = [];
         var ndSprites = [];
+        var cont = 0;
         info.nodos.forEach(function(nodoPlanta){
             //nodo.x, nodo.y, nodo.visible, nodo.tipoNodo, nodo.radio
             var graphics = new PIXI.Graphics();
@@ -159,7 +160,7 @@ function empezarJuego(){
             sprite.position.x = nodoPlanta[0];
             sprite.position.y = nodoPlanta[1];
             sprite.interactive = true;
-            sprite.zOrder = zPlantas+cont;
+            //sprite.zOrder = zPlantas+cont;
             app.world.addChild(sprite);
 
             ndSprites.push(sprite);
@@ -170,11 +171,16 @@ function empezarJuego(){
                 radio: nodoPlanta[4],
             }
             nodosSprites.push(datos);
+            cont++;
         });
         plantas[info.id] = nodosSprites;
         plantas[info.id].tipo = info.nodos[0][3].tipo;
         plantas[info.id].hitbox = info.hitbox;
         plantasSprites[info.id]=ndSprites;
+<<<<<<< HEAD
+=======
+        //actualizarZ();
+>>>>>>> origin/master
     });
     socket.on('borrarNodo',function(info){
        var pl = null;
