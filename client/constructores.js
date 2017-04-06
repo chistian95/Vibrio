@@ -17,17 +17,14 @@ function renderPixi(){
     /*Declarar contenedores de imágenes
     =====================================*/
     this.world = new PIXI.Container();
-    this.bichos = new PIXI.Container();
+    this.world.displayList = new PIXI.DisplayList();
+    this.general = new PIXI.DisplayGroup(1, function (sprite) {
+        sprite.zOrder = -sprite.z;
+    });
     this.back = new PIXI.Container();
     this.exp = new PIXI.Container();
     this.borde = new PIXI.Container();
-    this.world.addChild(this.bichos);
     /*==================================*/
-    //this.world.displayList = new PIXI.DisplayList();
-    this.general = new PIXI.DisplayGroup(0, true);
-    this.general.on('add', function (sprite) {
-        sprite.zOrder = sprite.z;
-    });
     /*Declarar renderer de imágenes
     =================================================================================================*/
     this.renderer = new PIXI.CanvasRenderer(window.innerWidth, window.innerHeight, {antialias: false, transparent: true, resolution: 1});
@@ -135,9 +132,6 @@ function debugo(){
     this.gui.add(game, 'evoCorza');
     this.gui.add(game, 'evoNodos');
     this.gui.add(game, 'meMato');
-    this.gui.add(game, 'buscarPlantaMasCercana');
-    this.gui.add(game, 'actuColas');
-    this.gui.add(game, 'pinchoColas');
     this.gui.add(game, 'pintarHitboxPlanta0');
     return this;
 }

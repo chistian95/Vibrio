@@ -18,16 +18,12 @@ function actualizarExp() {
         app.expRenderer.render(app.exp);
     }
 }
-function declararSpriteDesdeTextura(textura,container, x,y,anchor, z,displaygroup) {
+function declararSpriteDesdeTextura(textura,container, x,y,anchor, z) {
     var spriteTemp = new PIXI.Sprite(textura);
     spriteTemp.position.x = x || 0;
     spriteTemp.position.y = y || 0;
     spriteTemp.anchor.set(anchor || 0.5);
     spriteTemp.z = z;
-    if(displaygroup) sprite.displayGroup = displaygroup;
-    else {
-        sprite.displayGroup = app ? app.general : null || displaygroup;
-    }
     container.addChild(spriteTemp);
     return spriteTemp;
 }
@@ -116,6 +112,12 @@ function actualizarRaton(e) {
         game.localPlayer.ratonY = e.clientY;
     }
 }
+function usarHabilidad() {
+    console.log("USAR HABILIDAD");
+    if(game.localPlayer) {
+        game.socket.emit('usarHabilidad',{id:game.localPlayer.id})
+    }
+}
 function actualizarTouch(e) {
     if(game.localPlayer) {
         game.localPlayer.ratonX = e.touches[0].clientX;
@@ -161,7 +163,7 @@ function rgb2hex(rgb){
   ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
 }
 
-function generarDibujoCircular(radio,color,tiponodoColor,alpha,z,x,y,anchor,displaygroup) {
+function generarDibujoCircular(radio,color,tiponodoColor,alpha,z,x,y,anchor) {
     var colorTemp = []; //"rgba(199, 64, 64, 0.93)"
     if(tiponodoColor) {
         colorTemp = rgb2hex(color);
@@ -176,7 +178,6 @@ function generarDibujoCircular(radio,color,tiponodoColor,alpha,z,x,y,anchor,disp
     if(x)sprite.position.x = x;
     if(y)sprite.position.y = y;
     if(z)sprite.z = z;
-    sprite.displayGroup = displaygroup || app.general;
     sprite.anchor.set(anchor || 0.5);
     app.world.addChild(sprite);
     return sprite;

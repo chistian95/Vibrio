@@ -2,8 +2,8 @@
 =================================================================*/
 var express = require('express');
 var app = express();
-var width = 3000;
-var height = 3000;
+var width = 1000;
+var height = 1000;
 app.use(express.static(__dirname));
 var server = app.listen(process.env.PORT || 8082, function () {
 	var puerto = server.address().port;
@@ -182,7 +182,7 @@ io.on('connection', function(client) {
                     console.log("===================")
                     console.log("Error en sumaRadios");
                 }
-                if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
+                //if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
                     if(player.radio > planta.radio) {
                         matarNodosPlanta(plantas[numPlanta], planta);
                         io.sockets.emit('borrarPlantas', { numPlanta: numPlanta, numNodo: infoActual[2]});
@@ -190,7 +190,7 @@ io.on('connection', function(client) {
                     } else {
                         console.log("Planta["+numPlanta+"].nodos["+infoActual[2]+"].radio = "+planta.radio);
                     }
-                } else console.log("distancia")
+                //} else console.log("distancia")
             } catch(err) {console.log(err.message);}
             //console.log(cont+" max: "+info.length);
             cont++;
@@ -316,6 +316,15 @@ io.on('connection', function(client) {
             });
 		}
     });
+    client.on('usarHabilidad', function(info) {
+        if(info.id != undefined) {
+            players.forEach(function(player){
+                if(player.id == info.id) {
+                    player.bicho.usarHabilidad();
+                }
+            })
+        }
+    })
 
     /*Al evolucionar*/
     client.on('evo', function(idPlayer){
@@ -331,6 +340,14 @@ io.on('connection', function(client) {
                }
             });
         }
+    });
+    client.on('updateBounds',function(info){
+        players.forEach(function(player){
+            if(player.id == info.id) {
+                player.bounds.x = info.width;
+                player.bounds.y = info.height;
+            }
+        })
     });
 });
 /*==============================================================================*/
@@ -362,6 +379,7 @@ function Player(id, x, y,nombre,socket, nodoInicial){
     this.nombre = nombre;
 	this.id = id;
     this.socket = socket;
+    this.bounds = {x: 500, y: 500};
     this.bicho = new Bicho(x,y,width,height, nodoInicial);
     players.push(this);
     //===========================================
@@ -394,8 +412,9 @@ setInterval(function(){
     players.forEach( function(player){
         player.bicho.update();
     });
-    var info = [];
+
     players.forEach(function(player) {
+        var info = [];
         if(player.nombre != 'bot') {
             player.idsCercanas.forEach(function(id) {
                 players.forEach(function(playerCercano) {
@@ -411,6 +430,9 @@ setInterval(function(){
 setInterval(function() {
     players.forEach(function(player) {
         player.bicho.calcularHitbox();
+        if(player.bicho.cooldownHabilidad > 0) {
+            player.bicho.cooldownHabilidad--;
+        }
     });
     decaerPlantas();
 }, 500);
@@ -433,8 +455,12 @@ function actualizarPlayersCercanos() {
             players.forEach(function(playerTarget) {
                 if(player.id != playerTarget.id) {
                     var hTarget = playerTarget.bicho.hitbox;
-                    if(hPlayer[2] >= hTarget[0]-500 && hTarget[2]+500 >= hPlayer[0]) {
-                        if(hPlayer[3] >= hTarget[1]-300 && hTarget[3]+300 >= hPlayer[1]) {
+                    var nodo = player.bicho.nodos[0];
+                    //xmin, ymin, xmax,ymax
+                    var margenX = player.bounds.x/2 + 100;
+                    var margenY = player.bounds.x/2 + 100;
+                    if(hPlayer[2] >= hTarget[0]-margenX && hTarget[2]+margenX >= hPlayer[0]) { // xPlayerMax >= objXmin && obj.y >= yPlayer
+                        if(hPlayer[3] >= hTarget[1]-margenY && hTarget[3]+margenY >= hPlayer[1]) {
                             idsTemp.push(playerTarget.id);
                         }
                     }
@@ -457,6 +483,7 @@ function actualizarPlayersCercanos() {
             }
         });
         player.idsCercanas = idsTemp;
+        //console.log(JSON.stringify(idsTemp))
     });
 }
 

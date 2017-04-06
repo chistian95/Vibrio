@@ -20,6 +20,8 @@ function Game(socket){
         window.addEventListener('mousemove', actualizarRaton, true);
         window.addEventListener('touchstart', actualizarTouch, true);
         window.addEventListener('touchmove', actualizarTouch, true);
+        window.addEventListener('mousedown', usarHabilidad, true);
+        window.addEventListener('touchstart', checkUsarHabilidad, true);
     }
     this.bucle0 = setInterval(function(){
         if(game.localPlayer && game.localPlayer.bicho.nodos[0]) {
@@ -70,6 +72,16 @@ function Game(socket){
 }
 /*=======================================================*/
 
+var timerHabilidad = 0;
+function checkUsarHabilidad() {
+    if(timerHabilidad == 0) {
+        timerHabilidad = 1;
+        timerHabilidad = setTimeout(function(){ timerHabilidad = 0 }, 600);
+    } else {
+        usarHabilidad();
+    }
+}
+
 Game.prototype = {
     evoZise: function() {this.socket.emit('evole',{id:game.localPlayer.id,opc: "zise"});this.emitirEvoTrampa();},
     evoPinchus: function() {this.socket.emit('evole',{id:game.localPlayer.id,opc: "pinchus"});this.emitirEvoTrampa();},
@@ -107,15 +119,6 @@ Game.prototype = {
         });
     },
 
-    pinchoColas: function(){
-        players.forEach(function(player){
-            if(player.bicho.sprite) {
-                player.bicho.sprite.texture = pincho;
-                player.bicho.sprite.refresh();
-            }
-        });
-    },
-
     resetGui: function() {
         debug.gui.__controllers[1].__max = Math.round(players.length-1);
         debug.gui.__controllers[2].__max = players[Math.round(this.playerToDebug)].bicho.nodos.length-1;
@@ -134,12 +137,10 @@ Game.prototype = {
         app.renderer.resize(window.innerWidth, window.innerHeight);
         app.expRenderer.resize(window.innerWidth/2, Math.min(window.innerHeight/10),26);
         app.backrenderer.resize(window.innerWidth, window.innerHeight);
-
-        app.background.width = Math.max(window.innerWidth,500);
-        app.background.height = Math.max(window.innerHeight,300);
         zoomObj = resc;
         app.backrenderer.render(app.background);
         app.renderer.render(app.world);
+        game.localPlayer.socket.emit("updateBounds",{height: window.innerHeight/zoom, width: window.innerWidth/zoom,id: game.localPlayer.id});
         actualizarUi();
         actualizarExp();
     },
@@ -149,10 +150,14 @@ Game.prototype = {
         app.back.scale.set(zoom);
         app.borde.scale.set(zoom);
         actualizarUi();
-        app.parallax1.width = window.innerWidth*zoom;
-        app.parallax1.height = window.innerHeight*zoom;
-        app.parallax2.width = window.innerWidth*zoom;
-        app.parallax2.height = window.innerHeight*zoom;
+        var h = window.innerHeight/zoom;
+        var w = window.innerWidth/zoom;
+        app.parallax1.width = w;
+        app.parallax1.height = h;
+        app.parallax2.width = w;
+        app.parallax2.height = h;
+        app.background.width = w;
+        app.background.height = h;
     },
     calcularExpTotal(exp){
         if(exp){
@@ -203,12 +208,21 @@ Game.prototype = {
             }
             var encontrado = false;
             game.localPlayer.idsCercanas.forEach(function(idcercana){
-                if(idcercana === player.id) encontrado = true;
+                if(idcercana === player.id) {
+                    encontrado = true;
+                    console.log(idcercana+" encontrado.");
+                }
             });
             if(!encontrado) {
+                console.log("no encontrado")
                 player.bicho.nodos.forEach(function(nodo){
                     app.world.removeChild(nodo.sprite);
+                    nodo.sprite.destroy();
                 });
+                if(player.bicho.sprite)app.world.removeChild(player.bicho.sprite);
+                if(player.bicho.sprite) {
+					player.bicho.sprite.destroy(true,true,true);
+				}
                 players.splice(players.indexOf(player),1);
                 return;
             }
@@ -247,38 +261,8 @@ Game.prototype = {
         if(plantasAcheckear.length >=1) socket.emit('chocarPlanta',plantasAcheckear);
 	},
     /*===================================================*/
-    buscarPlantaMasCercana: function() {
-        var acumMin = 99999;
-        game.localPlayer.bicho.nodos.forEach(function(nodo) { //LocalPlayer
-            var numNodoEnemigo = 0;
-            plantas.forEach(function(planta){
-                planta.forEach(function(nodoTarget) {
-                    var distanciaX = nodo.sprite.position.x - nodoTarget.x;
-                    var distanciaY = nodo.sprite.position.y - nodoTarget.y;
-                    var sumaRadios = nodoTarget.radio + nodo.radio;
-                    var dist = distanciaX * distanciaX + distanciaY * distanciaY;
-                    if(dist<acumMin) acumMin = dist;
-                });
-            });
-        });
-        console.log("Planta mas cercana: "+Math.floor(acumMin)+" radio del pj: "+game.localPlayer.bicho.nodos[0].radio);
-    },
 
     pintarHitboxPlanta0: function(){
-        /*plantas.forEach(function(planta){
-            if(planta.spr){
-                app.world.removeChild(planta.spr);
-            }
-            var graphics2 = new PIXI.Graphics();
-            graphics2.lineStyle(1,0xff0000,1);
-            graphics2.beginFill(0x555555, 0.1);
-            graphics2.drawRect(0,0,planta.hitbox[2]-planta.hitbox[0],planta.hitbox[3]-planta.hitbox[1]);
-            planta.spr = new PIXI.Sprite(graphics2.generateCanvasTexture());
-            planta.spr.position.x = planta.hitbox[0];
-            planta.spr.position.y = planta.hitbox[1];
-            app.world.addChild(planta.spr);
-            graphics2.endFill();
-        });*/
         if(plantas[1] && plantas[1].spr){
             app.world.removeChild(plantas[1].spr);
         }

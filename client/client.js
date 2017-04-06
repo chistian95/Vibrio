@@ -27,6 +27,7 @@ function empezarJuego(){
     //Inicializar el juego
     g = new PIXI.Graphics();
     game = new Game(socket);
+
     function crearJugadorServer(socket){
         console.log("Creando player: "+nombre);
         console.log("NODO INICAL DESEADO: "+nodoInicial);
@@ -92,7 +93,7 @@ function empezarJuego(){
                                 player.bicho.parsearNodo(nodo);
                             });
                         }
-                        //player.bicho.calcularSprite();
+                        player.bicho.actualizarSprite();
                     });
                 });
             }
@@ -135,11 +136,10 @@ function empezarJuego(){
     });
     socket.on('actualizarPlanta', function(info){
         var num = 0;
+        var cont = 0;
         info.nodos.forEach(function(nodoPlanta){
             app.world.removeChild(plantasSprites[info.id][num]);
-            if(plantasSprites[info.id][num]) {
-                plantasSprites[info.id][num].destroy(true,true,true);
-            }
+            if(plantasSprites[info.id][num])plantasSprites[info.id][num].destroy();
             num++;
         });
         var nodosSprites = [];
@@ -175,7 +175,6 @@ function empezarJuego(){
         plantas[info.id].tipo = info.nodos[0][3].tipo;
         plantas[info.id].hitbox = info.hitbox;
         plantasSprites[info.id]=ndSprites;
-        //actualizarZ();
     });
     socket.on('borrarNodo',function(info){
        var pl = null;
@@ -236,3 +235,5 @@ function reiniciarVariables(){
     zoom = 1;
     modifOjos = 0
 }
+
+
