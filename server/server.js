@@ -182,7 +182,7 @@ io.on('connection', function(client) {
                     console.log("===================")
                     console.log("Error en sumaRadios");
                 }
-                if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
+                //if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
                     if(player.radio > planta.radio) {
                         matarNodosPlanta(plantas[numPlanta], planta);
                         io.sockets.emit('borrarPlantas', { numPlanta: numPlanta, numNodo: infoActual[2]});
@@ -190,7 +190,7 @@ io.on('connection', function(client) {
                     } else {
                         console.log("Planta["+numPlanta+"].nodos["+infoActual[2]+"].radio = "+planta.radio);
                     }
-                } else console.log("distancia")
+                //} else console.log("distancia")
             } catch(err) {console.log(err.message);}
             //console.log(cont+" max: "+info.length);
             cont++;

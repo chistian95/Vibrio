@@ -227,7 +227,9 @@ Game.prototype = {
                     nodo.sprite.destroy();
                 });
                 if(player.bicho.sprite)app.world.removeChild(player.bicho.sprite);
-                player.bicho.sprite.destroy(true,true,true);
+                if(player.bicho.sprite) {
+					player.bicho.sprite.destroy(true,true,true);
+				}
                 players.splice(players.indexOf(player),1);
                 return;
             }
