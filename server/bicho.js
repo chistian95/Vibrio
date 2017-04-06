@@ -162,7 +162,7 @@ var BichoProto = function(){
         Object.keys(this.exp).forEach(function(clave) {
             pesoTotal += self.exp[clave];
         });
-        for(var i = 0; i < this.nivel / 4; i++) {
+        for(var i = 0; i < this.nivel / 16; i++) {
             var numRandom = Math.random() * pesoTotal;
             var sumaPesos = 0;
             var tipoSeleccionado;

@@ -2,8 +2,8 @@
 =================================================================*/
 var express = require('express');
 var app = express();
-var width = 1000;
-var height = 1000;
+var width = 3000;
+var height = 3000;
 app.use(express.static(__dirname));
 var server = app.listen(process.env.PORT || 8082, function () {
 	var puerto = server.address().port;
@@ -470,7 +470,7 @@ function regenerarMapa() {
 
 function decaerPlantas() {
     plantas.forEach(function(planta){
-        if(Math.random() * 100 < 12) {
+        if(Math.random() * 100 < 1.5) {
             var numNodo = Math.floor(Math.random() * planta.nodos.length);
             matarNodosPlanta(planta, planta.nodos[numNodo]);
             io.sockets.emit('borrarPlantas', { numPlanta: plantas.indexOf(planta), numNodo: numNodo});
@@ -481,7 +481,7 @@ function decaerPlantas() {
 
 /* GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS */
 function generarPlantas() {
-    for(var i=0; i<2; i++) {
+    for(var i=0; i<25; i++) {
         var tipoPlanta = Math.round(Math.random() * 5);
         var x = Math.random()*(width-200)+100;
         var y = Math.random()*(width-200)+100;
@@ -513,17 +513,17 @@ for(var i=0;i<0;i++) {
 function ganarExperienciaPlanta(bicho, tipoPlanta, radioNodo){
     //0=size, 1=pinchos, 2=tentaculos, 3=coraza, 4=nodos, 5=ojos
     if(tipoPlanta === 0){
-        bicho.exp.size += (radioNodo/10);
+        bicho.exp.size += (radioNodo/2.5);
     }else if(tipoPlanta === 1){
-        bicho.exp.pinchos += (radioNodo/10);
+        bicho.exp.pinchos += (radioNodo/2.5);
     }else if(tipoPlanta === 2){
-        bicho.exp.tentaculos += (radioNodo/10);
+        bicho.exp.tentaculos += (radioNodo/2.5);
     }else if(tipoPlanta === 3){
-        bicho.exp.coraza += (radioNodo/10);
+        bicho.exp.coraza += (radioNodo/2.5);
     }else if(tipoPlanta === 4){
-        bicho.exp.nodos += (radioNodo/10);
+        bicho.exp.nodos += (radioNodo/2.5);
     }else if(tipoPlanta === 5){
-        bicho.exp.ojos += (radioNodo/10);
+        bicho.exp.ojos += (radioNodo/0.5);
     }
     //console.log(bicho.exp);
 }
@@ -531,15 +531,15 @@ function ganarExperienciaPlanta(bicho, tipoPlanta, radioNodo){
 function ganarExperienciaBicho(bicho, nombreNodo, radioNodo){
     //0=size, 1=pinchos, 2=tentaculos, 3=coraza, 4=nodos
     if(nombreNodo === "ESTATICO" || nombreNodo === "MOTOR" || nombreNodo === "FLEXIBLE"){
-        bicho.exp.nodos += (radioNodo * 0.6);
+        bicho.exp.nodos += (radioNodo * 2.4);
     }else if(nombreNodo === "PINCHO"){
-        bicho.exp.pinchos += (radioNodo * 1.5);
+        bicho.exp.pinchos += (radioNodo * 6.0);
     }else if(nombreNodo === "OJO"){
-        bicho.exp.ojos += (radioNodo * 0.75);
+        bicho.exp.ojos += (radioNodo * 3.0);
     }else if(nombreNodo === "CORAZA"){
-        bicho.exp.coraza += (radioNodo);
+        bicho.exp.coraza += (radioNodo * 4.0);
     }else if(nombreNodo === "TENTACULO"){
-        bicho.exp.tentaculos += (radioNodo);
+        bicho.exp.tentaculos += (radioNodo * 4.0);
     }
     //console.log(bicho.exp);
 }
