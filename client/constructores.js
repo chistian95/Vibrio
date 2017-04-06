@@ -13,28 +13,9 @@ function Player(id, game, local,nombrev){
 /*====================================================================================*/
 /*Render - Pixi
 ======================================================================================*/
-/*var app = new PIXI.Application(2800, 2600, {backgroundColor: 0x1099bb});
-    ***document.body.appendChild(app.view);
-    ***app.stage.displayList = new PIXI.DisplayList();
-    ***var blueLayer = new PIXI.DisplayGroup(1, function (sprite) {
-        sprite.zOrder = +sprite.y;
-    });
-    ***var texture_blue = PIXI.Texture.fromImage('assets/img/ojo.png');
-    ***var bunniesBlue = new PIXI.Container();*
-    ***app.stage.addChild(bunniesBlue);*
-    ****for (var i = 9; i >= 0; i--) {
-        var bunny = new PIXI.Sprite(texture_blue);
-        bunny.width = 50;
-        bunny.height = 50;
-        bunny.position.set(400 + 20 * i, 400 - 20 * i);
-        bunny.anchor.set(0.5);
-        bunny.displayGroup = blueLayer;
-        bunniesBlue.addChild(bunny);
-    }*/
 function renderPixi(){
     /*Declarar contenedores de imágenes
     =====================================*/
-    //this.cosaMaster = new PIXI.Application(2800, 2600, {backgroundColor: 0x1099bb});
     this.world = new PIXI.Container();
     this.world.displayList = new PIXI.DisplayList();
     this.general = new PIXI.DisplayGroup(1, function (sprite) {
@@ -151,9 +132,6 @@ function debugo(){
     this.gui.add(game, 'evoCorza');
     this.gui.add(game, 'evoNodos');
     this.gui.add(game, 'meMato');
-    this.gui.add(game, 'buscarPlantaMasCercana');
-    this.gui.add(game, 'actuColas');
-    this.gui.add(game, 'pinchoColas');
     this.gui.add(game, 'pintarHitboxPlanta0');
     return this;
 }

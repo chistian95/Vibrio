@@ -59,7 +59,7 @@ var BichoProto = function(){
             this.sprite.destroy(true,true,true);
             app.world.removeChild(this.sprite);
             this.spriteReady = false;
-            //return;
+            return;
         }
         if(this.cuerpo && this.cuerpo[0] && this.cuerpo[0].sprite) {
             var gSpriteBichos = new PIXI.Graphics();

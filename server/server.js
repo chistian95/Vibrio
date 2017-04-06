@@ -2,8 +2,8 @@
 =================================================================*/
 var express = require('express');
 var app = express();
-var width = 3000;
-var height = 3000;
+var width = 1000;
+var height = 1000;
 app.use(express.static(__dirname));
 var server = app.listen(process.env.PORT || 8082, function () {
 	var puerto = server.address().port;
@@ -341,6 +341,14 @@ io.on('connection', function(client) {
             });
         }
     });
+    client.on('updateBounds',function(info){
+        players.forEach(function(player){
+            if(player.id == info.id) {
+                player.bounds.x = info.width;
+                player.bounds.y = info.height;
+            }
+        })
+    });
 });
 /*==============================================================================*/
 /*Coger la información para mandarsela al cliente
@@ -371,6 +379,7 @@ function Player(id, x, y,nombre,socket, nodoInicial){
     this.nombre = nombre;
 	this.id = id;
     this.socket = socket;
+    this.bounds = {x: 500, y: 500};
     this.bicho = new Bicho(x,y,width,height, nodoInicial);
     players.push(this);
     //===========================================
@@ -446,8 +455,12 @@ function actualizarPlayersCercanos() {
             players.forEach(function(playerTarget) {
                 if(player.id != playerTarget.id) {
                     var hTarget = playerTarget.bicho.hitbox;
-                    if(hPlayer[2] >= hTarget[0]-100 && hTarget[2]+100 >= hPlayer[0]) {
-                        if(hPlayer[3] >= hTarget[1]-300 && hTarget[3]+300 >= hPlayer[1]) {
+                    var nodo = player.bicho.nodos[0];
+                    //xmin, ymin, xmax,ymax
+                    var margenX = player.bounds.x/2 + 100;
+                    var margenY = player.bounds.x/2 + 100;
+                    if(hPlayer[2] >= hTarget[0]-margenX && hTarget[2]+margenX >= hPlayer[0]) { // xPlayerMax >= objXmin && obj.y >= yPlayer
+                        if(hPlayer[3] >= hTarget[1]-margenY && hTarget[3]+margenY >= hPlayer[1]) {
                             idsTemp.push(playerTarget.id);
                         }
                     }
