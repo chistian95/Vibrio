@@ -3,12 +3,12 @@
 function Game(socket){
     reiniciarVariables();
     app = new renderPixi();
-    this.mXtentaculos = 2;
-    this.mYtentaculos = 5;
+    this.mXtentaculos = 3.3;
+    this.mYtentaculos = 0;
     this.movimiento = true;
     this.playerToDebug = 0;
     this.NodoToDebug = 0;
-    this.vTentaculos = 0.2;
+    this.vTentaculos = .8;
     this.playerDebug = false;
     this.debugNodosLength = 0;
 	this.socket = socket;
