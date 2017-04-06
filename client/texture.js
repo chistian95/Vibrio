@@ -13,12 +13,12 @@ parallax2 = PIXI.Texture.fromImage('assets/img/parallax2.png');
 
 /*UI
 =====================================================================*/
-uiPincho = PIXI.Texture.fromImage('assets/img/pinchus.png');
-uiOjo = PIXI.Texture.fromImage('assets/img/eye.png');
-uiTentaculo = PIXI.Texture.fromImage('assets/img/tientaculos.png');
-uiZise = PIXI.Texture.fromImage('assets/img/zise.png');
-uiNodos = PIXI.Texture.fromImage('assets/img/ganarNodos.png');
-uiCoraza = PIXI.Texture.fromImage('assets/img/coraza.png');
+uiPincho = PIXI.Texture.fromImage('assets/img/ico-pincho.png');
+uiOjo = PIXI.Texture.fromImage('assets/img/ico-ojo.png');
+uiTentaculo = PIXI.Texture.fromImage('assets/img/ico-tentaculo.png');
+uiZise = PIXI.Texture.fromImage('assets/img/ico-size.png');
+uiNodos = PIXI.Texture.fromImage('assets/img/ico-nodo.png');
+uiCoraza = PIXI.Texture.fromImage('assets/img/ico-coraza.png');
 barraExp =  PIXI.Texture.fromImage('assets/img/expBar.png');
 exp =  PIXI.Texture.fromImage('assets/img/exp.png');
 
