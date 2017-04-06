@@ -21,6 +21,7 @@ var BichoProto = function(){
                     nodo.sprite.width = nodoMin[4] * 2;
                     nodo.sprite.height = nodoMin[4] * 2;
                 }
+                if(this)this.calcularSprite();
             }
         } else {
             if(pos===0) {
@@ -58,7 +59,7 @@ var BichoProto = function(){
             var y = this.cuerpo[0].radio//this.cuerpo[0].sprite.position.y;
             var x = xP//this.cuerpo[0].sprite.position.x;
             gSpriteBichos.beginFill(0x24c191);
-            gSpriteBichos.lineStyle(0);
+            gSpriteBichos.lineStyle(2);
             /*INICIO - CABEZA
             ===================================================================*/
             var coord = calcularPuntoEnCirculo(x,y,ultimoNodo.radio,0);
@@ -68,8 +69,8 @@ var BichoProto = function(){
                 console.log(this.cuerpo[0].anguloActual);
                 return;
             }
-            coord = calcularPuntoEnCirculo(x,y,ultimoNodo.radio,-Math.PI/2);
-            gSpriteBichos.arcTo(init[0],init[1]-ultimoNodo.radio,coord[0],coord[1],ultimoNodo.radio); //Arco inicial
+            coord = calcularPuntoEnCirculo(x,y,this.cuerpo[0].radio-2,-Math.PI/2);
+            gSpriteBichos.lineTo(coord[0],coord[1]); //Arco inicial
             /*===============================================================*/
             /*CUERPO LADO
             ================================================================*/
@@ -90,7 +91,12 @@ var BichoProto = function(){
             //===========================================================================
             coord = calcularPuntoEnCirculo(x,y,this.cuerpo[0].radio,-Math.PI/2+Math.PI);
             gSpriteBichos.lineTo(coord[0],coord[1]); //Última recta
-            gSpriteBichos.arcTo(coord[0]+ultimoNodo.radio,coord[1],init[0],init[1],ultimoNodo.radio); //Arco inicial
+            gSpriteBichos.lineTo(init[0],init[1]); //Arco inicial
+            gSpriteBichos.endFill();
+            coord = calcularPuntoEnCirculo(init[0],init[1],this.cuerpo[0].radio,-Math.PI);
+            gSpriteBichos.beginFill(0x24c191);
+            gSpriteBichos.lineStyle(0);
+            gSpriteBichos.drawCircle(coord[0],coord[1],this.cuerpo[0].radio*1.005)
             gSpriteBichos.endFill();
             var tempTentaculines = [];
             for (var i = 1; i <= this.cuerpo.length; i++) {

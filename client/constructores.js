@@ -56,8 +56,8 @@ function renderPixi(){
 
     this.background.position.x = 0;
     this.background.position.y = 0;
-    this.back.addChild(this.back);
-    this.backrenderer.render(this.background);
+    this.back.addChild(this.background);
+    this.backrenderer.render(this.back);
 
     this.barraExp = new PIXI.Sprite(barraExp);
     this.barraExp.position.x = 0;
@@ -102,6 +102,15 @@ function renderPixi(){
     this.barraExp.width =this.expRenderer.width;
     this.barraExp.height =this.expRenderer.height;
 
+    this.parallax1 = new PIXI.extras.TilingSprite(parallax1, window.innerWidth,window.innerHeight);
+    this.parallax1.tilePosition.x = 0;
+    this.parallax1.tilePosition.y = 0;
+    this.back.addChild(this.parallax1);
+
+    this.parallax2 = new PIXI.extras.TilingSprite(parallax2, window.innerWidth,window.innerHeight);
+    this.parallax2.tilePosition.x = 0;
+    this.parallax2.tilePosition.y = 0;
+    this.back.addChild(this.parallax2);
 }
 
 /*===================================================================*/

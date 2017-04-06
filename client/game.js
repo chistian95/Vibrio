@@ -21,9 +21,6 @@ function Game(socket){
         window.addEventListener('touchstart', actualizarTouch, true);
         window.addEventListener('touchmove', actualizarTouch, true);
     }
-    setInterval(function(){
-        game.actuColas();
-    },20);
     this.bucle1 = setInterval(function(){
         if(game.localPlayer && game.localPlayer.bicho.nodos[0]) {
             count += this.vTentaculos;
@@ -52,6 +49,7 @@ function Game(socket){
                 this.reescalar();
             }
         }
+        app.backrenderer.render(app.back);
 	}.bind(this), 40);
     this.bucle2 = setInterval(function() {
         if(game.localPlayer && game.localPlayer.bicho.hitbox) {
@@ -147,6 +145,8 @@ Game.prototype = {
         app.world.scale.set(zoom);
         app.back.scale.set(zoom);
         app.borde.scale.set(zoom);
+        //this.parallax1.tileScale.x = zoom;
+        //this.parallax1.tileScale.y = zoom;
         actualizarUi();
     },
     calcularExpTotal(exp){

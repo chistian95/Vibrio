@@ -82,6 +82,8 @@ function empezarJuego(){
     });
     socket.on('sync', function(serverInfo){//serverInfo[id "NUM", nodos "Array nodos min", Hitbox, exp]
         if(game.localPlayer) {
+            var initxy;
+            if(game.localPlayer.bicho.nodos[0])initxy = [game.localPlayer.bicho.nodos[0].sprite.position.x,game.localPlayer.bicho.nodos[0].sprite.position.y];
             //Borramos players desconectados
             if(serverInfo[0].playersDesc != undefined){
                 for(var i = 0; i < serverInfo[0].playersDesc.length; i++)
@@ -112,6 +114,16 @@ function empezarJuego(){
                 app.world.pivot.x = game.localPlayer.bicho.nodos[0].sprite.position.x - (window.innerWidth/2)/zoom
                 app.world.pivot.y = game.localPlayer.bicho.nodos[0].sprite.position.y - (window.innerHeight/2)/zoom
                 app.renderer.render(app.world);
+
+                if(initxy){
+                    initxy[0] -= game.localPlayer.bicho.nodos[0].sprite.position.x;
+                    initxy[1] -= game.localPlayer.bicho.nodos[0].sprite.position.y;
+                    app.parallax1.tilePosition.x += initxy[0]*.5;
+                    app.parallax1.tilePosition.y += initxy[1]*.5;
+                    app.parallax2.tilePosition.x += initxy[0]*.6;
+                    app.parallax2.tilePosition.y += initxy[1]*.6;
+                    console.log(Math.abs(initxy[0])+" papuj "+Math.abs(initxy[1]))
+                }
             }
             /*==========================================================================*/
             expActual = serverInfo[serverInfo.length-1][3];

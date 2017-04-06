@@ -8,8 +8,8 @@ pincho = PIXI.Texture.fromImage('assets/img/Pincho.png');
 /*BLACKGROUND
 ======================================================================*/
 backgroundFijo = PIXI.Texture.fromImage('assets/img/fondo.png');
-parallax1 = PIXI.Texture.fromImage('assets/img/fondo_parallax1.png');
-parallax2 = PIXI.Texture.fromImage('assets/img/fondo_parallax2.png');
+parallax1 = PIXI.Texture.fromImage('assets/img/parallax1.png');
+parallax2 = PIXI.Texture.fromImage('assets/img/parallax2.png');
 
 /*UI
 =====================================================================*/
