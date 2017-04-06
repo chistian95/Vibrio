@@ -68,7 +68,8 @@ var BichoProto = function(){
         }else if(nodo === 1){ //1=pincho
             new Nodo(TipoNodo.PINCHO, cuerpo, 180, 7, this);
         }else if(nodo === 2){ //2=tentaculo
-            new Nodo(TipoNodo.TENTACULO, cuerpo, 360, 15, this);
+            var tamCentral = cuerpo.radio * 0.14;
+            new Nodo(TipoNodo.TENTACULO, cuerpo, 0, tamCentral, this);
         }else if(nodo === 4){ //4=cuerpo
             new Nodo(TipoNodo.MOTOR, cuerpo, 0, 35, this);
         }
@@ -332,15 +333,18 @@ var BichoProto = function(){
                 if(posicion != -1) {
                     posicionReal = posicionesReales[posicion];
                     var nodoMover = this.nodoCentral.nodos[posicionReal];
-                    this.nodoCentral.nodos[posicionReal].tipoNodo = TipoNodo.FLEXIBLE;
+                    //this.nodoCentral.nodos[posicionReal].tipoNodo = TipoNodo.FLEXIBLE;
                     new Nodo(TipoNodo.MOTOR, this.nodoCentral, 0, tamCentral, this);
                     var nodoNuevo = this.nodoCentral.nodos[this.nodoCentral.nodos.length - 1];
                     nodoNuevo.nodos.push(nodoMover);
                     nodoMover.nodoPadre = nodoNuevo;
-                    nodoMover.tipoNodo = TipoNodo.FLEXIBLE;
-                    nodoMover.anguloActual = 0;
-                    nodoMover.anguloGiro = 0;
-                    nodoMover.anguloBajar = 0;
+                    if(nodoMover.tipoNodo.nombre != TipoNodo.TENTACULO.nombre) {
+                        console.log(nodoMover.tipoNodo);
+                        nodoMover.tipoNodo = TipoNodo.FLEXIBLE;
+                        nodoMover.anguloActual = 0;
+                        nodoMover.anguloGiro = 0;
+                        nodoMover.anguloBajar = 0;
+                    }
                 } else {
                     new Nodo(TipoNodo.MOTOR, this.nodoCentral, 0, tamCentral, this);
                 }
