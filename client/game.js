@@ -21,6 +21,11 @@ function Game(socket){
         window.addEventListener('touchstart', actualizarTouch, true);
         window.addEventListener('touchmove', actualizarTouch, true);
     }
+    this.bucle0 = setInterval(function(){
+        if(game.localPlayer && game.localPlayer.bicho.nodos[0]) {
+            this.actuColas();
+        }
+    }.bind(this),10);
     this.bucle1 = setInterval(function(){
         if(game.localPlayer && game.localPlayer.bicho.nodos[0]) {
             count += this.vTentaculos;
@@ -36,8 +41,6 @@ function Game(socket){
                             nodo.tentaculines[i].y = Math.sin((i * 0.5) + count) * this.mXtentaculos;
                             nodo.tentaculines[i].x = (i * lengthTentaculo + Math.cos((i * 0.3) + count) * this.mYtentaculos)-5;
                         }
-                        console.log("Tentaculo")
-                        console.log(nodo.tentaculines);
                         player.bicho.nodos[player.bicho.nodos.indexOf(nodo)].sprite.rotation = player.bicho.nodos[player.bicho.nodos.indexOf(nodo)].anguloActual*Math.PI/180;
                     } else if(nodo.tipoNodo.nombre === "OJO" && modifOjosTemp<1 && player.id === game.localPlayer.id) {
                         modifOjosTemp += 0.1;
@@ -126,7 +129,6 @@ Game.prototype = {
     /*BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE - BUCLE*/
     reescalar: function () {
         var widthR = window.innerWidth/modifOjos, heightR = window.innerHeight/modifOjos;
-        console.log("wr: "+widthR+" hr: "+heightR+" mod: "+modifOjos)
         var resc = Math.max(Math.min(Math.max(widthR/w,heightR/h),3),maxZoom);
         app.renderer.resize(window.innerWidth, window.innerHeight);
         app.expRenderer.resize(window.innerWidth/2, Math.min(window.innerHeight/10),26);
@@ -145,8 +147,10 @@ Game.prototype = {
         app.world.scale.set(zoom);
         app.back.scale.set(zoom);
         app.borde.scale.set(zoom);
-        //this.parallax1.tileScale.x = zoom;
-        //this.parallax1.tileScale.y = zoom;
+        app.parallax1.width = window.innerWidth*zoom;
+        app.parallax1.height = window.innerHeight*zoom;
+        app.parallax2.width = window.innerWidth*zoom;
+        app.parallax2.height = window.innerHeight*zoom;
         actualizarUi();
     },
     calcularExpTotal(exp){

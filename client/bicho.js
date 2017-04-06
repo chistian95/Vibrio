@@ -31,6 +31,9 @@ var BichoProto = function(){
                 //nodo.sprite.addChild(texto);
             } else {
                 var nodo = new Nodo(nodoMin[1], nodoMin[2], nodoMin[3], nodoMin[4], nodoMin[5],this.z);
+                if(this === game.localPlayer.bicho){
+                    sonidoEvolucion.play();
+                }
             }
             this.nodos.push(nodo);
             if(nodo.tipoNodo.nombre === "MOTOR" || nodo.tipoNodo.nombre === "ESTATICO" || nodo.tipoNodo.nombre === "FLEXIBLE" || nodo.tipoNodo.nombre === "CORAZA") {
@@ -66,7 +69,6 @@ var BichoProto = function(){
             var init = coord;
             if(coord)gSpriteBichos.moveTo(coord[0],coord[1]);
             else {
-                console.log(this.cuerpo[0].anguloActual);
                 return;
             }
             coord = calcularPuntoEnCirculo(x,y,this.cuerpo[0].radio-2,-Math.PI/2);
@@ -121,7 +123,6 @@ var BichoProto = function(){
 
     this.actualizarSprite = function(){
         if(this.cuerpo.length <=1) return;
-        console.log("paodpo")
         if(this.cuerpo && this.cuerpo[0] && this.cosas && this.cosas[0]){
             this.cuerpoOrdenado = [];
             this.cuerpoOrdenado[0] = this.cuerpo[0];
@@ -229,7 +230,6 @@ var Nodo = function(x, y, tipoNodo, radio, anguloActual,z,anguloInicio,master){
         //this.sprite = generarDibujoCircular(radio,tipoNodo.color,true,0.7,z,x,y);
         if(master) {
             this.sprite = generarDibujoCircular(radio,'rgba(36, 193, 145,1)',true,0.7,z+5,x,y);
-            console.log("papuh")
         }
         else this.sprite = new sprite(x,y);
     }

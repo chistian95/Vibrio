@@ -18,6 +18,8 @@ var expAntigua;
 var zoomObj;
 var modifOjos;
 var debug;
+var sonidoEvolucion = new Audio('assets/snd/evolucion.wav');
+sonidoEvolucion.loop = false;
 /*====================*/
 /*Constantes
 ======================*/
@@ -30,7 +32,6 @@ var maxZoom = 0.25;
 
 function empezarJuego(){
     //if(debug && debug.gui) debug.gui.destroy()
-    console.log("asdasd")
     socket = null;
     socket = io.connect('http://127.0.0.1:8082');
 
@@ -122,7 +123,6 @@ function empezarJuego(){
                     app.parallax1.tilePosition.y += initxy[1]*.5;
                     app.parallax2.tilePosition.x += initxy[0]*.6;
                     app.parallax2.tilePosition.y += initxy[1]*.6;
-                    console.log(Math.abs(initxy[0])+" papuj "+Math.abs(initxy[1]))
                 }
             }
             /*==========================================================================*/
