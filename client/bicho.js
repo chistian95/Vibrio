@@ -24,11 +24,8 @@ var BichoProto = function(){
                     nodo.sprite.width = nodoMin[4] * 2;
                     nodo.sprite.height = nodoMin[4] * 2;
                     nodo.sprite.delete(true);
-                    console.log("pasdpasodpasdo")
                     this.sprite = generarDibujoCircular(nodo.radio,'rgba(36, 193, 145,1)',true,0.7,z,x,y);
                     this.sprite.displayGroup = app.general;
-
-
                 }
                 if(this)this.calcularSprite();
             }
@@ -37,6 +34,7 @@ var BichoProto = function(){
                 var nodo = new Nodo(nodoMin[1], nodoMin[2], nodoMin[3], nodoMin[4], nodoMin[5],this.z,null,true);
                 var texto = new PIXI.Text(this.nombre, {fontFamily:'Arial', fontSize:"20px", fill:"#1f27f2"});
                 texto.anchor.set(0.5);
+                texto.rotation = Math.PI/2;
                 nodo.sprite.addChild(texto);
             } else {
                 var nodo = new Nodo(nodoMin[1], nodoMin[2], nodoMin[3], nodoMin[4], nodoMin[5],this.z);

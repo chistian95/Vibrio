@@ -43,16 +43,6 @@ function renderPixi(){
     this.back = new PIXI.Container();
     this.exp = new PIXI.Container();
     this.borde = new PIXI.Container();
-    //this.cosaMaster.stage.addChild(this.world);
-    for (var i = 9; i >= 0; i--) {
-        var bunny = new PIXI.Sprite(ojo);
-        bunny.width = 50;
-        bunny.height = 50;
-        bunny.position.set(400 + 20 * i, 400 - 20 * i);
-        bunny.anchor.set(0.5);
-        bunny.displayGroup = this.general;
-        this.world.addChild(bunny);
-    }
     /*==================================*/
     /*Declarar renderer de imágenes
     =================================================================================================*/
