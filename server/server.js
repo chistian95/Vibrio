@@ -192,7 +192,7 @@ io.on('connection', function(client) {
                     }
                 } else console.log("distancia")
             } catch(err) {console.log(err.message);}
-            console.log(cont+" max: "+info.length);
+            //console.log(cont+" max: "+info.length);
             cont++;
         });
     });
@@ -249,13 +249,13 @@ io.on('connection', function(client) {
                 var radioAtacado = players[numPlayerAtacado].bicho.nodoCentral.radio;
                 if(atacado.vida <= 0 || radioAtacante / 1.75 >= radioAtacado) {
                     atacado.vida = 0;
-                    console.log("comer")
+                    //console.log("comer")
                     var nodos = players[numPlayerAtacado].bicho.nodos;
                     io.sockets.emit('borrarNodo', { idPlayer: players[numPlayerAtacado].id, numNodo: nodos.indexOf(atacado)});
                     nodos.splice(nodos.indexOf(atacado),1);
                     ganarExperienciaBicho(playerAtacante.bicho, atacado.tipoNodo.nombre, atacado.radio);
                 } else console.log("radio")
-            } else console.log("distancia")
+            } //else console.log("distancia")
         } catch(err) {console.log(err.message);}
     });
 

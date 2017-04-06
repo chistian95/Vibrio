@@ -97,7 +97,7 @@ var BichoProto = function(){
         this.radio = radio;
         this.vida = tipoNodo.vidaBase * radio;
         this.coraza = false;
-        this.anguloTope = 15;
+        this.anguloTope = 7;
         this.nodos = [];
         if(this.nodoPadre !== null) {
             nodoPadre.nodos.push(this);
@@ -387,8 +387,9 @@ var BichoProto = function(){
         this.velocidadMovimiento = 4.0;
         var self = this;
         this.nodos.forEach(function(nodo) {
+            self.velocidadMovimiento -= nodo.radio * 0.0025;
             if(nodo.tipoNodo === TipoNodo.TENTACULO) {
-                self.velocidadMovimiento += 0.25;
+                self.velocidadMovimiento += 0.3;
             }
         });
         this.velocidadGiro = this.velocidadMovimiento / 2.0;
@@ -402,7 +403,7 @@ var Bicho = function(x,y,w,h, nodoInicial) {
     this.x = x;
     this.y = y;
     this.velocidadGiro = 2.0;
-    this.velocidadMotor = 1.0;
+    this.velocidadMotor = 0.6;
     this.velocidadMovimiento = 1.0;
     this.nodos = [];
     this.nodoCentral = null;
