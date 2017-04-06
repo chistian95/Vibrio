@@ -177,10 +177,6 @@ function empezarJuego(){
         plantas[info.id].tipo = info.nodos[0][3].tipo;
         plantas[info.id].hitbox = info.hitbox;
         plantasSprites[info.id]=ndSprites;
-<<<<<<< HEAD
-=======
-        //actualizarZ();
->>>>>>> origin/master
     });
     socket.on('borrarNodo',function(info){
        var pl = null;
