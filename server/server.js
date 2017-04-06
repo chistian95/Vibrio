@@ -482,6 +482,20 @@ function decaerPlantas() {
 /* GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS */
 function generarPlantas() {
     for(var i=0; i<25; i++) {
+        var tipoPlanta;
+        if(Math.random() * 100 < 25) {
+            tipoPlanta = 4;
+        } else if(Math.random() * 100 < 30) {
+            tipoPlanta = 0;
+        } else if(Math.random() * 100 < 25) {
+            tipoPlanta = 1;
+        } else if(Math.random() * 100 < 40) {
+            tipoPlanta = 2;
+        } else if(Math.random() * 100 < 60) {
+            tipoPlanta = 5;
+        } else {
+            tipoPlanta = 3;
+        }
         var tipoPlanta = Math.round(Math.random() * 5);
         var x = Math.random()*(width-200)+100;
         var y = Math.random()*(width-200)+100;
