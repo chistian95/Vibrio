@@ -1,5 +1,6 @@
 var respawn = false;
 var respawn2 = false;
+var zPlantas = 500;
 var game;
 var zoom;
 var socket;
@@ -167,6 +168,7 @@ function empezarJuego(){
             sprite.position.x = nodoPlanta[0];
             sprite.position.y = nodoPlanta[1];
             sprite.interactive = true;
+            sprite.zOrder = zPlantas;
             app.world.addChild(sprite);
 
             ndSprites.push(sprite);
@@ -182,6 +184,7 @@ function empezarJuego(){
         plantas[info.id].tipo = info.nodos[0][3].tipo;
         plantas[info.id].hitbox = info.hitbox;
         plantasSprites[info.id]=ndSprites;
+        actualizarZ();
     });
     socket.on('borrarNodo',function(info){
        var pl = null;

@@ -15,8 +15,11 @@ var BichoProto = function(){
             if(nodo.radio != nodoMin[4]) {
                 nodo.radio = nodoMin[4];
                 if(nodo.tipoNodo.nombre === "TENTACULO") {
-                    //nodo.sprite.width = nodoMin[4]*2;
-                    //nodo.sprite.height = nodoMin[4]*6;
+                    nodo.sprite.width = nodoMin[4]*8;
+                    nodo.sprite.height = nodoMin[4]*2;
+                } else if(nodo.tipoNodo.nombre === "PINCHO") {
+                    nodo.sprite.width = nodoMin[4]*8;
+                    nodo.sprite.height = nodoMin[4]*2;
                 } else {
                     nodo.sprite.width = nodoMin[4] * 2;
                     nodo.sprite.height = nodoMin[4] * 2;
@@ -41,6 +44,7 @@ var BichoProto = function(){
                 xP+= nodo.radio;
                 if(this)this.calcularSprite();
             }
+            actualizarZ();
         }
     }
 
@@ -109,6 +113,7 @@ var BichoProto = function(){
             //if(this.sprite) app.world.removeChild(this.sprite);
             if(!this.spriteReady) {
                 this.sprite = new PIXI.mesh.Rope(this.texture,this.cosas);
+                this.sprite.zOrder = this.nodos[0].sprite.zOrder;
                 app.world.addChild(this.sprite);
                 this.spriteReady = true;
             } else {
@@ -215,21 +220,24 @@ var Nodo = function(x, y, tipoNodo, radio, anguloActual,z,anguloInicio,master){
         this.sprite = new PIXI.mesh.Rope(tentaculo, this.tentaculines);
         this.sprite.position.x = x;
         this.sprite.position.y = y;
+        this.sprite.zOrder = z-2;
+        this.sprite.width = radio*8;
+        this.sprite.height = radio*2;
         app.world.addChild(this.sprite);
     } else if(tipoNodo.nombre ==="OJO") {
-        this.sprite = declararSpriteDesdeTextura(ojo,app.world,x,y,0.5,z,x,y);
+        this.sprite = declararSpriteDesdeTextura(ojo,app.world,x,y,0.5,z+1,x,y);
         this.sprite.width = radio*2;
         this.sprite.height = radio*2;
     } else if(tipoNodo.nombre ==="PINCHO"){
         //VITOR NECESITO QUE AQUI HAGAS QUE LOS PINCHOS SE VEAN UN POCO DESPLAZADOS A LA IZQUIERDA PARA QUE QUEDEN BIEN!!
         //Ok, ahora lo hago.
-        this.sprite = declararSpriteDesdeTextura(pincho,app.world,x,y,0.0,z,x,y);
-        this.sprite.width = radio*2;
+        this.sprite = declararSpriteDesdeTextura(pincho,app.world,x,y,0.0,z-1,x,y);
+        this.sprite.width = radio*8;
         this.sprite.height = radio*2;
     } else {
         //this.sprite = generarDibujoCircular(radio,tipoNodo.color,true,0.7,z,x,y);
         if(master) {
-            this.sprite = generarDibujoCircular(radio,'rgba(36, 193, 145,1)',true,0.7,z+5,x,y);
+            this.sprite = generarDibujoCircular(radio,'rgba(36, 193, 145,1)',true,0.7,z,x,y);
         }
         else this.sprite = new sprite(x,y);
     }
@@ -237,6 +245,7 @@ var Nodo = function(x, y, tipoNodo, radio, anguloActual,z,anguloInicio,master){
     this.radio = radio;
     this.anguloActual = anguloActual;
     this.vida = 0;
+    actualizarZ();
 }
 var TipoNodo = function(nombre, color){
     this.nombre = nombre;

@@ -47,7 +47,7 @@ function init(servPlantas, pHitbox,t,ancho,alto) {
             //nodo.x, nodo.y, nodo.visible, nodo.tipoNodo, nodo.radio
             var graphics = new PIXI.Graphics();
             graphics.lineStyle(0);
-            graphics.beginFill(nodoPlanta[3].colorHex, 0.75);
+            graphics.beginFill(nodoPlanta[3].colorHex, 0.8);
             graphics.drawCircle(nodoPlanta[4], nodoPlanta[4], nodoPlanta[4]);
             graphics.endFill();
             var sprite = new PIXI.Sprite(graphics.generateCanvasTexture());
@@ -55,9 +55,8 @@ function init(servPlantas, pHitbox,t,ancho,alto) {
             sprite.anchor.set(0.5);
             sprite.position.x = nodoPlanta[0];
             sprite.position.y = nodoPlanta[1];
-            sprite.interactive = true;
+            sprite.zOrder = zPlantas;
             app.world.addChild(sprite);
-
             ndSprites.push(sprite);
 
             var datos = {
@@ -75,6 +74,7 @@ function init(servPlantas, pHitbox,t,ancho,alto) {
         }
         plantas[plantas.length-1].hitbox = pHitbox[plantas.length-1];
         plantasSprites.push(ndSprites);
+        actualizarZ();
     });
 
     app.bordeGraphics = new PIXI.Graphics();
@@ -221,4 +221,12 @@ function calcularPuntoEnCirculo(x = 0,y = 0,r,a){
     coord.push(x + r * Math.cos(a));
     coord.push(y + r * Math.sin(a));
     return coord;
+}
+
+function actualizarZ(){
+    app.world.children.sort(function(a,b) {
+      if (a.zOrder > b.zOrder) return 1;
+      if (a.zOrder < b.zOrder) return -1;
+      return 0;
+    });
 }
