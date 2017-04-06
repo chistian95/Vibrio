@@ -1,38 +1,25 @@
-var respawn = false;
-var respawn2 = false;
-var zPlantas = 500;
-var game;
-var zoom;
-var socket;
-var app;
-var players;
-var g;
-var playerReady;
-var plantas;
-var plantasSprites;
-var plantasHitbox;
-var numPlantas;
-var nivel;
+var plantas,plantasSprites,plantasHitbox,numPlantas;
+var respawn = false,respawn2 = false;
+var game,socket;
+var app,zoom,g,zoomObj,modifOjos;
+var players, playerReady,nivel;
 var lengthTentaculo;
-var expActual ;
-var expAntigua;
-var zoomObj;
-var modifOjos;
+var expActual,expAntigua;
 var debug;
+
+/*===========================================================*/
+/*Constantes
+============================================================*/
 var sonidoEvolucion = new Audio('assets/snd/evolucion.wav');
 sonidoEvolucion.loop = false;
-/*====================*/
-/*Constantes
-======================*/
-var maxW = 1920;
-var maxH = 1920;
-var w = 1920;
-var h = 1080;
+var maxW = 1920,maxH = 1920;
+var w = 1920,h=1080;
 var maxZoom = 0.25;
-/*===================*/
+var zPlantas = 500
+/*=========================================================*/
 
 function empezarJuego(){
-    //if(debug && debug.gui) debug.gui.destroy()
+    if(debug && debug.gui) debug.gui.destroy(true,true,true)
     socket = null;
     socket = io.connect('http://127.0.0.1:8082');
 
@@ -63,10 +50,10 @@ function empezarJuego(){
                 console.log("Creando player local: "+player.nombre);
                 init(player.plantas,player.plantasHitbox,t,player.width,player.height);
                 players.push(t);
+                debug = new debugo();
                 if(!respawn) {
                     respawn = true;
                 } else return;
-                debug = new debugo();
             }
         }
     });
@@ -140,19 +127,19 @@ function empezarJuego(){
         });
     });
     socket.on('borrarPlantas', function(info){
-        app.world.removeChild(plantasSprites[info.numPlanta][info.numNodo]);
-        plantasSprites[info.numPlanta].splice(info.numNodo,1);
-        plantas[info.numPlanta].splice(info.numNodo,1);
+        if(plantasSprites && plantasSprites[info.numPlanta] && plantasSprites[info.numPlanta][info.numNodo]){
+            app.world.removeChild(plantasSprites[info.numPlanta][info.numNodo]);
+            plantasSprites[info.numPlanta].splice(info.numNodo,1);
+            plantas[info.numPlanta].splice(info.numNodo,1);
+        }
     });
     socket.on('actualizarPlanta', function(info){
         var num = 0;
         info.nodos.forEach(function(nodoPlanta){
             app.world.removeChild(plantasSprites[info.id][num]);
+            plantasSprites[info.id][num].destroy(true,true,true);
             num++;
         });
-        delete plantas[info.id];
-        delete plantasSprites[info.id];
-
         var nodosSprites = [];
         var ndSprites = [];
         info.nodos.forEach(function(nodoPlanta){
@@ -168,7 +155,7 @@ function empezarJuego(){
             sprite.position.x = nodoPlanta[0];
             sprite.position.y = nodoPlanta[1];
             sprite.interactive = true;
-            sprite.zOrder = zPlantas;
+            sprite.zOrder = zPlantas+cont;
             app.world.addChild(sprite);
 
             ndSprites.push(sprite);
@@ -194,20 +181,26 @@ function empezarJuego(){
             }
         });
         var spriteBorrar = pl.bicho.nodos[info.numNodo].sprite;
+        console.log("borrando")
         app.world.removeChild(spriteBorrar);
         if(info.numNodo === 0 && pl === game.localPlayer){
             gameOver();
         }
         var nodo = pl.bicho.nodos[info.numNodo];
         if(nodo.tipoNodo.nombre === "MOTOR" || nodo.tipoNodo.nombre === "ESTATICO" || nodo.tipoNodo.nombre === "FLEXIBLE" || nodo.tipoNodo.nombre === "CORAZA") {
+            for(var i = pl.bicho.cuerpo.indexOf(nodo)-1; i >= 1; i--) {
+                console.log("borrado: "+pl.bicho.cuerpo.indexOf(nodo)+" actualidadRealidad: "+i)
+                pl.bicho.cuerpo.splice(i,1);
+            }
             pl.bicho.cuerpo.splice(pl.bicho.cuerpo.indexOf(nodo),1);
+            console.log("patxeko")
             pl.bicho.calcularSprite(); //*
+            console.log("pepe")
         }
         pl.bicho.nodos.splice(info.numNodo,1);
 
     });
     /*========================================================================*/
-
 }
 
 function gameOver(){

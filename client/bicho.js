@@ -35,7 +35,7 @@ var BichoProto = function(){
             } else {
                 var nodo = new Nodo(nodoMin[1], nodoMin[2], nodoMin[3], nodoMin[4], nodoMin[5],this.z);
                 if(this === game.localPlayer.bicho){
-                    sonidoEvolucion.play();
+                    //sonidoEvolucion.play();
                 }
             }
             this.nodos.push(nodo);
@@ -43,8 +43,10 @@ var BichoProto = function(){
                 this.cuerpo.push(nodo);
                 xP+= nodo.radio;
                 if(this)this.calcularSprite();
+            } else if(nodo.tipoNodo.nombre === "OJO"){
+                this.contOjos++;
             }
-            actualizarZ();
+            //actualizarZ();
         }
     }
 
@@ -61,7 +63,9 @@ var BichoProto = function(){
         var acumDif = 0;
         acumDif+= this.cuerpo[0].radio;
         if(this.cuerpo.length === 1) ultimoNodo = this.cuerpo[0];
-        else ultimoNodo = this.cuerpo[1];
+        else {
+            ultimoNodo = this.cuerpo[1];
+        }
         if(this.cuerpo && this.cuerpo[0] && this.cuerpo[0].sprite) {
             var y = this.cuerpo[0].radio//this.cuerpo[0].sprite.position.y;
             var x = xP//this.cuerpo[0].sprite.position.x;
@@ -113,13 +117,14 @@ var BichoProto = function(){
             //if(this.sprite) app.world.removeChild(this.sprite);
             if(!this.spriteReady) {
                 this.sprite = new PIXI.mesh.Rope(this.texture,this.cosas);
-                this.sprite.zOrder = this.nodos[0].sprite.zOrder;
+                this.sprite.z = this.nodos[0].sprite.z;
                 app.world.addChild(this.sprite);
                 this.spriteReady = true;
             } else {
                 this.sprite.points = this.cosas;
                 this.sprite.texture = this.texture;
             }
+            gSpriteBichos.destroy(true,true,true);
         } else {
             console.log("no hay sprite inicial.");
             console.log(this.cuerpo[0]);
@@ -178,23 +183,28 @@ var BichoProto = function(){
     this.chocarPlanta = function(target,socket,idTarget,idLocal) {
         var numNodoLocalPlayer = 0;
         var central = this.nodos[0];
+        var distancias = [];
+        var numNodosEnemigo = [];
         this.nodos.forEach(function(nodo) { //LocalPlayer
             if(central===nodo) {
-                var numNodoEnemigo = 0;
                 target.forEach(function(nodoTarget) {
                     var distanciaX = nodo.sprite.position.x - nodoTarget.x;
                     var distanciaY = nodo.sprite.position.y - nodoTarget.y;
                     var sumaRadios = nodoTarget.radio + nodo.radio;
                     if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
                         //console.log("chocar planta: "+numNodoEnemigo)
-                        socket.emit('chocarPlanta',{idAtacante: idLocal, numNodoAtacante: numNodoLocalPlayer, idAtacado: idTarget, numNodoAtacado: numNodoEnemigo});
-                        //return true;
+                        numNodosEnemigo.push(target.indexOf(nodoTarget));
+                        return;
+                    } else {
+                        distancias.push((distanciaX * distanciaX + distanciaY * distanciaY),sumaRadios * sumaRadios);
                     }
-                    numNodoEnemigo++;
                 });
             }
             numNodoLocalPlayer++;
         });
+        return numNodosEnemigo;
+        //console.log("================")
+        //console.log(distancias);
     }
 }
 var Bicho = function(z,nombre) {
@@ -202,6 +212,7 @@ var Bicho = function(z,nombre) {
     this.cuerpo = [];
     this.sprite = null;
     this.z = z;
+    this.contOjos = 0;
     this.spriteReady = false;
     this.nodos = [];
     this.arriba = false;
@@ -220,12 +231,13 @@ var Nodo = function(x, y, tipoNodo, radio, anguloActual,z,anguloInicio,master){
         this.sprite = new PIXI.mesh.Rope(tentaculo, this.tentaculines);
         this.sprite.position.x = x;
         this.sprite.position.y = y;
-        this.sprite.zOrder = z-2;
+        this.sprite.z = z-2;
         this.sprite.width = radio*8;
         this.sprite.height = radio*2;
+        this.sprite.displayGroup = app.general;
         app.world.addChild(this.sprite);
     } else if(tipoNodo.nombre ==="OJO") {
-        this.sprite = declararSpriteDesdeTextura(ojo,app.world,x,y,0.5,z+1,x,y);
+        this.sprite = declararSpriteDesdeTextura(ojo,app.world,x,y,0.5,z+1+this.contOjos,x,y);
         this.sprite.width = radio*2;
         this.sprite.height = radio*2;
     } else if(tipoNodo.nombre ==="PINCHO"){
@@ -235,17 +247,16 @@ var Nodo = function(x, y, tipoNodo, radio, anguloActual,z,anguloInicio,master){
         this.sprite.width = radio*8;
         this.sprite.height = radio*2;
     } else {
-        //this.sprite = generarDibujoCircular(radio,tipoNodo.color,true,0.7,z,x,y);
-        if(master) {
-            this.sprite = generarDibujoCircular(radio,'rgba(36, 193, 145,1)',true,0.7,z,x,y);
+        /*if(master) {
+            */this.sprite = generarDibujoCircular(radio,'rgba(36, 193, 145,1)',true,0.7,z,x,y);/*
         }
-        else this.sprite = new sprite(x,y);
+        else this.sprite = new sprite(x,y);*/
     }
     this.tipoNodo = tipoNodo;
     this.radio = radio;
     this.anguloActual = anguloActual;
     this.vida = 0;
-    actualizarZ();
+    //actualizarZ();
 }
 var TipoNodo = function(nombre, color){
     this.nombre = nombre;

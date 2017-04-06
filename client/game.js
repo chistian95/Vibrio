@@ -26,6 +26,9 @@ function Game(socket){
             this.actuColas();
         }
     }.bind(this),10);
+    setInterval(function(){
+        //actualizarZ();
+    },500);
     this.bucle1 = setInterval(function(){
         if(game.localPlayer && game.localPlayer.bicho.nodos[0]) {
             count += this.vTentaculos;
@@ -34,7 +37,6 @@ function Game(socket){
             players.forEach(function(player){
                 player.bicho.nodos.forEach(function(nodo){
                     if(nodo.tipoNodo.nombre === "TENTACULO") {
-                        nodo.sprite.zOrder = -10;
                         if(!nodo.tentaculines || !nodo.tentaculines.length) return;
                         nodo.tentaculines[1].x = -5;
                         for (var i = 2; i <nodo.tentaculines.length; i++) {
@@ -101,7 +103,6 @@ Game.prototype = {
         players.forEach(function(player){
             if(player.bicho.sprite) {
                 player.bicho.actualizarSprite();
-                //player.bicho.sprite.refresh();
             }
         });
     },
@@ -147,11 +148,11 @@ Game.prototype = {
         app.world.scale.set(zoom);
         app.back.scale.set(zoom);
         app.borde.scale.set(zoom);
+        actualizarUi();
         app.parallax1.width = window.innerWidth*zoom;
         app.parallax1.height = window.innerHeight*zoom;
         app.parallax2.width = window.innerWidth*zoom;
         app.parallax2.height = window.innerHeight*zoom;
-        actualizarUi();
     },
     calcularExpTotal(exp){
         if(exp){
@@ -224,17 +225,26 @@ Game.prototype = {
         });
 	},
     colisionPlantas: function(){
-        var plantascerca = false;
+        var numNodo = false;
+        var test = false;
+        var plantasAcheckear = [];
+        //console.log("=====================")
+        //console.log(game.localPlayer.bicho.hitbox);
 		plantas.forEach(function(planta) {
+            test = false;
             var hPlayer = game.localPlayer.bicho.hitbox;
             var hTarget = plantas[plantas.indexOf(planta)].hitbox;
-            if(hPlayer[2] >= hTarget[0] && hTarget[2] >= hPlayer[0]) {
-                if(hPlayer[3] >= hTarget[1] && hTarget[3] >= hPlayer[1]) {
-                    if(game.localPlayer.bicho.chocarPlanta(planta, this.socket, plantas.indexOf(planta),game.localPlayer.id))plantascerca= true;
-                }
-            }
+            //0: xMin,1: yMin,2: xMax,3: yMax
+            //if(hPlayer[2] >= hTarget[0] && hTarget[2] >= hPlayer[0]) {
+              // if(hPlayer[3] >= hTarget[1] && hTarget[3] >= hPlayer[1]) {
+                    numNodos = game.localPlayer.bicho.chocarPlanta(planta, this.socket, plantas.indexOf(planta),game.localPlayer.id);
+                    numNodos.forEach(function(numNodo){
+                        plantasAcheckear.push([game.localPlayer.id, plantas.indexOf(planta),numNodo]);
+                    });
+                //}
+            //}
         });
-        //if(!plantascerca) console.log("Ninguna planta cerca.");
+        if(plantasAcheckear.length >=1) socket.emit('chocarPlanta',plantasAcheckear);
 	},
     /*===================================================*/
     buscarPlantaMasCercana: function() {
@@ -254,6 +264,33 @@ Game.prototype = {
         console.log("Planta mas cercana: "+Math.floor(acumMin)+" radio del pj: "+game.localPlayer.bicho.nodos[0].radio);
     },
 
-
+    pintarHitboxPlanta0: function(){
+        /*plantas.forEach(function(planta){
+            if(planta.spr){
+                app.world.removeChild(planta.spr);
+            }
+            var graphics2 = new PIXI.Graphics();
+            graphics2.lineStyle(1,0xff0000,1);
+            graphics2.beginFill(0x555555, 0.1);
+            graphics2.drawRect(0,0,planta.hitbox[2]-planta.hitbox[0],planta.hitbox[3]-planta.hitbox[1]);
+            planta.spr = new PIXI.Sprite(graphics2.generateCanvasTexture());
+            planta.spr.position.x = planta.hitbox[0];
+            planta.spr.position.y = planta.hitbox[1];
+            app.world.addChild(planta.spr);
+            graphics2.endFill();
+        });*/
+        if(plantas[1] && plantas[1].spr){
+            app.world.removeChild(plantas[1].spr);
+        }
+        var graphics2 = new PIXI.Graphics();
+        graphics2.lineStyle(1,0xff0000,1);
+        graphics2.beginFill(0x555555, 0.1);
+        graphics2.drawRect(0,0,plantas[1].hitbox[2]-plantas[1].hitbox[0],plantas[1].hitbox[3]-plantas[1].hitbox[1]);
+        plantas[1].spr = new PIXI.Sprite(graphics2.generateCanvasTexture());
+        plantas[1].spr.position.x = plantas[1].hitbox[0];
+        plantas[1].spr.position.y = plantas[1].hitbox[1];
+        app.world.addChild(plantas[1].spr);
+        graphics2.endFill();
+    }
 
 }

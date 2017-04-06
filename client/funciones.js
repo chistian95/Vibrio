@@ -18,12 +18,16 @@ function actualizarExp() {
         app.expRenderer.render(app.exp);
     }
 }
-function declararSpriteDesdeTextura(textura,container, x = 0,y = 0,anchor = 0.5, z = 0) {
+function declararSpriteDesdeTextura(textura,container, x,y,anchor, z,displaygroup) {
     var spriteTemp = new PIXI.Sprite(textura);
-    spriteTemp.position.x = x;
-    spriteTemp.position.y = y;
-    spriteTemp.anchor.set(anchor);
-    spriteTemp.zOrder = z;
+    spriteTemp.position.x = x || 0;
+    spriteTemp.position.y = y || 0;
+    spriteTemp.anchor.set(anchor || 0.5);
+    spriteTemp.z = z;
+    if(displaygroup) sprite.displayGroup = displaygroup;
+    else {
+        sprite.displayGroup = app ? app.general : null || displaygroup;
+    }
     container.addChild(spriteTemp);
     return spriteTemp;
 }
@@ -40,6 +44,7 @@ function init(servPlantas, pHitbox,t,ancho,alto) {
     plantasSprites = [];
     game.localPlayer = t;
     var nodosSprites = [];
+    var cont = 0;
     servPlantas.forEach(function(p) {
         nodosSprites = [];
         ndSprites = [];
@@ -51,11 +56,12 @@ function init(servPlantas, pHitbox,t,ancho,alto) {
             graphics.drawCircle(nodoPlanta[4], nodoPlanta[4], nodoPlanta[4]);
             graphics.endFill();
             var sprite = new PIXI.Sprite(graphics.generateCanvasTexture());
-
             sprite.anchor.set(0.5);
             sprite.position.x = nodoPlanta[0];
             sprite.position.y = nodoPlanta[1];
-            sprite.zOrder = zPlantas;
+            sprite.z = zPlantas+cont;
+            cont++;
+            sprite.displayGroup = app.general;
             app.world.addChild(sprite);
             ndSprites.push(sprite);
 
@@ -73,16 +79,16 @@ function init(servPlantas, pHitbox,t,ancho,alto) {
             console.log(p);
         }
         plantas[plantas.length-1].hitbox = pHitbox[plantas.length-1];
+
         plantasSprites.push(ndSprites);
-        actualizarZ();
+        //actualizarZ();
     });
 
     app.bordeGraphics = new PIXI.Graphics();
     app.bordeGraphics.lineStyle(30, 0x8d8dc9, 30);
     app.bordeGraphics.drawRect(0, 0, ancho, alto);
     app.bordeSprite = new PIXI.Sprite(app.bordeGraphics.generateCanvasTexture());
-    app.bordeSprite.interactive = true;
-    app.bordeSprite.zOrder =5;
+    app.bordeSprite.z =10;
     app.bordeSprite.x = 0;
     app.bordeSprite.y = 0;
     app.world.addChild(app.bordeSprite);
@@ -155,7 +161,7 @@ function rgb2hex(rgb){
   ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
 }
 
-function generarDibujoCircular(radio,color,tiponodoColor,alpha,z,x,y,anchor) {
+function generarDibujoCircular(radio,color,tiponodoColor,alpha,z,x,y,anchor,displaygroup) {
     var colorTemp = []; //"rgba(199, 64, 64, 0.93)"
     if(tiponodoColor) {
         colorTemp = rgb2hex(color);
@@ -169,7 +175,8 @@ function generarDibujoCircular(radio,color,tiponodoColor,alpha,z,x,y,anchor) {
     var sprite = new PIXI.Sprite(grap.generateCanvasTexture());
     if(x)sprite.position.x = x;
     if(y)sprite.position.y = y;
-    if(z)sprite.zOrder = z;
+    if(z)sprite.z = z;
+    sprite.displayGroup = displaygroup || app.general;
     sprite.anchor.set(anchor || 0.5);
     app.world.addChild(sprite);
     return sprite;
@@ -221,12 +228,4 @@ function calcularPuntoEnCirculo(x = 0,y = 0,r,a){
     coord.push(x + r * Math.cos(a));
     coord.push(y + r * Math.sin(a));
     return coord;
-}
-
-function actualizarZ(){
-    app.world.children.sort(function(a,b) {
-      if (a.zOrder > b.zOrder) return 1;
-      if (a.zOrder < b.zOrder) return -1;
-      return 0;
-    });
 }

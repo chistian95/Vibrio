@@ -23,9 +23,15 @@ function renderPixi(){
     this.borde = new PIXI.Container();
     this.world.addChild(this.bichos);
     /*==================================*/
+    //this.world.displayList = new PIXI.DisplayList();
+    this.general = new PIXI.DisplayGroup(0, true);
+    this.general.on('add', function (sprite) {
+        sprite.zOrder = sprite.z;
+    });
     /*Declarar renderer de imágenes
     =================================================================================================*/
     this.renderer = new PIXI.CanvasRenderer(window.innerWidth, window.innerHeight, {antialias: false, transparent: true, resolution: 1});
+    //this.renderer = new PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight, {antialias: true, transparent: true, resolution: 1});
     this.backrenderer = new PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight,null,true,true,false,true,1,false,true,false);
     this.expRenderer = new PIXI.autoDetectRenderer(window.innerWidth/2, window.innerHeight/10, {antialias: false, transparent: true, resolution: 1});
     //Añadirlos al body para que se vean
@@ -71,12 +77,12 @@ function renderPixi(){
     var x = this.expRenderer.width/6;
     var y = 60;
 
-    this.spr_uiOjo = declararSpriteDesdeTextura(uiOjo,this.exp,x,y,1);
-    this.spr_uiPincho = declararSpriteDesdeTextura(uiPincho,this.exp,x*2,y,1);
-    this.spr_uiZise = declararSpriteDesdeTextura(uiZise,this.exp,x*3,y,1);
-    this.spr_uiTentaculo =  declararSpriteDesdeTextura(uiTentaculo,this.exp,x*4,y,1);
+    this.spr_uiOjo = declararSpriteDesdeTextura(uiOjo,this.exp,x,y,1,null,this.general);
+    this.spr_uiPincho = declararSpriteDesdeTextura(uiPincho,this.exp,x*2,y,1,null,this.general);
+    this.spr_uiZise = declararSpriteDesdeTextura(uiZise,this.exp,x*3,y,1,null,this.general);
+    this.spr_uiTentaculo =  declararSpriteDesdeTextura(uiTentaculo,this.exp,x*4,y,1,null,this.general);
     this.spr_uiNodos =  declararSpriteDesdeTextura(uiNodos,this.exp,x*5,y,1);
-    this.spr_uiCoraza =  declararSpriteDesdeTextura(uiCoraza,this.exp,x*6,y,1);
+    this.spr_uiCoraza =  declararSpriteDesdeTextura(uiCoraza,this.exp,x*6,y,1,null,this.general);
 
     //texto,father, x = 0, y = 0 , anchor = 0.5, font= 'Comic Sans MS', size = '20px', color = "#ffff00", z = 0
     addChildrenText("0%",this.expSpr,window.innerWidth/4,window.innerHeight/13.5,0.5,null,35,"#1400ff"); //Exp General
@@ -132,7 +138,7 @@ function debugo(){
     this.gui.add(game, 'buscarPlantaMasCercana');
     this.gui.add(game, 'actuColas');
     this.gui.add(game, 'pinchoColas');
-    //this.gui.view.style.zIndex = 600;
+    this.gui.add(game, 'pintarHitboxPlanta0');
     return this;
 }
 /*====================================*/

@@ -143,52 +143,58 @@ io.on('connection', function(client) {
     /*ChocarPlantas
     =================================*/
     client.on('chocarPlanta', function(info){
-        //console.log("======================================================")
-        //console.log("planta: "+info.idAtacado+" nodo: "+info.numNodoAtacado);
-        var numPlayer = 0;
-        var numPlanta = info.idAtacado;
-        var num = 0;
         var playerAtacante = null;
-        var planta = null;
+        var numPlayer = -5;
+        var num = 0;
         players.forEach(function(player) {
-            if(info.idAtacante == player.id) {
+            if(info[0][0] == player.id) {
                 playerAtacante = player;
                 numPlayer = num;
             }
             num++;
         });
-        try {
-            if(!players[numPlayer].bicho.nodos[info.numNodoAtacante] || !plantas[numPlanta].nodos[info.numNodoAtacado]) {
-                return;
-            }
+        var cont = 0;
+        info.forEach(function(infoActual){
+            var numPlanta = infoActual[1];
+            var planta = null;
+
             try {
-                var player = players[numPlayer].bicho.nodos[info.numNodoAtacante];
-                planta = plantas[numPlanta].nodos[info.numNodoAtacado];
-            } catch(err) {
-                console.log("==================");
-                console.log("Error al declarar el player o la planta.");
-            }
-            try {
-                var distanciaX =player.x - planta.x;
-                var distanciaY = player.y - planta.y;
-             } catch(err) {
-                 console.log("===================")
-                 console.log("Error en xy");
-             }
-            try {
-                var sumaRadios = planta.radio +  player.radio;
-            } catch(err) {
-                console.log("===================")
-                console.log("Error en sumaRadios");
-            }
-            if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
-                if(player.radio > planta.radio) {
-                    matarNodosPlanta(plantas[numPlanta], planta);
-                    io.sockets.emit('borrarPlantas', { numPlanta: numPlanta, numNodo: info.numNodoAtacado});
-                    ganarExperienciaPlanta(playerAtacante.bicho, planta.tipoNodo.tipo, planta.radio);
-                }//else console.log("else1");
-            }
-        } catch(err) {console.log(err.message);}
+                if(!players[numPlayer].bicho.nodos[0] || !plantas[numPlanta].nodos[infoActual[2]]) {
+                    return;
+                }
+                try {
+                    var player = players[numPlayer].bicho.nodos[0];
+                    planta = plantas[numPlanta].nodos[infoActual[2]];
+                } catch(err) {
+                    console.log("==================");
+                    console.log("Error al declarar el player o la planta.");
+                }
+                try {
+                    var distanciaX =player.x - planta.x;
+                    var distanciaY = player.y - planta.y;
+                 } catch(err) {
+                     console.log("===================")
+                     console.log("Error en xy");
+                 }
+                try {
+                    var sumaRadios = planta.radio +  player.radio;
+                } catch(err) {
+                    console.log("===================")
+                    console.log("Error en sumaRadios");
+                }
+                if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
+                    if(player.radio > planta.radio) {
+                        matarNodosPlanta(plantas[numPlanta], planta);
+                        io.sockets.emit('borrarPlantas', { numPlanta: numPlanta, numNodo: infoActual[2]});
+                        ganarExperienciaPlanta(playerAtacante.bicho, planta.tipoNodo.tipo, planta.radio);
+                    } else {
+                        console.log("Planta["+numPlanta+"].nodos["+infoActual[2]+"].radio = "+planta.radio);
+                    }
+                } else console.log("distancia")
+            } catch(err) {console.log(err.message);}
+            console.log(cont+" max: "+info.length);
+            cont++;
+        });
     });
 
     /*===============================*/
@@ -243,12 +249,13 @@ io.on('connection', function(client) {
                 var radioAtacado = players[numPlayerAtacado].bicho.nodoCentral.radio;
                 if(atacado.vida <= 0 || radioAtacante / 1.75 >= radioAtacado) {
                     atacado.vida = 0;
+                    console.log("comer")
                     var nodos = players[numPlayerAtacado].bicho.nodos;
                     io.sockets.emit('borrarNodo', { idPlayer: players[numPlayerAtacado].id, numNodo: nodos.indexOf(atacado)});
                     nodos.splice(nodos.indexOf(atacado),1);
                     ganarExperienciaBicho(playerAtacante.bicho, atacado.tipoNodo.nombre, atacado.radio);
-                }
-            }
+                } else console.log("radio")
+            } else console.log("distancia")
         } catch(err) {console.log(err.message);}
     });
 
@@ -409,7 +416,7 @@ setInterval(function() {
 }, 500);
 
 setInterval(function() {
-    regenerarMapa()
+    regenerarMapa();
 }, 15000);
 
 setInterval(function() {
@@ -474,7 +481,7 @@ function decaerPlantas() {
 
 /* GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS */
 function generarPlantas() {
-    for(var i=0; i<20; i++) {
+    for(var i=0; i<2; i++) {
         var tipoPlanta = Math.round(Math.random() * 5);
         var x = Math.random()*(width-200)+100;
         var y = Math.random()*(width-200)+100;

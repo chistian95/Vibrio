@@ -1,0 +1,48 @@
+{
+  "name": "pixi-display",
+  "version": "1.1.1",
+  "description": "Pixi.js plugin, allows to change rendering order of containers without changing the scene graph.",
+  "author": "Ivan Popelyshev",
+  "contributors": [
+    "Ivan Popelyshev <ivan.popelyshev@gmail.com>"
+  ],
+  "main": "./bin/pixi-display.js",
+  "types": "./bin/pixi-display.d.ts",
+  "homepage": "http://www.pixijs.com/",
+  "bugs": "https://github.com/gameofbombs/pixi-display/issues",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gameofbombs/pixi-display.git"
+  },
+  "scripts": {
+    "clean": "rimraf bin && mkdirp bin",
+    "prestart": "npm run clean",
+    "start": "parallelshell \"npm run watch\"",
+    "watch": "tsc -w",
+    "prebuild": "npm run clean",
+    "build": "tsc",
+    "docs": "jsdoc -c scripts/jsdoc.conf.json -R README.md"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "CONTRIBUTING.md",
+    "LICENSE",
+    "package.json",
+    "tsconfig.json",
+    "README.md"
+  ],
+  "devDependencies": {
+    "del": "^2.2.0",
+    "jaguarjs-jsdoc": "^1.0.1",
+    "jsdoc": "^3.4.0",
+    "mkdirp": "^0.5.1",
+    "parallelshell": "^2.0.0",
+    "rimraf": "^2.5.3",
+    "typescript": "^2.0.3"
+  },
+  "dependencies": {
+    "@types/pixi.js": "^4.3.1"
+  }
+}
