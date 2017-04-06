@@ -1,0 +1,76 @@
+.ojos, .ojos-sel , .pinchoss, .pinchoss-sel , .size, .size-sel , .tentaculos, .tentaculos-sel , .coraza, .coraza-sel , .nodos , .nodos sel {
+	background: url(sprites.png) no-repeat;
+}
+
+.ojos{
+	background-position: 0 -1px ;
+	width: 129px;
+	height: 129px;
+}
+
+.ojos-sel {
+	background-position: -130px 0;
+	width: 129px;
+	height: 129px;
+}
+
+.pinchos{
+	background-position: -261px -1px ;
+	width: 129px;
+	height: 129px;
+}
+
+.pinchos-sel {
+	background-position: -393px 0;
+	width: 129px;
+	height: 129px;
+}
+
+.size{
+	background-position: -2px -125px ;
+	width: 129px;
+	height: 129px;
+}
+
+.size-sel {
+	background-position: -128px -123px ;
+	width: 129px;
+	height: 129px;
+}
+
+.tentaculos{
+	background-position: -259px -124px ;
+	width: 129px;
+	height: 129px;
+}
+
+.tentaculos-sel {
+	background-position: -392px -124px ;
+	width: 129px;
+	height: 129px;
+}
+
+.coraza{
+	background-position: -1px -250px ;
+	width: 129px;
+	height: 129px;
+}
+
+.coraza-sel {
+	background-position: -128px -251px ;
+	width: 129px;
+	height: 129px;
+}
+
+.nodos {
+	background-position: -256px -253px ;
+	width: 129px;
+	height: 129px;
+}
+
+.nodos-sel {
+	background-position: -391px -253px ;
+	width: 129px;
+	height: 129px;
+}
+

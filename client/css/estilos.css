@@ -1,0 +1,183 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+#menu{
+    margin-top: 3%;
+}
+/*#inputNombre{margin-right: 5px;}*/
+h1{font-size: 8em;}
+
+#configuracion{
+    margin-top: 1em;
+    /*border:1px solid #00aaf5;
+    border-radius: 2em;*/
+    display: none;
+}
+
+#p{
+    display: inline;
+    margin-right: 1%;
+}
+
+.barrasVida{
+    /*ocultar la flecha*/
+    -webkit-appearance:none;
+    -moz-appearance:none;
+    appearance:none;
+
+    width: 10em;
+    height: 29px;
+
+    /*Nueva flecha de fondo*/
+    background: url(http://i62.tinypic.com/15xvbd5.png) no-repeat 92% center;
+
+    /*los bordes circulares*/
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+
+    padding-left: 10px;
+}
+
+.barrasVida select{
+    border: none;
+    font-size: 14px;
+    height: 29px;
+    padding: 5px;
+    width: 268px;
+    color: #fff;
+}
+
+.opciones{
+    margin-top: 10px;
+}
+
+#nodoInicial{
+    width: 100%;
+    margin-bottom: 1%;
+}
+
+#nodoInicial label > input{ /* OCULATAR EL RADIO */
+    visibility: hidden; /* Hacer al input no clickable */
+    position: absolute; /* Borrar el input del flow del documento*/
+}
+
+#nodoInicial label > input + img{ /* LOS ESTILOS DE LAS IMGS */
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+/*CAMBIAR IMAGEN DEL NODO ELEGIDO*/
+
+#nodoInicial label img{
+    object-fit: none;
+    transition: all 1s ease-in;
+}
+
+#l-ojo > input:checked + img{ /* (RADIO CHECKED) ESTILOS DE LA IMAGEN [OJO] */
+    object-position: -130px 0;
+	width: 129px;
+	height: 129px;
+}
+#l-pincho > input:checked + img{ /* (RADIO CHECKED) ESTILOS DE LA IMAGEN [PINCHO] */
+    object-position: -393px 0;
+	width: 129px;
+	height: 129px;
+}
+#l-tentaculo > input:checked + img{ /* (RADIO CHECKED) ESTILOS DE LA IMAGEN [TENTACULO] */
+    object-position: -392px -124px ;
+	width: 129px;
+	height: 129px;
+}
+#l-coraza > input:checked + img{ /* (RADIO CHECKED) ESTILOS DE LA IMAGEN [CORAZA] */
+    object-position: -128px -251px ;
+	width: 129px;
+	height: 129px;
+}
+#l-cuerpo > input:checked + img{ /* (RADIO CHECKED) ESTILOS DE LA IMAGEN [CUERPO] */
+    object-position: -391px -253px ;
+	width: 129px;
+	height: 129px;
+}
+
+@media screen and (max-width:768px) {
+    .ajustar {
+        width: 100%;
+        display:block;
+        margin-bottom: 1%;
+    }
+}
+
+.ojos{
+	object-position: 0 -1px ;
+	width: 129px;
+	height: 129px;
+}
+
+.ojos-sel {
+	object-position: -130px 0;
+	width: 129px;
+	height: 129px;
+}
+
+.pinchos{
+	object-position: -261px -1px ;
+	width: 129px;
+	height: 129px;
+}
+
+.pinchos-sel {
+	object-position: -393px 0;
+	width: 129px;
+	height: 129px;
+}
+
+.size{
+	object-position: -2px -125px ;
+	width: 129px;
+	height: 129px;
+}
+
+.size-sel {
+	object-position: -128px -123px ;
+	width: 129px;
+	height: 129px;
+}
+
+.tentaculos{
+	object-position: -259px -124px ;
+	width: 129px;
+	height: 129px;
+}
+
+.tentaculos-sel {
+	object-position: -392px -124px ;
+	width: 129px;
+	height: 129px;
+}
+
+.coraza{
+	object-position: -1px -250px ;
+	width: 129px;
+	height: 129px;
+}
+
+.coraza-sel {
+	object-position: -128px -251px ;
+	width: 129px;
+	height: 129px;
+}
+
+.nodos {
+	object-position: -256px -253px ;
+	width: 129px;
+	height: 129px;
+}
+
+.nodos-sel {
+	background-position: -391px -253px ;
+	width: 129px;
+	height: 129px;
+}

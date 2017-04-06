@@ -8,108 +8,7 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-        }
-
-        #menu{
-            margin-top: 3%;
-        }
-        /*#inputNombre{margin-right: 5px;}*/
-        h1{font-size: 8em;}
-
-        #configuracion{
-            margin-top: 1em;
-            /*border:1px solid #00aaf5;
-            border-radius: 2em;*/
-            display: none;
-        }
-
-        #p{
-            display: inline;
-            margin-right: 1%;
-        }
-
-        .barrasVida{
-            /*ocultar la flecha*/
-            -webkit-appearance:none;
-            -moz-appearance:none;
-            appearance:none;
-
-            width: 10em;
-            height: 29px;
-
-            /*Nueva flecha de fondo*/
-            background: url(http://i62.tinypic.com/15xvbd5.png) no-repeat 92% center;
-
-            /*los bordes circulares*/
-            -webkit-border-radius: 5px;
-            -moz-border-radius: 5px;
-            border-radius: 5px;
-
-            padding-left: 10px;
-        }
-
-        .barrasVida select{
-            border: none;
-            font-size: 14px;
-            height: 29px;
-            padding: 5px;
-            width: 268px;
-            color: #fff;
-        }
-
-        .opciones{
-            margin-top: 10px;
-        }
-
-        #nodoInicial{
-            width: 100%;
-            margin-bottom: 1%;
-        }
-
-        #nodoInicial label > input{ /* OCULATAR EL RADIO */
-            visibility: hidden; /* Hacer al input no clickable */
-            position: absolute; /* Borrar el input del flow del documento*/
-        }
-        #nodoInicial label > input + img{ /* LOS ESTILOS DE LAS IMGS */
-            cursor:pointer;
-            border:2px solid transparent;
-        }
-
-        /*CAMBIAR IMAGEN DEL NODO ELEGIDO*/
-        #l-ojo > input:checked + img{ /* (RADIO CHECKED) ESTILOS DE LA IMAGEN [OJO] */
-            content: url('assets/img/ico-pincho.png');
-        }
-        #l-pincho > input:checked + img{ /* (RADIO CHECKED) ESTILOS DE LA IMAGEN [PINCHO] */
-            content: url('assets/img/ico-ojo.png');
-        }
-        #l-tentaculo > input:checked + img{ /* (RADIO CHECKED) ESTILOS DE LA IMAGEN [TENTACULO] */
-            content: url('assets/img/ico-ojo.png');
-        }
-        #l-coraza > input:checked + img{ /* (RADIO CHECKED) ESTILOS DE LA IMAGEN [CORAZA] */
-            content: url('assets/img/ico-ojo.png');
-        }
-        #l-cuerpo > input:checked + img{ /* (RADIO CHECKED) ESTILOS DE LA IMAGEN [CUERPO] */
-            content: url('assets/img/ico-ojo.png');
-        }
-
-        #nodoInicial img{
-            max-width: 150px;
-            width: 100%;
-        }
-
-        @media screen and (max-width:768px) {
-            .ajustar {
-                width: 100%;
-                display:block;
-                margin-bottom: 1%;
-            }
-        }
-    </style>
-
+    <link href="css/estilos.css" rel="stylesheet">
 </head>
 <script src="lib/socket.io.js"></script>
 <script src="client.js"></script>
@@ -121,23 +20,23 @@
             <div id="nodoInicial">
                 <label id="l-ojo">
                     <input id="rbOjo" type="radio" name="nodo" value="ojo" />
-                    <img src="assets/img/ico-ojo.png">
+                    <img class="ojos" src="assets/img/sprites.png" alt=""/>
                 </label>
                 <label id="l-pincho">
                     <input id="rbPincho" type="radio" name="nodo" value="pincho" />
-                    <img src="assets/img/ico-pincho.png">
+                    <img class="pinchos" src="assets/img/sprites.png" alt=""/>
                 </label>
                 <label id="l-tentaculo">
                     <input id="rbTentaculo" type="radio" name="nodo" value="tentaculo" />
-                    <img src="assets/img/ico-tentaculo.png">
+                     <img class="tentaculos" src="assets/img/sprites.png" alt=""/>
                 </label>
                 <label id="l-coraza">
                     <input id="rbCoraza" type="radio" name="nodo" value="coraza" />
-                    <img src="assets/img/ico-coraza.png">
+                     <img class="coraza" src="assets/img/sprites.png" alt=""/
                 </label>
                 <label id="l-cuerpo">
                     <input id="rbCuerpo" type="radio" name="nodo" value="cuerpo" />
-                    <img src="assets/img/ico-nodo.png">
+                     <img class="nodos" src="assets/img/sprites.png" alt=""/>
                 </label>
             </div>
 			<form class="form-inline" autocomplete="off" onSubmit="return false;">
@@ -146,7 +45,7 @@
 				</div>
                 <button class="btn btn-primary ajustar" id="btn" type="button">Entrar</button>
                 <button type="button" class="btn btn-primary ajustar" id="conf">
-                    <span class="glyphicon glyphicon-cog" id="span_confi"></span>
+                    <span class="glyphicon glyphmenun-cog" id="span_confi"></span>
                 </button>
                 <div id="configuracion">
                     <p id="p">Mostrar vida: </p>
