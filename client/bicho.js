@@ -59,7 +59,7 @@ var BichoProto = function(){
             var y = this.cuerpo[0].radio//this.cuerpo[0].sprite.position.y;
             var x = xP//this.cuerpo[0].sprite.position.x;
             gSpriteBichos.beginFill(0x24c191);
-            gSpriteBichos.lineStyle(2);
+            gSpriteBichos.lineStyle(0);
             /*INICIO - CABEZA
             ===================================================================*/
             var coord = calcularPuntoEnCirculo(x,y,ultimoNodo.radio,0);
