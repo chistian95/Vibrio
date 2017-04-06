@@ -316,6 +316,15 @@ io.on('connection', function(client) {
             });
 		}
     });
+    client.on('usarHabilidad', function(info) {
+        if(info.id != undefined) {
+            players.forEach(function(player){
+                if(player.id == info.id) {
+                    player.bicho.usarHabilidad();
+                }
+            })
+        }
+    })
 
     /*Al evolucionar*/
     client.on('evo', function(idPlayer){
@@ -404,7 +413,6 @@ setInterval(function(){
                 });
             });
             info.push([player.id, player.bicho.crearNodosMin(false),player.bicho.hitbox, player.bicho.exp, player.bicho.nivel]);
-            console.log(info.length)
             player.socket.emit('sync', info);
         }
     });
@@ -413,6 +421,9 @@ setInterval(function(){
 setInterval(function() {
     players.forEach(function(player) {
         player.bicho.calcularHitbox();
+        if(player.bicho.cooldownHabilidad > 0) {
+            player.bicho.cooldownHabilidad--;
+        }
     });
     decaerPlantas();
 }, 500);

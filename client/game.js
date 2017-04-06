@@ -20,6 +20,8 @@ function Game(socket){
         window.addEventListener('mousemove', actualizarRaton, true);
         window.addEventListener('touchstart', actualizarTouch, true);
         window.addEventListener('touchmove', actualizarTouch, true);
+        window.addEventListener('mousedown', usarHabilidad, true);
+        window.addEventListener('touchstart', checkUsarHabilidad, true);
     }
     this.bucle0 = setInterval(function(){
         if(game.localPlayer && game.localPlayer.bicho.nodos[0]) {
@@ -69,6 +71,16 @@ function Game(socket){
     }.bind(this), 100);
 }
 /*=======================================================*/
+
+var timerHabilidad = 0;
+function checkUsarHabilidad() {
+    if(timerHabilidad == 0) {
+        timerHabilidad = 1;
+        timerHabilidad = setTimeout(function(){ timerHabilidad = 0 }, 600);
+    } else {
+        usarHabilidad();
+    }
+}
 
 Game.prototype = {
     evoZise: function() {this.socket.emit('evole',{id:game.localPlayer.id,opc: "zise"});this.emitirEvoTrampa();},

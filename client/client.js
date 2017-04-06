@@ -95,9 +95,6 @@ function empezarJuego(){
                         //player.bicho.calcularSprite();
                     });
                 });
-                console.log("IDS =======================")
-                console.log(game.localPlayer.idsCercanas);
-                console.log("n Player Cerca: "+serverInfo.length);
             }
             /*==========================================================================*/
             /* Pixi - Mover la cámara y pintarlo todo

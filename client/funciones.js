@@ -113,6 +113,12 @@ function actualizarRaton(e) {
         game.localPlayer.ratonY = e.clientY;
     }
 }
+function usarHabilidad() {
+    console.log("USAR HABILIDAD");
+    if(game.localPlayer) {
+        game.socket.emit('usarHabilidad',{id:game.localPlayer.id})
+    }
+}
 function actualizarTouch(e) {
     if(game.localPlayer) {
         game.localPlayer.ratonX = e.touches[0].clientX;

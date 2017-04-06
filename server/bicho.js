@@ -18,6 +18,9 @@ TipoNodo.HIJOTENTACULO = new TipoNodo("HIJOTENTACULO", [0,0,0,64], 1);
 
 var BichoProto = function(){
     this.update = function() {
+        if(this.bufoVelocidad > 0) {
+            this.bufoVelocidad -= 0.1;
+        }
         if(this.nodoCentral.vida>0) {
             var anguloRad = this.nodoCentral.anguloActual * Math.PI / 180.0;
             var tempx = this.x;
@@ -396,7 +399,18 @@ var BichoProto = function(){
                 self.velocidadMovimiento += 0.3;
             }
         });
+        if(this.bufoVelocidad > 0) {
+            this.velocidadMovimiento += 4.0;
+        }
+        //this.velocidadMovimento = this.velocidadMovimiento + this.bufoVelocidad;
+        console.log("VELOCIDAD: " + this.velocidadMovimiento + ", BUFO: " + this.bufoVelocidad);
         this.velocidadGiro = this.velocidadMovimiento / 2.0;
+    }
+    this.usarHabilidad = function() {
+        if(this.cooldownHabilidad <= 0) {
+            this.cooldownHabilidad = 20;
+            this.bufoVelocidad = 20.0;
+        }
     }
 }
 
@@ -417,6 +431,8 @@ var Bicho = function(x,y,w,h, nodoInicial) {
     this.derecha = false;
     this.bichoInicial(nodoInicial);
     this.hitbox = [];
+    this.cooldownHabilidad = 0;
+    this.bufoVelocidad = 0;
 
     this.nivel = 0; /*La experiencia necesaria para subir de nivel es igual a (nivelASubir*100), es decir, para subir del nivel 1 al nivel 2 necesitas 200 de experiencia.*/
     this.exp = {
