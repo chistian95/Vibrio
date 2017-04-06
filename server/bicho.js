@@ -403,7 +403,7 @@ var BichoProto = function(){
             this.velocidadMovimiento += 4.0;
         }
         //this.velocidadMovimento = this.velocidadMovimiento + this.bufoVelocidad;
-        console.log("VELOCIDAD: " + this.velocidadMovimiento + ", BUFO: " + this.bufoVelocidad);
+        //console.log("VELOCIDAD: " + this.velocidadMovimiento + ", BUFO: " + this.bufoVelocidad);
         this.velocidadGiro = this.velocidadMovimiento / 2.0;
     }
     this.usarHabilidad = function() {
