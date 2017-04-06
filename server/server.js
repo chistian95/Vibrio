@@ -394,8 +394,9 @@ setInterval(function(){
     players.forEach( function(player){
         player.bicho.update();
     });
-    var info = [];
+
     players.forEach(function(player) {
+        var info = [];
         if(player.nombre != 'bot') {
             player.idsCercanas.forEach(function(id) {
                 players.forEach(function(playerCercano) {
@@ -403,6 +404,7 @@ setInterval(function(){
                 });
             });
             info.push([player.id, player.bicho.crearNodosMin(false),player.bicho.hitbox, player.bicho.exp, player.bicho.nivel]);
+            console.log(info.length)
             player.socket.emit('sync', info);
         }
     });
@@ -433,7 +435,7 @@ function actualizarPlayersCercanos() {
             players.forEach(function(playerTarget) {
                 if(player.id != playerTarget.id) {
                     var hTarget = playerTarget.bicho.hitbox;
-                    if(hPlayer[2] >= hTarget[0]-500 && hTarget[2]+500 >= hPlayer[0]) {
+                    if(hPlayer[2] >= hTarget[0]-100 && hTarget[2]+100 >= hPlayer[0]) {
                         if(hPlayer[3] >= hTarget[1]-300 && hTarget[3]+300 >= hPlayer[1]) {
                             idsTemp.push(playerTarget.id);
                         }
@@ -457,6 +459,7 @@ function actualizarPlayersCercanos() {
             }
         });
         player.idsCercanas = idsTemp;
+        //console.log(JSON.stringify(idsTemp))
     });
 }
 

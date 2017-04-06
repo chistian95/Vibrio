@@ -57,16 +57,16 @@ var BichoProto = function(){
             this.spriteReady = false;
             return;
         }
-        var gSpriteBichos = new PIXI.Graphics();
-        var nodo = this.cuerpo[0];
-        var ultimoNodo = null;
-        var acumDif = 0;
-        acumDif+= this.cuerpo[0].radio;
-        if(this.cuerpo.length === 1) ultimoNodo = this.cuerpo[0];
-        else {
-            ultimoNodo = this.cuerpo[1];
-        }
         if(this.cuerpo && this.cuerpo[0] && this.cuerpo[0].sprite) {
+            var gSpriteBichos = new PIXI.Graphics();
+            var nodo = this.cuerpo[0];
+            var ultimoNodo = null;
+            var acumDif = 0;
+            acumDif+= this.cuerpo[0].radio;
+            if(this.cuerpo.length === 1) ultimoNodo = this.cuerpo[0];
+            else {
+                ultimoNodo = this.cuerpo[1];
+            }
             var y = this.cuerpo[0].radio//this.cuerpo[0].sprite.position.y;
             var x = xP//this.cuerpo[0].sprite.position.x;
             gSpriteBichos.beginFill(0x24c191);
@@ -242,15 +242,12 @@ var Nodo = function(x, y, tipoNodo, radio, anguloActual,z,anguloInicio,master){
         this.sprite.height = radio*2;
     } else if(tipoNodo.nombre ==="PINCHO"){
         //VITOR NECESITO QUE AQUI HAGAS QUE LOS PINCHOS SE VEAN UN POCO DESPLAZADOS A LA IZQUIERDA PARA QUE QUEDEN BIEN!!
-        //Ok, ahora lo hago.
+        //Ok, ahora lo hago. :p mentira
         this.sprite = declararSpriteDesdeTextura(pincho,app.world,x,y,0.0,z-1,x,y);
         this.sprite.width = radio*8;
         this.sprite.height = radio*2;
     } else {
-        /*if(master) {
-            */this.sprite = generarDibujoCircular(radio,'rgba(36, 193, 145,1)',true,0.7,z,x,y);/*
-        }
-        else this.sprite = new sprite(x,y);*/
+        this.sprite = generarDibujoCircular(radio,'rgba(36, 193, 145,1)',true,0.7,z,x,y);
     }
     this.tipoNodo = tipoNodo;
     this.radio = radio;

@@ -95,6 +95,9 @@ function empezarJuego(){
                         //player.bicho.calcularSprite();
                     });
                 });
+                console.log("IDS =======================")
+                console.log(game.localPlayer.idsCercanas);
+                console.log("n Player Cerca: "+serverInfo.length);
             }
             /*==========================================================================*/
             /* Pixi - Mover la cámara y pintarlo todo
@@ -135,9 +138,10 @@ function empezarJuego(){
     });
     socket.on('actualizarPlanta', function(info){
         var num = 0;
+        var cont = 0;
         info.nodos.forEach(function(nodoPlanta){
             app.world.removeChild(plantasSprites[info.id][num]);
-            plantasSprites[info.id][num].destroy(true,true,true);
+            if(plantasSprites[info.id][num])plantasSprites[info.id][num].destroy();
             num++;
         });
         var nodosSprites = [];
@@ -171,7 +175,6 @@ function empezarJuego(){
         plantas[info.id].tipo = info.nodos[0][3].tipo;
         plantas[info.id].hitbox = info.hitbox;
         plantasSprites[info.id]=ndSprites;
-        actualizarZ();
     });
     socket.on('borrarNodo',function(info){
        var pl = null;

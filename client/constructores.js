@@ -26,7 +26,8 @@ function renderPixi(){
     //this.world.displayList = new PIXI.DisplayList();
     this.general = new PIXI.DisplayGroup(0, true);
     this.general.on('add', function (sprite) {
-        sprite.zOrder = sprite.z;
+        //console.log(sprite.z)
+        sprite.zOrder = -sprite.z;
     });
     /*Declarar renderer de imágenes
     =================================================================================================*/

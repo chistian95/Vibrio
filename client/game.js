@@ -203,12 +203,19 @@ Game.prototype = {
             }
             var encontrado = false;
             game.localPlayer.idsCercanas.forEach(function(idcercana){
-                if(idcercana === player.id) encontrado = true;
+                if(idcercana === player.id) {
+                    encontrado = true;
+                    console.log(idcercana+" encontrado.");
+                }
             });
             if(!encontrado) {
+                console.log("no encontrado")
                 player.bicho.nodos.forEach(function(nodo){
                     app.world.removeChild(nodo.sprite);
+                    nodo.sprite.destroy();
                 });
+                if(player.bicho.sprite)app.world.removeChild(player.bicho.sprite);
+                player.bicho.sprite.destroy(true,true,true);
                 players.splice(players.indexOf(player),1);
                 return;
             }

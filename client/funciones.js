@@ -24,10 +24,7 @@ function declararSpriteDesdeTextura(textura,container, x,y,anchor, z,displaygrou
     spriteTemp.position.y = y || 0;
     spriteTemp.anchor.set(anchor || 0.5);
     spriteTemp.z = z;
-    if(displaygroup) sprite.displayGroup = displaygroup;
-    else {
-        sprite.displayGroup = app ? app.general : null || displaygroup;
-    }
+    if(app)this.sprite.displayGroup = app.general || null;
     container.addChild(spriteTemp);
     return spriteTemp;
 }
@@ -176,7 +173,7 @@ function generarDibujoCircular(radio,color,tiponodoColor,alpha,z,x,y,anchor,disp
     if(x)sprite.position.x = x;
     if(y)sprite.position.y = y;
     if(z)sprite.z = z;
-    sprite.displayGroup = displaygroup || app.general;
+    this.sprite.displayGroup = app.general;
     sprite.anchor.set(anchor || 0.5);
     app.world.addChild(sprite);
     return sprite;
