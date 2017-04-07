@@ -219,11 +219,11 @@ Game.prototype = {
             game.localPlayer.idsCercanas.forEach(function(idcercana){
                 if(idcercana === player.id) {
                     encontrado = true;
-                    console.log(idcercana+" encontrado.");
+                    //console.log(idcercana+" encontrado.");
                 }
             });
             if(!encontrado) {
-                console.log("no encontrado")
+                //console.log("no encontrado")
                 player.bicho.nodos.forEach(function(nodo){
                     app.world.removeChild(nodo.sprite);
                     nodo.sprite.destroy();

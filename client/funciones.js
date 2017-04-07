@@ -68,8 +68,8 @@ function init(servPlantas, pHitbox,t,ancho,alto) {
         plantas.push(nodosSprites);
         if(p[0]) plantas[plantas.length-1].tipo = p[0][3].tipo;
         else {
-            console.log("p[0] no existe.");
-            console.log(p);
+            //console.log("p[0] no existe.");
+            //console.log(p);
         }
         plantas[plantas.length-1].hitbox = pHitbox[plantas.length-1];
 
@@ -110,7 +110,7 @@ function actualizarRaton(e) {
     }
 }
 function usarHabilidad() {
-    console.log("USAR HABILIDAD");
+    //console.log("USAR HABILIDAD");
     if(game.localPlayer) {
         game.socket.emit('usarHabilidad',{id:game.localPlayer.id})
     }
@@ -187,12 +187,12 @@ function actualizarUi() {
 }
 
 function calcularPuntoEnCirculo(x = 0,y = 0,r,a){
-    if(!r && r != 0|| !a && a != 0) {
-        console.log("Faltan atributos obligatorios: ")
-        if(!a)console.log("Ángulo: "+a);
-        if(!r)console.log("Radio: "+r);
+    /*if(!r && r != 0|| !a && a != 0) {
+        //console.log("Faltan atributos obligatorios: ")
+        //if(!a)console.log("Ángulo: "+a);
+        //if(!r)console.log("Radio: "+r);
         return;
-    }
+    }*/
     var coord = [];
     coord.push(x + r * Math.cos(a));
     coord.push(y + r * Math.sin(a));
@@ -200,7 +200,7 @@ function calcularPuntoEnCirculo(x = 0,y = 0,r,a){
 }
 
 function nodoAnodo(nodo,nodoTarget){
-    if(!nodo || ! nodoTarget) {console.log("wtf");return}
+    //if(!nodo || ! nodoTarget) {console.log("wtf");return}
     var distanciaX = nodo.sprite.position.x - nodoTarget.sprite.position.x;
     var distanciaY = nodo.sprite.position.y - nodoTarget.sprite.position.y;
     var sumaRadios = nodoTarget.radio + nodo.radio;
@@ -208,7 +208,7 @@ function nodoAnodo(nodo,nodoTarget){
     if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
         return true;
     } else{
-        console.log((distanciaX * distanciaX + distanciaY * distanciaY)+" radios: "+sumaRadios * sumaRadios);
+        //console.log((distanciaX * distanciaX + distanciaY * distanciaY)+" radios: "+sumaRadios * sumaRadios);
         return false;
     }
 }

@@ -31,8 +31,8 @@ function empezarJuego(){
     game = new Game(socket);
 
     function crearJugadorServer(socket){
-        console.log("Creando player: "+nombre);
-        console.log("NODO INICAL DESEADO: "+nodoInicial);
+        //console.log("Creando player: "+nombre);
+        //console.log("NODO INICAL DESEADO: "+nodoInicial);
         socket.emit('crearJugadorServer', {nombre: nombre, nodoInicial: nodoInicial});
     }
     /*Eventos para enviarle al servidor
@@ -50,7 +50,7 @@ function empezarJuego(){
         if(!repetido) {
             var t = new Player(player.id, this, player.local,player.nombre);
             if(player.local) {
-                console.log("Creando player local: "+player.nombre);
+                //console.log("Creando player local: "+player.nombre);
                 init(player.plantas,player.plantasHitbox,t,player.width,player.height);
                 players.push(t);
                 debug = new debugo();
@@ -186,7 +186,7 @@ function empezarJuego(){
             }
         });
         var spriteBorrar = pl.bicho.nodos[info.numNodo].sprite;
-        console.log("borrando")
+        //console.log("borrando")
         app.world.removeChild(spriteBorrar);
         if(info.numNodo === 0){
             if(pl === game.localPlayer) gameOver();
@@ -204,7 +204,7 @@ function empezarJuego(){
                 return;
             }
             for(var i = pl.bicho.cuerpo.indexOf(nodo)-1; i >= 1; i--) {
-                console.log("borrado: "+pl.bicho.cuerpo.indexOf(nodo)+" actualidadRealidad: "+i)
+                //console.log("borrado: "+pl.bicho.cuerpo.indexOf(nodo)+" actualidadRealidad: "+i)
                 pl.bicho.cuerpo.splice(i,1);
             }
             pl.bicho.cuerpo.splice(pl.bicho.cuerpo.indexOf(nodo),1);

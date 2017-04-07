@@ -139,8 +139,8 @@ var BichoProto = function(){
             }
             gSpriteBichos.destroy(true,true,true);
         } else {
-            console.log("no hay sprite inicial.");
-            console.log(this.cuerpo[0]);
+            //console.log("no hay sprite inicial.");
+            //console.log(this.cuerpo[0]);
         }
     }
 
