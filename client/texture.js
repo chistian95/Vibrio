@@ -2,7 +2,7 @@
 ======================================================================*/
 tentaculo = PIXI.Texture.fromImage('assets/img/tent2.png');
 ojo = PIXI.Texture.fromImage('assets/img/ojo.png');
-pincho = PIXI.Texture.fromImage('assets/img/Pincho.png');
+pincho = PIXI.Texture.fromImage('assets/img/pincho.png');
 
 /*BLACKGROUND
 ======================================================================*/
