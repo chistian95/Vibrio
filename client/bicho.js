@@ -39,7 +39,7 @@ var BichoProto = function(){
             } else {
                 var nodo = new Nodo(nodoMin[1], nodoMin[2], nodoMin[3], nodoMin[4], nodoMin[5],this.z);
                 if(this === game.localPlayer.bicho){
-                    //sonidoEvolucion.play();
+                    sonidoEvolucion.play();
                 }
             }
             this.nodos.push(nodo);
@@ -175,6 +175,7 @@ var BichoProto = function(){
                             socket.emit('chocar',{idAtacante: idLocal, numNodoAtacante: numNodoLocalPlayer, idAtacado: idTarget, numNodoAtacado: numNodoEnemigo});
                         } else {
                             socket.emit('comerBicho',{idAtacante: idLocal, numNodoAtacante: numNodoLocalPlayer, idAtacado: idTarget, numNodoAtacado: numNodoEnemigo});
+                            sonidoComer.play();
                         }
                     } else {
                         //console.log("Planta no choca dist: "+dist)
@@ -200,9 +201,11 @@ var BichoProto = function(){
                     if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
                         //console.log("chocar planta: "+numNodoEnemigo)
                         numNodosEnemigo.push(target.indexOf(nodoTarget));
+                        //sonidoComer.play();
                         return;
                     } else {
                         distancias.push((distanciaX * distanciaX + distanciaY * distanciaY),sumaRadios * sumaRadios);
+
                     }
                 });
             }

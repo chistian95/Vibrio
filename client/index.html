@@ -5,6 +5,7 @@
     <title>Vibrio</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta name="author" content="Chistulari, Vitorino, MrDátil">
+    <link rel="manifest" href="manifest.json">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
@@ -77,6 +78,7 @@
     <script src="game.js"></script>
 
     <script>
+        screen.orientation.lock('landscape');
         var juego = false;
         var opciones = {
             sounds: true,
@@ -123,7 +125,7 @@
                 return;
             }
             if(input.value == ""){
-                alert("Escribe algo susia");
+                //alert("Escribe algo susia");
                 return;
             }
             cargarJuego();
