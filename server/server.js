@@ -443,7 +443,7 @@ setInterval(function() {
 
 setInterval(function() {
     actualizarPlayersCercanos();
-}, 100);
+}, 20);
 
 function actualizarPlayersCercanos() {
     players.forEach(function(player) {
@@ -457,8 +457,8 @@ function actualizarPlayersCercanos() {
                     var hTarget = playerTarget.bicho.hitbox;
                     var nodo = player.bicho.nodos[0];
                     //xmin, ymin, xmax,ymax
-                    var margenX = player.bounds.x/2 + 100;
-                    var margenY = player.bounds.x/2 + 100;
+                    var margenX = player.bounds.x/2;
+                    var margenY = player.bounds.y/2;
                     if(hPlayer[2] >= hTarget[0]-margenX && hTarget[2]+margenX >= hPlayer[0]) { // xPlayerMax >= objXmin && obj.y >= yPlayer
                         if(hPlayer[3] >= hTarget[1]-margenY && hTarget[3]+margenY >= hPlayer[1]) {
                             idsTemp.push(playerTarget.id);

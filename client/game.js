@@ -140,7 +140,7 @@ Game.prototype = {
         zoomObj = resc;
         app.backrenderer.render(app.background);
         app.renderer.render(app.world);
-        game.localPlayer.socket.emit("updateBounds",{height: window.innerHeight/zoom, width: window.innerWidth/zoom,id: game.localPlayer.id});
+        if(game.localPlayer)this.socket.emit("updateBounds",{height: window.innerHeight/zoom, width: window.innerWidth/zoom,id: game.localPlayer.id});
         actualizarUi();
         actualizarExp();
     },
