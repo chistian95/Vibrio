@@ -27,8 +27,8 @@ function declararSpriteDesdeTextura(textura,container, x,y,anchor, z) {
     container.addChild(spriteTemp);
     return spriteTemp;
 }
-function addChildrenText(texto,father, x = 0, y = 0 , anchor = 0.5, font= 'Comic Sans MS', size = '20px', color = "#ffff00", z = 0) {
-    var tempText = new PIXI.Text(texto, {font : '24px Arial', fontSize:size, fill:color});
+function addChildrenText(texto,father, x = 0, y = 0 , anchor = 1, font= 'Comic Sans MS', size = '100px', color = "#ffff00", z = 0) {
+    var tempText = new PIXI.Text(texto, {font : '100px Arial', fontSize:size, fill:color});
     tempText.position.x = x;
     tempText.position.y = y;
     tempText.anchor.set(anchor);
@@ -192,13 +192,13 @@ function actualizarUi() {
     app.spr_uiNodos.position.x = x*6;
     app.spr_uiCoraza.position.x = x*7;
 
-    var y = Math.min(app.expRenderer.height/3.5,26);
-    /*app.spr_uiOjo.position.y = y;
+    var y = Math.min(app.expRenderer.height/3,150);
+    app.spr_uiOjo.position.y = y;
     app.spr_uiPincho.position.y = y;
     app.spr_uiZise.position.y = y;
     app.spr_uiTentaculo.position.y = y;
     app.spr_uiNodos.position.y = y;
-    app.spr_uiCoraza.position.y = y;*/
+    app.spr_uiCoraza.position.y = y;
 
     app.expSpr.children[0].position.x = app.expRenderer.width/2;
     app.expSpr.children[0].position.y = app.expRenderer.height/2.3+app.expRenderer.height/12+window.innerHeight/40-app.expRenderer.height/30;

@@ -83,12 +83,12 @@ function renderPixi(){
 
     //texto,father, x = 0, y = 0 , anchor = 0.5, font= 'Comic Sans MS', size = '20px', color = "#ffff00", z = 0
     addChildrenText("0%",this.expSpr,window.innerWidth/4,window.innerHeight/13.5,0.5,null,35,"#1400ff"); //Exp General
-    addChildrenText("Error",this.spr_uiOjo,null,10); //Exp Ojo
-    addChildrenText("Error",this.spr_uiPincho,null,10); //Exp Picho
-    addChildrenText("Error",this.spr_uiZise,null,10); //Exp Zise
-    addChildrenText("Error",this.spr_uiNodos,null,10); //Exp Nodos
-    addChildrenText("Error",this.spr_uiTentaculo,null,10); //Exp Tentaculos
-    addChildrenText("Error",this.spr_uiCoraza,null,10); //Exp Coraza
+    addChildrenText("Error",this.spr_uiOjo,null,100); //Exp Ojo
+    addChildrenText("Error",this.spr_uiPincho,null,100); //Exp Picho
+    addChildrenText("Error",this.spr_uiZise,null,100); //Exp Zise
+    addChildrenText("Error",this.spr_uiNodos,null,100); //Exp Nodos
+    addChildrenText("Error",this.spr_uiTentaculo,null,100); //Exp Tentaculos
+    addChildrenText("Error",this.spr_uiCoraza,null,100); //Exp Coraza
 
     var alturaRectangulo = this.expRenderer.height/2.1;
     var mascara = new PIXI.Graphics();

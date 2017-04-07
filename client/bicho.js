@@ -122,7 +122,7 @@ var BichoProto = function(){
             if(!this.spriteReady) {
                 this.sprite = new PIXI.mesh.Rope(this.texture,this.cosas);
                 this.sprite.canvasPadding = 1;
-                this.sprite.z = this.nodos[0].sprite.z;
+                this.sprite.z = this.nodos[0].sprite.z-1;
                 this.sprite.displayGroup = app.general;
                 app.world.addChild(this.sprite);
                 this.spriteReady = true;
@@ -249,7 +249,7 @@ var Nodo = function(x, y, tipoNodo, radio, anguloActual,z,anguloInicio,master){
     } else if(tipoNodo.nombre ==="PINCHO"){
         //VITOR NECESITO QUE AQUI HAGAS QUE LOS PINCHOS SE VEAN UN POCO DESPLAZADOS A LA IZQUIERDA PARA QUE QUEDEN BIEN!!
         //Ok, ahora lo hago. :p mentira
-        this.sprite = declararSpriteDesdeTextura(pincho,app.world,x,y,0.0,z-1,x,y);
+        this.sprite = declararSpriteDesdeTextura(pincho,app.world,x,y,0.0,z-2,x,y);
         this.sprite.width = radio*8;
         this.sprite.height = radio*2;
     } else {
