@@ -96,7 +96,6 @@ function empezarJuego(){
                         player.bicho.actualizarSprite();
                     });
                 });
-                console.log("Players cercanos: "+serverInfo.length);
             }
             /*==========================================================================*/
             /* Pixi - Mover la cámara y pintarlo todo
@@ -187,22 +186,34 @@ function empezarJuego(){
         var spriteBorrar = pl.bicho.nodos[info.numNodo].sprite;
         console.log("borrando")
         app.world.removeChild(spriteBorrar);
-        if(info.numNodo === 0 && pl === game.localPlayer){
-            gameOver();
+        if(info.numNodo === 0){
+            if(pl === game.localPlayer) gameOver();
         }
         var nodo = pl.bicho.nodos[info.numNodo];
         if(nodo.tipoNodo.nombre === "MOTOR" || nodo.tipoNodo.nombre === "ESTATICO" || nodo.tipoNodo.nombre === "FLEXIBLE" || nodo.tipoNodo.nombre === "CORAZA") {
+            if(pl.bicho.cuerpo.indexOf(nodo)===0) {
+                pl.bicho.cuerpo = [];
+                pl.bicho.calcularSprite();
+                return;
+            }
+            if(pl.bicho.cuerpo.indexOf(nodo)===1) {
+                pl.bicho.cuerpo = [pl.bicho.cuerpo[0]];
+                pl.bicho.calcularSprite();
+                return;
+            }
             for(var i = pl.bicho.cuerpo.indexOf(nodo)-1; i >= 1; i--) {
                 console.log("borrado: "+pl.bicho.cuerpo.indexOf(nodo)+" actualidadRealidad: "+i)
                 pl.bicho.cuerpo.splice(i,1);
             }
             pl.bicho.cuerpo.splice(pl.bicho.cuerpo.indexOf(nodo),1);
-            console.log("patxeko")
-            pl.bicho.calcularSprite(); //*
-            console.log("pepe")
+            pl.bicho.calcularSprite();
         }
         pl.bicho.nodos.splice(info.numNodo,1);
 
+    });
+    socket.on('evolucion', function(info){
+        game.lv = info.lv;
+        app.barraExp.children[0].text = game.lv;
     });
     /*========================================================================*/
 }

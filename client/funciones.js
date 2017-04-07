@@ -1,14 +1,11 @@
 function actualizarExp() {
     if(expActual) {
         //0=size, 1=pinchos, 2=tentaculos, 3=coraza, 4=nodos, 5=ojos
-        var anchoBordeExp = app.expRenderer.height/30;
-        var widthRect = window.innerWidth/2-anchoBordeExp*2;
-        var heightRect = window.innerHeight/20-anchoBordeExp*2;
+        var widthRect = app.expSpr.width*.5;
         var expTotal = expActual.nodos+expActual.ojos+expActual.tentaculos+expActual.size+expActual.pinchos+expActual.coraza;
-        var TempExp = (expTotal/((nivel+1)*100))*window.innerWidth/2;
-        app.expSpr.mask.width = Math.min(TempExp,widthRect-anchoBordeExp);
-        app.expSpr.mask.height = heightRect-anchoBordeExp;
-        app.expSpr.children[0].text = Math.floor((expTotal/((nivel+1)*100))*100)+'%';
+        var TempExp = (expTotal/((nivel+1)*100))*widthRect;
+        app.expSpr.mask.width = Math.min(TempExp,widthRect);
+        app.expPorc.text = Math.min(Math.floor((expTotal/((nivel+1)*100))*100),100)+'%';
         app.spr_uiZise.children[0].text = Math.floor((expActual.size/((nivel+1)*100))*100)+'%';
         app.spr_uiOjo.children[0].text = Math.floor((expActual.ojos/((nivel+1)*100))*100)+'%';
         app.spr_uiPincho.children[0].text = Math.floor((expActual.pinchos/((nivel+1)*100))*100)+'%';
@@ -27,8 +24,8 @@ function declararSpriteDesdeTextura(textura,container, x,y,anchor, z) {
     container.addChild(spriteTemp);
     return spriteTemp;
 }
-function addChildrenText(texto,father, x = 0, y = 0 , anchor = 1, font= 'Comic Sans MS', size = '100px', color = "#ffff00", z = 0) {
-    var tempText = new PIXI.Text(texto, {font : '100px Arial', fontSize:size, fill:color});
+function addChildrenText(texto,father, x = 0, y = 0 , anchor = 1, font= 'Comic Sans MS', size = '25px', color = "#ffff00", z = 0) {
+    var tempText = new PIXI.Text(texto, {font : 'Arial', fontSize:size, fill:color});
     tempText.position.x = x;
     tempText.position.y = y;
     tempText.anchor.set(anchor);
@@ -184,37 +181,9 @@ function generarDibujoCircular(radio,color,tiponodoColor,alpha,z,x,y,anchor) {
 }
 
 function actualizarUi() {
-    var x = app.expRenderer.width/7;
-    app.spr_uiOjo.position.x = x*2;
-    app.spr_uiPincho.position.x = x*3;
-    app.spr_uiZise.position.x = x*4;
-    app.spr_uiTentaculo.position.x = x*5;
-    app.spr_uiNodos.position.x = x*6;
-    app.spr_uiCoraza.position.x = x*7;
-
-    var y = Math.min(app.expRenderer.height/3,150);
-    app.spr_uiOjo.position.y = y;
-    app.spr_uiPincho.position.y = y;
-    app.spr_uiZise.position.y = y;
-    app.spr_uiTentaculo.position.y = y;
-    app.spr_uiNodos.position.y = y;
-    app.spr_uiCoraza.position.y = y;
-
-    app.expSpr.children[0].position.x = app.expRenderer.width/2;
-    app.expSpr.children[0].position.y = app.expRenderer.height/2.3+app.expRenderer.height/12+window.innerHeight/40-app.expRenderer.height/30;
-
-    var zoomUI = Math.max(zoom,0.3)* 0.15;
-    //app.expSprite.children[0].scale.set(zoomUI);
-    app.spr_uiOjo.scale.set(zoomUI);
-    app.spr_uiPincho.scale.set(zoomUI);
-    app.spr_uiZise.scale.set(zoomUI);
-    app.spr_uiTentaculo.scale.set(zoomUI);
-    app.spr_uiNodos.scale.set(zoomUI);
-    app.spr_uiCoraza.scale.set(zoomUI);
-    //app.expSprite.children[0].scale.set(zoomUI);
-
-    app.barraExp.width =app.expRenderer.width;
-    app.barraExp.height =app.expRenderer.height;
+    var num = Math.min(app.expRenderer.width/app.barraExp.width,app.expRenderer.height/app.barraExp.height);
+    app.exp.scale.set(num);
+    app.expRenderer.view.style.top = window.innerHeight-app.expRenderer.height+"px";
 }
 
 function calcularPuntoEnCirculo(x = 0,y = 0,r,a){
@@ -225,8 +194,21 @@ function calcularPuntoEnCirculo(x = 0,y = 0,r,a){
         return;
     }
     var coord = [];
-    //console.log("Ángulo: "+a+" grados: "+(a*180/Math.PI));
     coord.push(x + r * Math.cos(a));
     coord.push(y + r * Math.sin(a));
     return coord;
+}
+
+function nodoAnodo(nodo,nodoTarget){
+    if(!nodo || ! nodoTarget) {console.log("wtf");return}
+    var distanciaX = nodo.sprite.position.x - nodoTarget.sprite.position.x;
+    var distanciaY = nodo.sprite.position.y - nodoTarget.sprite.position.y;
+    var sumaRadios = nodoTarget.radio + nodo.radio;
+    var dist = distanciaX * distanciaX + distanciaY * distanciaY;
+    if(distanciaX * distanciaX + distanciaY * distanciaY <= sumaRadios * sumaRadios) {
+        return true;
+    } else{
+        console.log((distanciaX * distanciaX + distanciaY * distanciaY)+" radios: "+sumaRadios * sumaRadios);
+        return false;
+    }
 }

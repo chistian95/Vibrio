@@ -188,7 +188,7 @@ io.on('connection', function(client) {
                         io.sockets.emit('borrarPlantas', { numPlanta: numPlanta, numNodo: infoActual[2]});
                         ganarExperienciaPlanta(playerAtacante.bicho, planta.tipoNodo.tipo, planta.radio);
                     } else {
-                        console.log("Planta["+numPlanta+"].nodos["+infoActual[2]+"].radio = "+planta.radio);
+                        //console.log("Planta["+numPlanta+"].nodos["+infoActual[2]+"].radio = "+planta.radio);
                     }
                 //} else console.log("distancia")
             } catch(err) {console.log(err.message);}
@@ -336,6 +336,8 @@ io.on('connection', function(client) {
                        player.bicho.nivel++;
                        player.bicho.evo();
                        resetearExperiencia(player.bicho.exp);
+                       console.log("asdasd");
+                       player.socket.emit('evolucion',{lv: player.bicho.lv});
                    }
                }
             });

@@ -44,6 +44,13 @@ var BichoProto = function(){
             }
             this.nodos.push(nodo);
             if(nodo.tipoNodo.nombre === "MOTOR" || nodo.tipoNodo.nombre === "ESTATICO" || nodo.tipoNodo.nombre === "FLEXIBLE" || nodo.tipoNodo.nombre === "CORAZA") {
+                if(this.cuerpo.length > 1) {
+                    var ok = false;
+                   for(var i = 0; i<=this.cuerpo.length-1;i++) {
+                        if(nodoAnodo(this.cuerpo[i],nodo)) ok = true;
+                   }
+                   if(!ok) return;
+                }
                 this.cuerpo.push(nodo);
                 xP+= nodo.radio;
                 if(this)this.calcularSprite();

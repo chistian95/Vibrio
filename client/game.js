@@ -12,6 +12,7 @@ function Game(socket){
     this.playerDebug = false;
     this.debugNodosLength = 0;
 	this.socket = socket;
+    this.lv = 1;
     var count = 0;
 
     if(!respawn) {
@@ -68,6 +69,15 @@ function Game(socket){
                 actualizarExp();
             }
         }
+        players.forEach(function(pl){
+            pl.bicho.nodos.forEach(function(nodo){
+                var encontrado = false;
+                app.world.children.forEach(function(sprite){
+                    if(nodo.sprite === sprite) encontrado = true;
+                });
+                if(!encontrado) app.world.removeChild(nodo.sprite);
+            });
+        });
     }.bind(this), 100);
 }
 /*=======================================================*/
@@ -135,17 +145,16 @@ Game.prototype = {
         var widthR = window.innerWidth/modifOjos, heightR = window.innerHeight/modifOjos;
         var resc = Math.max(Math.min(Math.max(widthR/w,heightR/h),3),maxZoom);
         app.renderer.resize(window.innerWidth, window.innerHeight);
-        app.expRenderer.resize(window.innerWidth/2, Math.min(window.innerHeight/10),26);
+        app.expRenderer.resize(window.innerWidth/2, Math.min(window.innerHeight/5.2),26);
+        actualizarUi();
         app.backrenderer.resize(window.innerWidth, window.innerHeight);
         zoomObj = resc;
         app.backrenderer.render(app.background);
         app.renderer.render(app.world);
         if(game.localPlayer)this.socket.emit("updateBounds",{height: window.innerHeight/zoom, width: window.innerWidth/zoom,id: game.localPlayer.id});
-        actualizarUi();
         actualizarExp();
     },
     reescalarContainers: function(){
-        app.back.scale.set(zoom);
         app.world.scale.set(zoom);
         app.back.scale.set(zoom);
         app.borde.scale.set(zoom);

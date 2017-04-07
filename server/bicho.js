@@ -79,15 +79,6 @@ var BichoProto = function(){
         this.nodoCentral = cuerpo;
     }
 
-    this.involucionar = function(faseInvolucion) {
-        this.contFase = 0;
-        var ang = this.nodoCentral.anguloActual;
-        while(this.contFase<faseInvolucion) {
-            this.evolucionar();
-        }
-        this.nodoCentral.anguloActual = ang;
-    }
-
     var Nodo = function(tipoNodo, nodoPadre, anguloInicio, radio, bicho){
         this.x = 0;
         this.y = 0;
@@ -158,8 +149,8 @@ var BichoProto = function(){
     }
 
     this.evo = function() {
-        console.log("EVO");
-        console.log(this.exp);
+        //console.log("EVO");
+        //console.log(this.exp);
         var self = this;
         var pesoTotal = 0;
         Object.keys(this.exp).forEach(function(clave) {
@@ -175,7 +166,7 @@ var BichoProto = function(){
                     tipoSeleccionado = clave;
                 }
             });
-            console.log(tipoSeleccionado);
+            //console.log(tipoSeleccionado);
             if(tipoSeleccionado == "size") { //Aumentar el radio de todos sus nodos
                 this.nodos.forEach(function(nodo) {
                     var deltaRadio = nodo.radio * 0.05;
@@ -243,7 +234,7 @@ var BichoProto = function(){
                     }
                 }
             } else if(tipoSeleccionado == "tentaculos") { //Poner tentaculillos
-                console.log("Poner tentaculo");
+                //console.log("Poner tentaculo");
                 var angulosHijos = [];
                 var nodosTentaculos = [];
                 this.nodoCentral.nodos.forEach(function(nodo) {
@@ -342,7 +333,7 @@ var BichoProto = function(){
                     nodoNuevo.nodos.push(nodoMover);
                     nodoMover.nodoPadre = nodoNuevo;
                     if(nodoMover.tipoNodo.nombre != TipoNodo.TENTACULO.nombre) {
-                        console.log(nodoMover.tipoNodo);
+                        //console.log(nodoMover.tipoNodo);
                         nodoMover.tipoNodo = TipoNodo.FLEXIBLE;
                         nodoMover.anguloActual = 0;
                         nodoMover.anguloGiro = 0;
@@ -388,7 +379,7 @@ var BichoProto = function(){
             var deltaRadio = nodo.radio * 0.03;
             nodo.radio += deltaRadio;
         });
-        console.log("FIN EVO");
+        this.lv++;
     }
     this.calcularVelocidadMovimiento = function() {
         this.velocidadMovimiento = 4.0;
@@ -420,6 +411,7 @@ var Bicho = function(x,y,w,h, nodoInicial) {
     height = h;
     this.x = x;
     this.y = y;
+    this.lv = 1;
     this.velocidadGiro = 2.0;
     this.velocidadMotor = 0.6;
     this.velocidadMovimiento = 1.0;
