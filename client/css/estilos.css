@@ -73,7 +73,12 @@ h1{font-size: 8em;}
 
 #nodoInicial label img{
     object-fit: none;
-    transition: all 1s ease-in;
+
+}
+
+#nodoInicial label > input:checked + img{
+    transition: all 0.8s ease-in;
+    transform: rotateZ(360deg) scale(1.4);
 }
 
 #l-ojo > input:checked + img{ /* (RADIO CHECKED) ESTILOS DE LA IMAGEN [OJO] */
