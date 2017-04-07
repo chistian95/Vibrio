@@ -15,7 +15,7 @@ sonidoEvolucion.loop = false;
 var maxW = 1920,maxH = 1920;
 var w = 1920,h=1080;
 var maxZoom = 0.25;
-var zPlantas = 500
+var zPlantas = -500;
 /*=========================================================*/
 
 function empezarJuego(){
@@ -111,8 +111,8 @@ function empezarJuego(){
                     initxy[1] -= game.localPlayer.bicho.nodos[0].sprite.position.y;
                     app.parallax1.tilePosition.x += initxy[0]*.5;
                     app.parallax1.tilePosition.y += initxy[1]*.5;
-                    app.parallax2.tilePosition.x += initxy[0]*.6;
-                    app.parallax2.tilePosition.y += initxy[1]*.6;
+                    app.parallax2.tilePosition.x += initxy[0]*.8;
+                    app.parallax2.tilePosition.y += initxy[1]*.8;
                 }
             }
             /*==========================================================================*/
