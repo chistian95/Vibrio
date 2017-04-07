@@ -78,7 +78,8 @@
     <script src="game.js"></script>
 
     <script>
-        screen.orientation.lock('landscape');
+        if(esMovil)
+            screen.orientation.lock('landscape');
         var juego = false;
         var opciones = {
             sounds: true,
@@ -142,6 +143,17 @@
             configuracion.style.display = "none";
             menu.style.display = "none";
             empezarJuego();
+        }
+
+        function esMovil(){
+            return (
+                (navigator.userAgent.match(/Android/i)) ||
+                (navigator.userAgent.match(/webOS/i)) ||
+                (navigator.userAgent.match(/iPhone/i)) ||
+                (navigator.userAgent.match(/iPod/i)) ||
+                (navigator.userAgent.match(/iPad/i)) ||
+                (navigator.userAgent.match(/BlackBerry/i))
+            );
         }
     </script>
 </body>
