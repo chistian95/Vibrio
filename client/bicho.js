@@ -5,7 +5,10 @@ var BichoProto = function(){
         if(pos === undefined) return;
         if(this.nodos.length > pos) {
             var nodo = this.nodos[pos];
-            if(nodo === undefined || nodo.sprite === undefined) return;
+            if(nodo === undefined) return;
+            if(!nodo.sprite){
+                nodo = new Nodo(nodoMin[1], nodoMin[2], nodoMin[3], nodoMin[4], nodoMin[5],this.z,null,true);
+            }
             nodo.sprite.position.x = nodoMin[1];
             nodo.sprite.position.y = nodoMin[2];
             nodo.tipoNodo = nodoMin[3];
@@ -120,6 +123,7 @@ var BichoProto = function(){
                 this.sprite = new PIXI.mesh.Rope(this.texture,this.cosas);
                 this.sprite.canvasPadding = 1;
                 this.sprite.z = this.nodos[0].sprite.z;
+                this.sprite.displayGroup = app.general;
                 app.world.addChild(this.sprite);
                 this.spriteReady = true;
             } else {
@@ -225,6 +229,7 @@ var Bicho = function(z,nombre) {
 Bicho.prototype = Object.create(BichoProto.prototype);
 
 var Nodo = function(x, y, tipoNodo, radio, anguloActual,z,anguloInicio,master){
+    if(z)z*= 3;
     if(tipoNodo.nombre === "TENTACULO"){ //Tentaculo
         this.tentaculines = [];
         for (var i = 0; i < 25; i++) {
@@ -238,7 +243,7 @@ var Nodo = function(x, y, tipoNodo, radio, anguloActual,z,anguloInicio,master){
         this.sprite.height = radio*2;
         app.world.addChild(this.sprite);
     } else if(tipoNodo.nombre ==="OJO") {
-        this.sprite = declararSpriteDesdeTextura(ojo,app.world,x,y,0.5,z+1+this.contOjos,x,y);
+        this.sprite = declararSpriteDesdeTextura(ojo,app.world,x,y,0.5,z+1,x,y);
         this.sprite.width = radio*2;
         this.sprite.height = radio*2;
     } else if(tipoNodo.nombre ==="PINCHO"){
