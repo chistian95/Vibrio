@@ -58,6 +58,19 @@ var PlantaProto = function(){
         if(this.nodos.length === 0 || !this.nodoPadre || !this.nodoCentral) {
             this.x = x;
             this.y = y;
+            var tipoPlanta;
+			if(Math.random() * 100 < 20) {
+				tipoPlanta = 4;
+			} else if(Math.random() * 100 < 35) {
+				tipoPlanta = 0;
+			} else if(Math.random() * 100 < 35) {
+				tipoPlanta = 1;
+			} else if(Math.random() * 100 < 65) {
+				tipoPlanta = 3;
+			} else {
+				tipoPlanta = 5;
+			}
+			this.tipo = tipoPlanta;
             this.generar();
             this.calcularHitbox();
             io.sockets.emit('actualizarPlanta', {id: id, nodos: this.crearNodosMin(), hitbox: this.hitbox});

@@ -498,7 +498,7 @@ function regenerarMapa() {
 
 function decaerPlantas() {
     plantas.forEach(function(planta){
-        if(Math.random() * 100 < 1.5) {
+        if(Math.random() * 100 < 3) {
             var numNodo = Math.floor(Math.random() * planta.nodos.length);
             matarNodosPlanta(planta, planta.nodos[numNodo]);
             io.sockets.emit('borrarPlantas', { numPlanta: plantas.indexOf(planta), numNodo: numNodo});
@@ -509,22 +509,19 @@ function decaerPlantas() {
 
 /* GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS - GENERAR PLANTAS */
 function generarPlantas() {
-    for(var i=0; i<25; i++) {
+    for(var i=0; i<5; i++) {
         var tipoPlanta;
-        if(Math.random() * 100 < 25) {
-            tipoPlanta = 4;
-        } else if(Math.random() * 100 < 30) {
-            tipoPlanta = 0;
-        } else if(Math.random() * 100 < 25) {
-            tipoPlanta = 1;
-        } else if(Math.random() * 100 < 40) {
-            tipoPlanta = 2;
-        } else if(Math.random() * 100 < 60) {
-            tipoPlanta = 5;
-        } else {
-            tipoPlanta = 3;
-        }
-        var tipoPlanta = Math.round(Math.random() * 5);
+		if(Math.random() * 100 < 20) {
+			tipoPlanta = 4;
+		} else if(Math.random() * 100 < 35) {
+			tipoPlanta = 0;
+		} else if(Math.random() * 100 < 35) {
+			tipoPlanta = 1;
+		} else if(Math.random() * 100 < 65) {
+			tipoPlanta = 3;
+		} else {
+			tipoPlanta = 5;
+		}
         var x = Math.random()*(width-200)+100;
         var y = Math.random()*(width-200)+100;
         var planta = new p.Planta(x, y, tipoPlanta);
