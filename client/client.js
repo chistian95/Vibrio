@@ -96,6 +96,7 @@ function empezarJuego(){
                         player.bicho.actualizarSprite();
                     });
                 });
+                console.log("Players cercanos: "+serverInfo.length);
             }
             /*==========================================================================*/
             /* Pixi - Mover la cámara y pintarlo todo

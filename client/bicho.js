@@ -23,9 +23,6 @@ var BichoProto = function(){
                 } else {
                     nodo.sprite.width = nodoMin[4] * 2;
                     nodo.sprite.height = nodoMin[4] * 2;
-                    nodo.sprite.delete(true);
-                    this.sprite = generarDibujoCircular(nodo.radio,'rgba(36, 193, 145,1)',true,0.7,z,x,y);
-                    this.sprite.displayGroup = app.general;
                 }
                 if(this)this.calcularSprite();
             }
