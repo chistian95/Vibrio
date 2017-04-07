@@ -11,7 +11,9 @@ var debug;
 /*Constantes
 ============================================================*/
 var sonidoEvolucion = new Audio('assets/snd/evolucion.wav');
+var sonidoComer = new Audio('assets/snd/comer.wav');
 sonidoEvolucion.loop = false;
+sonidoComer.loop = false;
 var maxW = 1920,maxH = 1920;
 var w = 1920,h=1080;
 var maxZoom = 0.25;
